@@ -40,7 +40,7 @@ export const cols = [
     dataIndex: 'income',
     align: 'right',
     width: 100,
-    slots: { customRender: 'income'}
+    slots: { customRender: 'income' }
     // width: 100
   },
   {
@@ -48,7 +48,7 @@ export const cols = [
     dataIndex: 'income_avg',
     align: 'right',
     width: 100,
-    slots: { customRender: 'incomeAvg'}
+    slots: { customRender: 'incomeAvg' }
   },
   // {
   //   title: 'income_sum',
@@ -80,7 +80,7 @@ export const cols = [
     dataIndex: 'cost_ratio',
     align: 'right',
     width: 100,
-    slots: { customRender: 'costRatio'}
+    slots: { customRender: 'costRatio' }
   },
   // {
   //   title: 'cost_sum_ratio',
@@ -112,7 +112,7 @@ export const cols = [
     dataIndex: 'consume_ratio',
     align: 'right',
     width: 100,
-    slots: { customRender: 'consumeRatio'}
+    slots: { customRender: 'consumeRatio' }
   },
   // {
   //   title: 'consume_sum_ratio',
@@ -125,7 +125,7 @@ export const cols = [
     dataIndex: 'settlea_30',
     align: 'right',
     width: 100,
-    slots: { customRender: 'settlea30'}
+    slots: { customRender: 'settlea30' }
   },
   {
     title: 'settlea_1',
@@ -140,10 +140,11 @@ export const cols = [
     width: 100
   },
   {
-    title: 'settlea_7_3',
-    dataIndex: 'settlea_7_3',
+    title: 'status',
+    dataIndex: 'op_id',
     align: 'right',
-    width: 100
+    width: 80,
+    slots: { customRender: 'status' }
   },
   // {
   //   title: 'income_score',
@@ -291,5 +292,33 @@ export const cols2 = [
     dataIndex: 'date',
     align: 'right',
     width: 100
+  }
+]
+
+
+export const cols3 = [
+  {
+    title: 'op_name',
+    dataIndex: 'name',
+    align: 'right',
+    width: 80
+  },
+  {
+    title: 'q',
+    dataIndex: 'q',
+    align: 'right',
+    width: 200
+  },
+  {
+    title: 'a',
+    dataIndex: 'a',
+    align: 'right',
+    width: 400
+  },
+  {
+    title: 'time',
+    dataIndex: 'created_at',
+    align: 'right',
+    width: 200
   }
 ]

@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import { getTable } from './api'
+import dayjs from 'dayjs'
 
 const store = createStore({
   state() {
@@ -10,11 +11,23 @@ const store = createStore({
   getters: {
     table1({ table }) {
       return formatTable(table)
+    },
+    table1Persons({ table }) {
+      if (!table || table.err || !table.data) return []
+      let distinctPersons = Array.from(new Set(table.data.map(v => v.person)))
+      return distinctPersons.map(value => ({ value }))
     }
   },
   mutations: {
     initTable(state, payload) {
       state.table = payload
+    },
+    updateTable(state, payload) {
+      const index = state.table.data.findIndex(v => v.id == payload.id)
+      state.table.data[index].op_id = payload.op_id[0]
+      state.table.data[index].op_name = payload.op_name
+      state.table.data[index].q = payload.q
+      state.table.data[index].a = payload.a
     }
   },
   actions: {
@@ -62,6 +75,17 @@ export function formatTable(table) {
       cost_score: fixed2(v.cost_score),
       consume_score: fixed2(v.consume_score),
       score: fixed2(v.score)
+    }))
+  }
+}
+
+export function formatTable2(table) {
+  if (!table || table.err) return table
+  return {
+    ...table,
+    data: table.data.map(v => ({
+      ...v,
+      created_at: dayjs(v.created_at).format('YYYY/MM/DD HH:mm:ss')
     }))
   }
 }
