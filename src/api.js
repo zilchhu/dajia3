@@ -8,13 +8,19 @@ const inst = axios.create({
 
 inst.interceptors.response.use(
   res => {
-    return res.data
+    if(res.data.err) {
+      return Promise.reject(res.data.err)
+    } else {
+      return res.data.data
+    }
   },
   err => Promise.reject(err)
 )
 
 const urls = {
   table: 'table',
+  tableByDate: 'tableByDate',
+  tableByShop: 'tableByShop',
   rules: 'rules',
   plan: {
     list: 'plans',
@@ -30,6 +36,15 @@ export async function getTable(day_from_today = 1) {
 export async function getHistoryTable(day_from_today = 2, shop_id, interval = 7) {
   return inst.get(urls.table, { params: { day_from_today, shop_id, interval } })
 }
+
+export async function getTableByDate(day_from_today = 1) {
+  return inst.get(`${urls.tableByDate}/${day_from_today}`)
+}
+
+export async function getTableByShop(shopId) {
+  return inst.get(`${urls.tableByShop}/${shopId}`)
+}
+
 
 export async function getRules() {
   return inst.get(urls.rules)

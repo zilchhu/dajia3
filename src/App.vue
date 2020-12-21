@@ -6,7 +6,7 @@ template(v-else-if="table1.err")
 template(v-else-if="!table1.data")
   a-empty
 template(v-else)
-  a-table(:columns="cols" :data-source="table1.data" rowKey="shop_id" @expand="expand" :pagination="{pageSize: 30, showSizeChanger: true}" size="small")
+  a-table(:columns="cols" :data-source="table1.data" rowKey="shop_id" @expand="expand" :pagination="false" size="small" :scroll="{y: scrollY}")
 
     template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
       a-input-search(:value="selectedKeys[0]" @change="e => setSelectedKeys(e.target.value ? [e.target.value] : [])" @search="confirm" style="width: 200px;")
@@ -28,7 +28,7 @@ template(v-else)
 
     template(#expandedRowRender="{record}")
       a-tabs
-        a-tab-pane(v-if="unSatisfies(record).length > 0" key="q&a" tab="q&a")
+        a-tab-pane(v-if="unSatisfies(record).length > 0" key="q&a" tab="方案")
           a-list(:grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }" :data-source="unSatisfies(record)")
             template(#renderItem="{ item, index }")
               a-list-item
@@ -36,7 +36,7 @@ template(v-else)
                   a-statistic(:title="item.title" :value="item.value" :value-style="{ color: '#fa541c' }")
                     template(#suffix)
                       span.threshold / {{item.threshold}}
-          a-card(title="plan" :bordered="false")
+          a-card(v-if="!record.op_id" title="plan" :bordered="false")
             a-comment
               template(#content)
                 hello-form(:id="record.id" :shopId="record.shop_id" :problem="unSatisfiesProblems(record)" :persons="table1Persons" @submitPlan="onSubmitPlan")
@@ -45,14 +45,14 @@ template(v-else)
             a-table(:columns="cols3" :data-source="planTable.data" rowKey="id" :loading="planTableLoading" size="small")      
             
         //- description panel
-        a-tab-pane(key="description" tab="description")
+        a-tab-pane(key="description" tab="详情")
           a-descriptions(size="small" :column="{ xxl: 5, xl: 4, lg: 4, md: 4, sm: 3, xs: 1 }")
             a-descriptions-item(v-for="key in Object.keys(record)" :key="key" :label="key") {{record[key]}}
           a-card
             a-table(:columns="cols3" :data-source="planTable.data" rowKey="id" :loading="planTableLoading" size="small")
          
         //- history data panel
-        a-tab-pane(key="history", tab="history")
+        a-tab-pane(key="history", tab="历史数据")
           a-table(:columns="cols2" :data-source="historyTable.data" rowKey="date" :loading="historyTableLoading" :pagination="false" size="small")
              template(#expandedRowRender="{record}")
                a-descriptions(size="small" :column="{ xxl: 5, xl: 4, lg: 4, md: 4, sm: 3, xs: 1 }")
@@ -61,7 +61,7 @@ template(v-else)
 
 <script>
 import { mapActions, mapGetters, mapMutations } from 'vuex'
-import { cols, cols2, cols3 } from './App.model'
+import { cols2, cols3 } from './App.model'
 import { getHistoryTable, getPlans } from './api'
 import { formatTable, formatTable2 } from './store'
 import HelloForm from './components/HelloForm'
@@ -73,7 +73,6 @@ export default {
   },
   data() {
     return {
-      cols,
       cols2,
       cols3,
       searchText: '',
@@ -85,14 +84,222 @@ export default {
         name: '',
         plan: '',
         problem: ''
-      }
+      },
+      scrollY: 1000
     }
   },
   computed: {
-    ...mapGetters(['table1', 'table1Persons'])
+    ...mapGetters(['table1', 'table1Persons']),
+    cols: [
+      {
+        title: '城市',
+        dataIndex: 'city',
+        width: 70,
+        slots: { filterDropdown: 'filterDropdown' },
+        onFilter: (value, record) => record.city.includes(value.trim())
+      },
+      {
+        title: '负责',
+        dataIndex: 'person',
+        width: 70,
+        filters: [],
+        filterMultiple: true,
+        onFilter: (value, record) => record.platform == value
+      },
+      {
+        title: '物理店',
+        dataIndex: 'real_shop',
+        width: 90,
+        slots: { filterDropdown: 'filterDropdown' },
+        onFilter: (value, record) => record.real_shop.includes(value.trim())
+      },
+      {
+        title: '门店id',
+        dataIndex: 'shop_id',
+        width: 100,
+        slots: { filterDropdown: 'filterDropdown' },
+        onFilter: (value, record) => record.shop_id.includes(value.trim())
+      },
+      {
+        title: '店名',
+        dataIndex: 'shop_name',
+        width: 260,
+        slots: { filterDropdown: 'filterDropdown' },
+        onFilter: (value, record) => record.shop_name.includes(value.trim())
+      },
+      {
+        title: '平台',
+        dataIndex: 'platform',
+        width: 80,
+        filters: [
+          { text: '美团', value: '美团' },
+          { text: '饿了么', value: '饿了么' }
+        ],
+        filterMultiple: true,
+        onFilter: (value, record) => record.platform == value
+      },
+      {
+        title: '三方配送',
+        dataIndex: 'third_send',
+        align: 'right',
+        width: 100,
+        sorter: (a, b) => a.income - b.income
+        // width: 100
+      },
+      {
+        title: '收入',
+        dataIndex: 'income',
+        align: 'right',
+        width: 100,
+        slots: { customRender: 'income' },
+        sorter: (a, b) => a.income - b.income
+        // width: 100
+      },
+      {
+        title: '平均收入',
+        dataIndex: 'income_avg',
+        align: 'right',
+        width: 100,
+        slots: { customRender: 'incomeAvg' },
+        sorter: (a, b) => a.income_avg - b.income_avg
+      },
+      // {
+      //   title: 'income_sum',
+      //   dataIndex: 'income_sum',
+      //   align: 'right',
+      //   width: 100
+      // },
+      // {
+      //   title: 'cost',
+      //   dataIndex: 'cost',
+      //   align: 'right',
+      //   width: 100
+      //   // width: 100
+      // },
+      // {
+      //   title: 'cost_avg',
+      //   dataIndex: 'cost_avg',
+      //   align: 'right',
+      //   width: 100
+      // },
+      // {
+      //   title: 'cost_sum',
+      //   dataIndex: 'cost_sum',
+      //   align: 'right',
+      //   width: 100
+      // },
+      {
+        title: '成本比例',
+        dataIndex: 'cost_ratio',
+        align: 'right',
+        width: 100,
+        slots: { customRender: 'costRatio' },
+        sorter: (a, b) => a.cost_ratio - b.cost_ratio
+      },
+      // {
+      //   title: 'cost_sum_ratio',
+      //   dataIndex: 'cost_sum_ratio',
+      //   align: 'right',
+      //   width: 100
+      // },
+      // {
+      //   title: 'consume',
+      //   dataIndex: 'consume',
+      //   align: 'right',
+      //   width: 100
+      //   // width: 100
+      // },
+      // {
+      //   title: 'consume_avg',
+      //   dataIndex: 'consume_avg',
+      //   align: 'right',
+      //   width: 100
+      // },
+      // {
+      //   title: 'consume_sum',
+      //   dataIndex: 'consume_sum',
+      //   align: 'right',
+      //   width: 100
+      // },
+      {
+        title: '推广比例',
+        dataIndex: 'consume_ratio',
+        align: 'right',
+        width: 100,
+        slots: { customRender: 'consumeRatio' },
+        sorter: (a, b) => a.consume_ratio - b.consume_ratio
+      },
+      // {
+      //   title: 'consume_sum_ratio',
+      //   dataIndex: 'consume_sum_ratio',
+      //   align: 'right',
+      //   width: 100
+      // },
+      {
+        title: '比30日',
+        dataIndex: 'settlea_30',
+        align: 'right',
+        width: 100,
+        slots: { customRender: 'settlea30' },
+        sorter: (a, b) => a.settlea_30 - b.settlea_30
+      },
+      {
+        title: '比昨日',
+        dataIndex: 'settlea_1',
+        align: 'right',
+        width: 100,
+        sorter: (a, b) => a.settlea_1 - b.settlea_1
+      },
+      {
+        title: '比上周',
+        dataIndex: 'settlea_7',
+        align: 'right',
+        width: 100,
+        sorter: (a, b) => a.settlea_7 - b.settlea_7
+      },
+      {
+        title: '状态',
+        dataIndex: 'op_id',
+        align: 'center',
+        width: 70,
+        slots: { customRender: 'status' }
+      },
+      // {
+      //   title: 'income_score',
+      //   dataIndex: 'income_score',
+      //   align: 'right',
+      //   width: 100
+      // },
+      // {
+      //   title: 'cost_score',
+      //   dataIndex: 'cost_score',
+      //   align: 'right',
+      //   width: 100
+      // },
+      // {
+      //   title: 'consume_score',
+      //   dataIndex: 'consume_score',
+      //   align: 'right',
+      //   width: 100
+      // },
+      {
+        title: '总分',
+        dataIndex: 'score',
+        align: 'right',
+        width: 100,
+        sorter: (a, b) => a.score - b.score
+      },
+      {
+        title: '日期',
+        dataIndex: 'date',
+        align: 'right',
+        width: 100
+      }
+    ]
   },
   methods: {
     expand(expanded, record) {
+      this.historyTableLoading = true
       getHistoryTable(2, record.shop_id, 7)
         .then(res => formatTable(res))
         .then(res => {
@@ -170,9 +377,8 @@ export default {
     },
     status(text, record) {
       if (this.unSatisfies(record).length == 0) return { color: 'success', text: 'success' }
-      else if (this.unSatisfies(record).length > 0 && !text)
-        return { color: 'warning', text: 'unhandle' }
-      else return { color: 'processing', text: 'handled' }
+      else if (this.unSatisfies(record).length > 0 && !text) return { color: 'warning', text: '未提交' }
+      else return { color: 'processing', text: '已提交' }
     },
     renderPlans(shop_id) {
       getPlans(shop_id)
@@ -198,6 +404,7 @@ export default {
     ...mapMutations(['updateTable'])
   },
   mounted() {
+    this.scrollY = document.body.clientHeight
     this.initTable()
   }
 }

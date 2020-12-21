@@ -48,12 +48,23 @@ function fixed2(num) {
   return num.toFixed(2)
 }
 
+function empty(str) {
+  if(str == null) return ""
+  else return str
+}
+
 export function formatTable(table) {
   if (!table || table.err) return table
   return {
     ...table,
     data: table.data.map(v => ({
       ...v,
+      city: empty(v.city),
+      person: empty(v.person),
+      real_shop: empty(v.real_shop),
+      shop_id: empty(v.shop_id),
+      shop_name: empty(v.shop_name),
+      platform: empty(v.platform),
       income: fixed2(v.income),
       income_avg: fixed2(v.income_avg),
       income_sum: fixed2(v.income_sum),

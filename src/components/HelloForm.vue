@@ -3,7 +3,7 @@ a-form(ref="form" :model="form" :rules="rules" :label-col="{span: 1}" :wrapper-c
   a-form-item(label="name")
     a-auto-complete.plan-input(v-model:value="form.name" :options="persons")
       a-input(size="small")
-  a-form-item(label="plan")
+  a-form-item(label="方案")
     a-textarea.plan-input(v-model:value="form.plan" :autoSize="{minRows: 3}" showCount)
   a-form-item(:wrapper-col="{span: 10, offset: 1}")
     a-button(type="primary" @click="onSubmit" :loading="submitting") submit                    
