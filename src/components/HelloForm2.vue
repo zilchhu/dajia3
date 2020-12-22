@@ -1,0 +1,166 @@
+<template lang="pug">
+a-table(:columns="columns" :data-source="data" rowKey="q" :scroll={x: scrollX})
+  template(#name="{text, record}")
+    a-input(:value="text" @change="e => handleChange(e.target.value, record.q, 'name')")
+  template(#a="{text, record}")
+    a-input(:value="text" @change="e => handleChange(e.target.value, record.q, 'a')")
+  template(#operation="{text, record}")
+    a-button(@click="e => save(record)") {{text}}
+</template>
+
+<script>
+import dayjs from 'dayjs'
+const columns = [
+  {
+    title: 'q',
+    dataIndex: 'q',
+    width: 140
+  },
+  {
+    title: 'name',
+    dataIndex: 'name',
+    width: 140,
+    slots: { customRender: 'name' }
+  },
+  {
+    title: 'a',
+    dataIndex: 'a',
+    width: 400,
+    slots: { customRender: 'a' }
+  },
+  {
+    title: 'operation',
+    dataIndex: 'operation',
+    slots: { customRender: 'operation' },
+    width: 140
+  },
+  {
+    title: 'time',
+    dataIndex: 'time'
+  }
+]
+
+export default {
+  name: 'hello-form2',
+  props: {
+    record: Object
+  },
+  data() {
+    const data = this.record.a
+      ? JSON.parse(this.record.a)
+      : this.unSatisfiesProblems(this.record).map(v => ({
+          q: v,
+          name: this.record.person,
+          a: '',
+          operation: 'save',
+          time: ''
+        }))
+    return {
+      data,
+      columns
+    }
+  },
+  computed: {
+    scrollX() {
+      return this.columns.reduce((sum, { width }) => sum + width, 50)
+    }
+  },
+  methods: {
+    handleChange(value, key, column) {
+      const newData = [...this.data]
+      const target = newData.filter(item => key === item.q)[0]
+      if (target) {
+        target[column] = value
+        this.data = newData
+      }
+    },
+    save(record) {
+      const newData = [...this.data]
+      const target = newData.filter(item => record.q === item.q)[0]
+      if (target) {
+        target['time'] = dayjs().format('MM/DD HH:mm:ss')
+        this.data = newData
+        console.log(JSON.stringify(this.data))
+        // this.$emit('save', this.record.id)
+      }
+    },
+    toNum(str) {
+      try {
+        return parseFloat(str)
+      } catch (error) {
+        return 0
+      }
+    },
+    isIncome(text, record) {
+      text = this.toNum(text)
+      if (record.platform == '美团') return text < 1500
+      else if (record.platform == '饿了么') return text < 1000
+      return false
+    },
+    isIncomeAvg(text) {
+      text = this.toNum(text)
+      return text < 1500
+    },
+    isConsumeRatio(text) {
+      text = this.toNum(text)
+      return text > 5
+    },
+    isCostRatio(text) {
+      text = this.toNum(text)
+      return text > 50
+    },
+    isSettlea30(text) {
+      text = this.toNum(text)
+      return text < 70
+    },
+    unSatisfies(record) {
+      const { income, income_avg, consume_ratio, cost_ratio, settlea_30, platform } = record
+      let list = []
+      if (this.isIncome(income, record))
+        list.push({
+          title: '收入',
+          value: income,
+          threshold: platform == '美团' ? '1500' : '1000',
+          problem: '低收入'
+        })
+      if (this.isIncomeAvg(income_avg))
+        list.push({
+          title: '平均收入',
+          value: income_avg,
+          threshold: '1500',
+          problem: '低收入'
+        })
+      if (this.isConsumeRatio(consume_ratio))
+        list.push({
+          title: '推广比例',
+          value: consume_ratio,
+          threshold: '5%',
+          problem: '高推广'
+        })
+      if (this.isCostRatio(cost_ratio))
+        list.push({
+          title: '成本比例',
+          value: cost_ratio,
+          threshold: '50%',
+          problem: '高成本'
+        })
+      if (this.isSettlea30(settlea_30))
+        list.push({
+          title: '比30日',
+          value: settlea_30,
+          threshold: '70%',
+          problem: '低收入'
+        })
+      return list
+    },
+    unSatisfiesProblems(record) {
+      return Array.from(new Set(this.unSatisfies(record).map(v => v.problem)))
+    }
+  }
+}
+</script>
+<style scoped>
+.editable-row-operations a {
+  margin-right: 8px;
+}
+</style>
