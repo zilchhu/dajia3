@@ -1,41 +1,43 @@
 <template lang="pug">
-a-table(:columns="columns" :data-source="data" rowKey="q" :scroll={x: scrollX})
+a-table(:columns="columns" :data-source="data" rowKey="q" :scroll={x: scrollX} :pagination="false" size="small")
   template(#name="{text, record}")
     a-input(:value="text" @change="e => handleChange(e.target.value, record.q, 'name')")
   template(#a="{text, record}")
-    a-input(:value="text" @change="e => handleChange(e.target.value, record.q, 'a')")
+    a-textarea(:value="text" @change="e => handleChange(e.target.value, record.q, 'a')" :autoSize="{minRows: 1}")
   template(#operation="{text, record}")
     a-button(@click="e => save(record)") {{text}}
 </template>
 
 <script>
 import dayjs from 'dayjs'
+import { updateTableById } from '../api'
+import { message } from 'ant-design-vue'
 const columns = [
   {
-    title: 'q',
+    title: '问题',
     dataIndex: 'q',
     width: 140
   },
   {
-    title: 'name',
+    title: '姓名',
     dataIndex: 'name',
     width: 140,
     slots: { customRender: 'name' }
   },
   {
-    title: 'a',
+    title: '方案',
     dataIndex: 'a',
     width: 400,
     slots: { customRender: 'a' }
   },
   {
-    title: 'operation',
+    title: '操作',
     dataIndex: 'operation',
     slots: { customRender: 'operation' },
     width: 140
   },
   {
-    title: 'time',
+    title: '时间',
     dataIndex: 'time'
   }
 ]
@@ -79,9 +81,16 @@ export default {
       const target = newData.filter(item => record.q === item.q)[0]
       if (target) {
         target['time'] = dayjs().format('MM/DD HH:mm:ss')
-        this.data = newData
-        console.log(JSON.stringify(this.data))
-        // this.$emit('save', this.record.id)
+        let a = JSON.stringify(this.data)
+        updateTableById(this.record.id, a)
+          .then(res => {
+            message.success(res)
+            this.data = newData
+            // this.$emit('save', this.record.id)
+          })
+          .catch(err => {
+            message.error(err)
+          })
       }
     },
     toNum(str) {

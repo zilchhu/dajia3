@@ -24,7 +24,7 @@ a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :loading="tab
   template(#expandedRowRender="{record}")
     a-tabs
       //- a-tab-pane(key="1" tab="1") 1
-      a-tab-pane(key="3" tab="3" size="small") 
+      a-tab-pane(key="1" tab="往日" size="small") 
         a-table(:columns="shopTableCols" :data-source="tablesByShop.get(record.shop_id)" rowKey="date" :loading="tablesByShopLoading.has(record.shop_id)" :pagination="{showSizeChanger: true, defaultPageSize: 10}" size="small" :scroll="{x: shopScrollX}")
           template(#income="{text, record}")
             .cell(:class="{unsatisfied: isIncome(text, record)}") {{text}}
@@ -38,23 +38,32 @@ a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :loading="tab
             .cell(:class="{unsatisfied: isSettlea30(text, record)}") {{text}}
 
           template(#expandedRowRender="{record}")
-            a-descriptions(size="small" :column="{ xxl: 5, xl: 4, lg: 4, md: 4, sm: 3, xs: 1 }")
-              a-descriptions-item(v-for="key in Object.keys(record)" :key="key" :label="key") {{record[key]}}
+            a-tabs
+              a-tab-pane(:key="`${record.id}`-1" tab="方案" size="small")
+                hello-form2(:record="record" @save="onSave")
+              a-tab-pane(:key="`${record.id}`-2" tab="详情" size="small")
+               a-card(style="width: 100vw;" size="small")
+                a-card-grid(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key" style="width: 160px; padding: 10px;")
+                  a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
+                    template(#formatter="{value}")
+                      p.truncate {{value}}
 
+      a-tab-pane(key="2" tab="详情")
+        a-card(style="width: 100vw;" size="small")
+          a-card-grid(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key" style="width: 160px; padding: 4px 10px;")
+            a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
+              template(#formatter="{value}")
+                p.truncate {{value}}
 
-      a-tab-pane(key="2" tab="2")
-        a-descriptions(size="small" :column="{ xxl: 5, xl: 4, lg: 4, md: 4, sm: 3, xs: 1 }")
-          a-descriptions-item(v-for="key in Object.keys(record)" :key="key" :label="key") {{record[key]}}
-
-      
-      a-tab-pane(key="1" tab="1")
-        hello-form2(:record="record" @save="onSave")
+        
 </template>
 
 <script>
 import { message } from 'ant-design-vue'
 import { getTableByDate, getTableByShop } from './api'
 import HelloForm2 from './components/HelloForm2'
+import omit from 'omit'
+
 export default {
   data() {
     return {
@@ -276,8 +285,7 @@ export default {
         {
           title: '日期',
           dataIndex: 'date',
-          align: 'right',
-          width: 100,
+          align: 'left',
           sorter: (a, b) => this.toNum(a.date) - this.toNum(b.date)
         }
       ]
@@ -287,6 +295,43 @@ export default {
     },
     shopScrollX() {
       return this.shopTableCols.reduce((sum, { width }) => sum + width, 50)
+    },
+    omit(obj, keys) {
+      return omit(obj, keys)
+    },
+    en2zh() {
+      const map = new Map()
+      map.set('id', 'id')
+      map.set('city', '城市')
+      map.set('person', '负责')
+      map.set('real_shop', '物理店')
+      map.set('shop_id', '门店id')
+      map.set('shop_name', '店名')
+      map.set('platform', '平台')
+      map.set('third_send', '三方配送')
+      map.set('income', '收入')
+      map.set('income_avg', '平均收入')
+      map.set('income_sum', '总收入')
+      map.set('cost', '成本')
+      map.set('cost_avg', '平均成本')
+      map.set('cost_sum', '总成本')
+      map.set('cost_ratio', '成本比例')
+      map.set('cost_sum_ratio', '总成本比例')
+      map.set('consume', '推广')
+      map.set('consume_avg', '平均推广')
+      map.set('consume_sum', '总推广')
+      map.set('consume_ratio', '推广比例')
+      map.set('consume_sum_ratio', '总推广比例')
+      map.set('settlea_30', '比30日')
+      map.set('settlea_1', '比昨日')
+      map.set('settlea_7', '比上周')
+      map.set('settlea_7_3', '比上周(3日)')
+      map.set('income_score', '收入分')
+      map.set('consume_score', '推广分')
+      map.set('cost_score', '成本分')
+      map.set('score', '总分')
+      map.set('date', '日期')
+      return map
     }
   },
   methods: {
@@ -319,7 +364,6 @@ export default {
     },
     expand(expanded, record) {
       if (expanded) {
-        console.log(record)
         this.getTableByShop(record.shop_id)
       }
     },
@@ -429,4 +473,11 @@ export default {
 
 .icon-reset
   margin: 0 6px
+
+.truncate 
+  width: 120px
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
 </style>
