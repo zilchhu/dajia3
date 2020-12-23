@@ -10,50 +10,47 @@ a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :loading="tab
         br
         a-button(type="link" @click="clearFilters") reset
 
-  template(#income="{text, record}")
-    .cell(:class="{unsatisfied: isIncome(text, record)}") {{text}}
-  template(#incomeAvg="{text, record}")
-    .cell(:class="{unsatisfied: isIncomeAvg(text, record)}") {{text}}
-  template(#consumeRatio="{text, record}")
-    .cell(:class="{unsatisfied: isConsumeRatio(text, record)}") {{text}}
-  template(#costRatio="{text, record}")
-    .cell(:class="{unsatisfied: isCostRatio(text, record)}") {{text}}
-  template(#settlea30="{text, record}")
-    .cell(:class="{unsatisfied: isSettlea30(text, record)}") {{text}}
+  template(v-for="col in rules.map(r=>r[0])" #[col]="{text, record}")
+    .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
+ 
 
   template(#expandedRowRender="{record}")
-    a-tabs
+    a-tabs(size="small")
       //- a-tab-pane(key="1" tab="1") 1
       a-tab-pane(key="1" tab="往日" size="small") 
         a-table(:columns="shopTableCols" :data-source="tablesByShop.get(record.shop_id)" rowKey="date" :loading="tablesByShopLoading.has(record.shop_id)" :pagination="{showSizeChanger: true, defaultPageSize: 10}" size="small" :scroll="{x: shopScrollX}")
-          template(#income="{text, record}")
-            .cell(:class="{unsatisfied: isIncome(text, record)}") {{text}}
-          template(#incomeAvg="{text, record}")
-            .cell(:class="{unsatisfied: isIncomeAvg(text, record)}") {{text}}
-          template(#consumeRatio="{text, record}")
-            .cell(:class="{unsatisfied: isConsumeRatio(text, record)}") {{text}}
-          template(#costRatio="{text, record}")
-            .cell(:class="{unsatisfied: isCostRatio(text, record)}") {{text}}
-          template(#settlea30="{text, record}")
-            .cell(:class="{unsatisfied: isSettlea30(text, record)}") {{text}}
+          template(v-for="col in rules.map(r=>r[0])" #[col]="{text, record}")
+            .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
 
           template(#expandedRowRender="{record}")
-            a-tabs
+            a-tabs(size="small")
               a-tab-pane(:key="`${record.id}`-1" tab="方案" size="small")
                 hello-form2(:record="record" @save="onSave")
               a-tab-pane(:key="`${record.id}`-2" tab="详情" size="small")
-               a-card(style="width: 100vw;" size="small")
-                a-card-grid(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key" style="width: 160px; padding: 10px;")
-                  a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
-                    template(#formatter="{value}")
-                      p.truncate {{value}}
+                a-card(style="width: 100vw;" size="small")
+                  a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
+                    template(#title)
+                      .tip {{`${record[key]}${thresholdSuffix(key)}`}}
+                    a-card-grid(style="width: 160px; padding: 4px 10px;")
+                      a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
+                        template(v-if="rules.map(r=>r[0]).includes(key)" #formatter="{value}")
+                          p.truncate(:class="{unsatisfied: rules2fn[record.platform][key](value)}") {{value}}
+                        template(v-else #formatter="{value}")
+                          p.truncate {{value}}
 
       a-tab-pane(key="2" tab="详情")
         a-card(style="width: 100vw;" size="small")
-          a-card-grid(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key" style="width: 160px; padding: 4px 10px;")
-            a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
-              template(#formatter="{value}")
-                p.truncate {{value}}
+          a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
+            template(#title)
+              .tip {{`${record[key]}${thresholdSuffix(key)}`}}
+            a-card-grid(style="width: 160px; padding: 4px 10px;")
+              a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
+                template(v-if="rules.map(r=>r[0]).includes(key)" #formatter="{value}")
+                  p.truncate(:class="{unsatisfied: rules2fn[record.platform][key](value)}") {{value}}
+                //- template(v-else-if="key == 'score'")
+                //-   p.truncate(:class="{success: value == 100}") {{value}}
+                template(v-else #formatter="{value}")
+                  p.truncate {{value}}
 
         
 </template>
@@ -62,7 +59,6 @@ a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :loading="tab
 import { message } from 'ant-design-vue'
 import { getTableByDate, getTableByShop } from './api'
 import HelloForm2 from './components/HelloForm2'
-import omit from 'omit'
 
 export default {
   data() {
@@ -70,7 +66,16 @@ export default {
       table: [],
       tablesByShop: new Map(),
       tablesByShopLoading: new Set(),
-      tableLoading: false
+      tableLoading: false,
+      rules: [
+        ['income', '<', 1500],
+        ['income_avg', '<', 1500],
+        ['consume_ratio', '>', 5],
+        ['cost_ratio', '>', 50],
+        ['settlea_30', '<', 70]
+      ],
+      mtRules: [['income', '<', 1500]],
+      elmRules: [['income', '<', 1000]]
     }
   },
   components: {
@@ -156,7 +161,7 @@ export default {
           dataIndex: 'income_avg',
           align: 'right',
           width: 100,
-          slots: { customRender: 'incomeAvg' },
+          slots: { customRender: 'income_avg' },
           sorter: (a, b) => this.toNum(a.income_avg) - this.toNum(b.income_avg)
         },
         {
@@ -164,7 +169,7 @@ export default {
           dataIndex: 'cost_ratio',
           align: 'right',
           width: 100,
-          slots: { customRender: 'costRatio' },
+          slots: { customRender: 'cost_ratio' },
           sorter: (a, b) => this.toNum(a.cost_ratio) - this.toNum(b.cost_ratio)
         },
         {
@@ -172,7 +177,7 @@ export default {
           dataIndex: 'consume_ratio',
           align: 'right',
           width: 100,
-          slots: { customRender: 'consumeRatio' },
+          slots: { customRender: 'consume_ratio' },
           sorter: (a, b) => this.toNum(a.consume_ratio) - this.toNum(b.consume_ratio)
         },
         {
@@ -180,7 +185,7 @@ export default {
           dataIndex: 'settlea_30',
           align: 'right',
           width: 100,
-          slots: { customRender: 'settlea30' },
+          slots: { customRender: 'settlea_30' },
           sorter: (a, b) => this.toNum(a.settlea_30) - this.toNum(b.settlea_30)
         },
         {
@@ -234,7 +239,7 @@ export default {
           dataIndex: 'income_avg',
           align: 'right',
           width: 100,
-          slots: { customRender: 'incomeAvg' },
+          slots: { customRender: 'income_avg' },
           sorter: (a, b) => this.toNum(a.income_avg) - this.toNum(b.income_avg)
         },
         {
@@ -242,7 +247,7 @@ export default {
           dataIndex: 'cost_ratio',
           align: 'right',
           width: 100,
-          slots: { customRender: 'costRatio' },
+          slots: { customRender: 'cost_ratio' },
           sorter: (a, b) => this.toNum(a.cost_ratio) - this.toNum(b.cost_ratio)
         },
         {
@@ -250,7 +255,7 @@ export default {
           dataIndex: 'consume_ratio',
           align: 'right',
           width: 100,
-          slots: { customRender: 'consumeRatio' },
+          slots: { customRender: 'consume_ratio' },
           sorter: (a, b) => this.toNum(a.consume_ratio) - this.toNum(b.consume_ratio)
         },
         {
@@ -258,7 +263,7 @@ export default {
           dataIndex: 'settlea_30',
           align: 'right',
           width: 100,
-          slots: { customRender: 'settlea30' },
+          slots: { customRender: 'settlea_30' },
           sorter: (a, b) => this.toNum(a.settlea_30) - this.toNum(b.settlea_30)
         },
         {
@@ -296,9 +301,6 @@ export default {
     shopScrollX() {
       return this.shopTableCols.reduce((sum, { width }) => sum + width, 50)
     },
-    omit(obj, keys) {
-      return omit(obj, keys)
-    },
     en2zh() {
       const map = new Map()
       map.set('id', 'id')
@@ -332,6 +334,32 @@ export default {
       map.set('score', '总分')
       map.set('date', '日期')
       return map
+    },
+    rules2fn() {
+      let mt = [...this.rules, ...this.mtRules]
+      let elm = [...this.rules, ...this.elmRules]
+      const fnBody = r => `
+      let v = 0  
+      try {
+        v = parseFloat(val)
+      } catch (e) { console.error(e) }
+      return v ${r[1]} ${r[2]}`
+      mt = mt.reduce((o, r) => {
+        return {
+          ...o,
+          [r[0]]: new Function('val', fnBody(r))
+        }
+      }, {})
+      elm = elm.reduce((o, r) => {
+        return {
+          ...o,
+          [r[0]]: new Function('val', fnBody(r))
+        }
+      }, {})
+      return {
+        美团: mt,
+        饿了么: elm
+      }
     }
   },
   methods: {
@@ -378,72 +406,11 @@ export default {
         return 0
       }
     },
-    isIncome(text, record) {
-      text = this.toNum(text)
-      if (record.platform == '美团') return text < 1500
-      else if (record.platform == '饿了么') return text < 1000
-      return false
-    },
-    isIncomeAvg(text) {
-      text = this.toNum(text)
-      return text < 1500
-    },
-    isConsumeRatio(text) {
-      text = this.toNum(text)
-      return text > 5
-    },
-    isCostRatio(text) {
-      text = this.toNum(text)
-      return text > 50
-    },
-    isSettlea30(text) {
-      text = this.toNum(text)
-      return text < 70
-    },
-    unSatisfies(record) {
-      const { income, income_avg, consume_ratio, cost_ratio, settlea_30, platform } = record
-      let list = []
-      if (this.isIncome(income, record))
-        list.push({
-          title: 'income',
-          value: income,
-          threshold: platform == '美团' ? '1500' : '1000'
-        })
-      if (this.isIncomeAvg(income_avg))
-        list.push({
-          title: 'income_avg',
-          value: income_avg,
-          threshold: '1500',
-          problem: 'low_income'
-        })
-      if (this.isConsumeRatio(consume_ratio))
-        list.push({
-          title: 'consume_ratio',
-          value: consume_ratio,
-          threshold: '5%',
-          problem: 'high_consume'
-        })
-      if (this.isCostRatio(cost_ratio))
-        list.push({
-          title: 'cost_ratio',
-          value: cost_ratio,
-          threshold: '50%',
-          problem: 'high_cost'
-        })
-      if (this.isSettlea30(settlea_30))
-        list.push({
-          title: 'settlea_30',
-          value: settlea_30,
-          threshold: '70%',
-          problem: 'low_income'
-        })
-      return list
-    },
-    unSatisfiesProblems(record) {
-      return Array.from(new Set(this.unSatisfies(record).map(v => v.problem))).join(' ')
-    },
-    selectChange(value) {
-      console.log(value)
+    thresholdSuffix(name) {
+      let rule = this.rules.find(v => v[0] == name)
+      if(!rule) return ''
+      let needPercent = ['consume_ratio', 'cost_ratio', 'settlea_30'].includes(rule[0]) ? '%': ''
+      return ` / ${rule[2]}${needPercent}`
     }
   },
   mounted() {
@@ -461,6 +428,9 @@ export default {
 .unsatisfied
   color: #fa541c
 
+.success
+  color: #52c41a
+
 .threshold
   color: black
 
@@ -474,10 +444,9 @@ export default {
 .icon-reset
   margin: 0 6px
 
-.truncate 
+.truncate
   width: 120px
   white-space: nowrap
   overflow: hidden
   text-overflow: ellipsis
-
 </style>

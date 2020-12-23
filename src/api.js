@@ -35,3 +35,8 @@ export async function getTableByShop(shopId) {
 export async function updateTableById(id, a) {
   return inst.post(urls.plan, { id, a })
 }
+
+export function getTable() {
+  // mock 
+  return { err: null, data: [] }
+}
