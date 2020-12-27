@@ -25,7 +25,7 @@ const columns = [
     slots: { customRender: 'name' }
   },
   {
-    title: '方案',
+    title: '优化',
     dataIndex: 'a',
     width: 400,
     slots: { customRender: 'a' }
@@ -158,7 +158,7 @@ export default {
           title: '比30日',
           value: settlea_30,
           threshold: '70%',
-          problem: '低收入'
+          problem: '严重超跌'
         })
       return list
     },

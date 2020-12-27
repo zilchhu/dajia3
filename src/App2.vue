@@ -1,5 +1,5 @@
 <template lang="pug">
-a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :loading="tableLoading" @expand="expand" :pagination="{showSizeChanger: true, defaultPageSize: 20}" size="small" :scroll="{x: scrollX}")
+a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :loading="tableLoading" @expand="expand" :expandRowByClick="true" :pagination="{showSizeChanger: true, defaultPageSize: 20}" size="small" :scroll="{x: scrollX, y: scrollY}")
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     a-row(type="flex")
       a-col(flex="auto")
@@ -9,48 +9,55 @@ a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :loading="tab
         a-button(type="link" @click="confirm") confirm
         br
         a-button(type="link" @click="clearFilters") reset
-
-  template(v-for="col in rules.map(r=>r[0])" #[col]="{text, record}")
+  //- 染色
+  template(v-for="col in ruleIdx" #[col]="{text, record}")
     .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
  
 
   template(#expandedRowRender="{record}")
-    a-tabs(size="small")
+    a-collapse(v-model:activeKey="collapseKey" :bordered="false")
+      a-collapse-panel(:key="`${record.id}-a`" style="border: none;")
+        template(#header)
+          span.small 昨日
+        a-card(style="width: 100vw;" size="small")
+          a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
+            template(#title)
+              .tip {{`${record[key]}${thresholdSuffix(key, record.platform)}`}}
+            a-card-grid(style="width: 130px; padding: 4px;")
+              a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
+                template(v-if="ruleIdx.includes(key)" #formatter="{value}")
+                  p.truncate(:class="{unsatisfied: rules2fn[record.platform][key](value)}") {{emptyVal(value)}}
+                  //- template(v-else-if="key == 'score'")
+                  //-   p.truncate(:class="{success: value == 100}") {{value}}
+                template(v-else #formatter="{value}")
+                  p.truncate {{emptyVal(value)}}
+        hello-form2(:record="record" @save="onSave")
       //- a-tab-pane(key="1" tab="1") 1
-      a-tab-pane(key="1" tab="往日" size="small") 
-        a-table(:columns="shopTableCols" :data-source="tablesByShop.get(record.shop_id)" rowKey="date" :loading="tablesByShopLoading.has(record.shop_id)" :pagination="{showSizeChanger: true, defaultPageSize: 10}" size="small" :scroll="{x: shopScrollX}")
-          template(v-for="col in rules.map(r=>r[0])" #[col]="{text, record}")
+      a-collapse-panel(:key="`${record.id}-b`" style="border: none;") 
+        template(#header)
+          span.small 往日
+        a-table(:columns="shopTableCols" :data-source="tablesByShop.get(record.shop_id)" rowKey="date" :loading="tablesByShopLoading.has(record.shop_id)" :expandRowByClick="true" :pagination="{showSizeChanger: true, defaultPageSize: 10}" size="small" :scroll="{x: shopScrollX}" style="width: calc(100vw - 80px);")
+          //- 染色
+          template(v-for="col in ruleIdx" #[col]="{text, record}")
             .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
 
           template(#expandedRowRender="{record}")
             a-tabs(size="small")
-              a-tab-pane(:key="`${record.id}`-1" tab="方案" size="small")
-                hello-form2(:record="record" @save="onSave")
-              a-tab-pane(:key="`${record.id}`-2" tab="详情" size="small")
-                a-card(style="width: 100vw;" size="small")
+              a-tab-pane(:key="`${record.id}`-1" tab="详情" size="small")
+                a-card(size="small")
                   a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
                     template(#title)
-                      .tip {{`${record[key]}${thresholdSuffix(key)}`}}
-                    a-card-grid(style="width: 160px; padding: 4px 10px;")
+                      .tip {{`${record[key]}${thresholdSuffix(key, record.platform)}`}}
+                    a-card-grid(style="width: 130px; padding: 4px;")
                       a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
-                        template(v-if="rules.map(r=>r[0]).includes(key)" #formatter="{value}")
-                          p.truncate(:class="{unsatisfied: rules2fn[record.platform][key](value)}") {{value}}
+                        template(v-if="ruleIdx.includes(key)" #formatter="{value}")
+                          p.truncate(:class="{unsatisfied: rules2fn[record.platform][key](value)}") {{emptyVal(value)}}
                         template(v-else #formatter="{value}")
-                          p.truncate {{value}}
+                          p.truncate {{emptyVal(value)}}
+              a-tab-pane(:key="`${record.id}`-2" tab="优化" size="small")
+                hello-form2(:record="record" @save="onSave")
 
-      a-tab-pane(key="2" tab="详情")
-        a-card(style="width: 100vw;" size="small")
-          a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
-            template(#title)
-              .tip {{`${record[key]}${thresholdSuffix(key)}`}}
-            a-card-grid(style="width: 160px; padding: 4px 10px;")
-              a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
-                template(v-if="rules.map(r=>r[0]).includes(key)" #formatter="{value}")
-                  p.truncate(:class="{unsatisfied: rules2fn[record.platform][key](value)}") {{value}}
-                //- template(v-else-if="key == 'score'")
-                //-   p.truncate(:class="{success: value == 100}") {{value}}
-                template(v-else #formatter="{value}")
-                  p.truncate {{value}}
+      
 
         
 </template>
@@ -61,6 +68,7 @@ import { getTableByDate, getTableByShop } from './api'
 import HelloForm2 from './components/HelloForm2'
 
 export default {
+  name: 'App2',
   data() {
     return {
       table: [],
@@ -68,14 +76,16 @@ export default {
       tablesByShopLoading: new Set(),
       tableLoading: false,
       rules: [
-        ['income', '<', 1500],
         ['income_avg', '<', 1500],
         ['consume_ratio', '>', 5],
         ['cost_ratio', '>', 50],
         ['settlea_30', '<', 70]
       ],
       mtRules: [['income', '<', 1500]],
-      elmRules: [['income', '<', 1000]]
+      elmRules: [['income', '<', 1000]],
+      ruleIdx: ['income', 'income_avg', 'consume_ratio', 'cost_ratio', 'settlea_30'],
+      collapseKey: [],
+      scrollY: 900
     }
   },
   components: {
@@ -133,7 +143,7 @@ export default {
         {
           title: '平台',
           dataIndex: 'platform',
-          width: 80,
+          width: 70,
           filters: [
             { text: '美团', value: '美团' },
             { text: '饿了么', value: '饿了么' }
@@ -142,19 +152,11 @@ export default {
           onFilter: (value, record) => record.platform == value
         },
         {
-          title: '三方配送',
-          dataIndex: 'third_send',
+          title: '总收入',
+          dataIndex: 'income_sum',
           align: 'right',
           width: 100,
-          sorter: (a, b) => this.toNum(a.third_send) - this.toNum(b.third_send)
-        },
-        {
-          title: '收入',
-          dataIndex: 'income',
-          align: 'right',
-          width: 100,
-          slots: { customRender: 'income' },
-          sorter: (a, b) => this.toNum(a.income) - this.toNum(b.income)
+          sorter: (a, b) => this.toNum(a.income_sum) - this.toNum(b.income_sum)
         },
         {
           title: '平均收入',
@@ -165,12 +167,42 @@ export default {
           sorter: (a, b) => this.toNum(a.income_avg) - this.toNum(b.income_avg)
         },
         {
+          title: '三方配送',
+          dataIndex: 'third_send',
+          align: 'right',
+          width: 100,
+          sorter: (a, b) => this.toNum(a.third_send) - this.toNum(b.third_send)
+        },
+        {
+          title: '订单',
+          dataIndex: 'orders',
+          align: 'right',
+          width: 80,
+          sorter: (a, b) => this.toNum(a.orders) - this.toNum(b.orders)
+        },
+        {
+          title: '收入',
+          dataIndex: 'income',
+          align: 'right',
+          width: 100,
+          slots: { customRender: 'income' },
+          sorter: (a, b) => this.toNum(a.income) - this.toNum(b.income)
+        },
+
+        {
           title: '成本比例',
           dataIndex: 'cost_ratio',
           align: 'right',
           width: 100,
           slots: { customRender: 'cost_ratio' },
           sorter: (a, b) => this.toNum(a.cost_ratio) - this.toNum(b.cost_ratio)
+        },
+        {
+          title: '推广',
+          dataIndex: 'consume',
+          align: 'right',
+          width: 100,
+          sorter: (a, b) => this.toNum(a.consume) - this.toNum(b.consume)
         },
         {
           title: '推广比例',
@@ -220,19 +252,11 @@ export default {
     shopTableCols() {
       return [
         {
-          title: '三方配送',
-          dataIndex: 'third_send',
+          title: '总收入',
+          dataIndex: 'income_sum',
           align: 'right',
           width: 100,
-          sorter: (a, b) => this.toNum(a.third_send) - this.toNum(b.third_send)
-        },
-        {
-          title: '收入',
-          dataIndex: 'income',
-          align: 'right',
-          width: 100,
-          slots: { customRender: 'income' },
-          sorter: (a, b) => this.toNum(a.income) - this.toNum(b.income)
+          sorter: (a, b) => this.toNum(a.income_sum) - this.toNum(b.income_sum)
         },
         {
           title: '平均收入',
@@ -243,12 +267,41 @@ export default {
           sorter: (a, b) => this.toNum(a.income_avg) - this.toNum(b.income_avg)
         },
         {
+          title: '三方配送',
+          dataIndex: 'third_send',
+          align: 'right',
+          width: 100,
+          sorter: (a, b) => this.toNum(a.third_send) - this.toNum(b.third_send)
+        },
+        {
+          title: '订单',
+          dataIndex: 'orders',
+          align: 'right',
+          width: 80,
+          sorter: (a, b) => this.toNum(a.orders) - this.toNum(b.orders)
+        },
+        {
+          title: '收入',
+          dataIndex: 'income',
+          align: 'right',
+          width: 100,
+          slots: { customRender: 'income' },
+          sorter: (a, b) => this.toNum(a.income) - this.toNum(b.income)
+        },
+        {
           title: '成本比例',
           dataIndex: 'cost_ratio',
           align: 'right',
           width: 100,
           slots: { customRender: 'cost_ratio' },
           sorter: (a, b) => this.toNum(a.cost_ratio) - this.toNum(b.cost_ratio)
+        },
+        {
+          title: '推广',
+          dataIndex: 'consume',
+          align: 'right',
+          width: 100,
+          sorter: (a, b) => this.toNum(a.consume) - this.toNum(b.consume)
         },
         {
           title: '推广比例',
@@ -368,6 +421,7 @@ export default {
       getTableByDate()
         .then(res => {
           this.table = res
+          this.collapseKey = this.table.map(v => `${v.id}-a`)
           this.tableLoading = false
         })
         .catch(err => {
@@ -406,14 +460,19 @@ export default {
         return 0
       }
     },
-    thresholdSuffix(name) {
-      let rule = this.rules.find(v => v[0] == name)
-      if(!rule) return ''
-      let needPercent = ['consume_ratio', 'cost_ratio', 'settlea_30'].includes(rule[0]) ? '%': ''
+    thresholdSuffix(name, platform) {
+      let r = platform == '美团' ? [...this.rules, ...this.mtRules] : [...this.rules, ...this.elmRules]
+      let rule = r.find(v => v[0] == name)
+      if (!rule) return ''
+      let needPercent = ['consume_ratio', 'cost_ratio', 'settlea_30'].includes(rule[0]) ? '%' : ''
       return ` / ${rule[2]}${needPercent}`
+    },
+    emptyVal(val) {
+      return val == null || val == undefined ? '-' : val
     }
   },
   mounted() {
+    this.scrollY = document.body.clientHeight - 100
     this.getTableByDate()
   }
 }
@@ -445,8 +504,11 @@ export default {
   margin: 0 6px
 
 .truncate
-  width: 120px
+  width: 110px
   white-space: nowrap
   overflow: hidden
   text-overflow: ellipsis
+
+.small
+  font-size: .9em
 </style>

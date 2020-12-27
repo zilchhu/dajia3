@@ -90,212 +90,214 @@ export default {
   },
   computed: {
     ...mapGetters(['table1', 'table1Persons']),
-    cols: [
-      {
-        title: '城市',
-        dataIndex: 'city',
-        width: 70,
-        slots: { filterDropdown: 'filterDropdown' },
-        onFilter: (value, record) => record.city.includes(value.trim())
-      },
-      {
-        title: '负责',
-        dataIndex: 'person',
-        width: 70,
-        filters: [],
-        filterMultiple: true,
-        onFilter: (value, record) => record.platform == value
-      },
-      {
-        title: '物理店',
-        dataIndex: 'real_shop',
-        width: 90,
-        slots: { filterDropdown: 'filterDropdown' },
-        onFilter: (value, record) => record.real_shop.includes(value.trim())
-      },
-      {
-        title: '门店id',
-        dataIndex: 'shop_id',
-        width: 100,
-        slots: { filterDropdown: 'filterDropdown' },
-        onFilter: (value, record) => record.shop_id.includes(value.trim())
-      },
-      {
-        title: '店名',
-        dataIndex: 'shop_name',
-        width: 260,
-        slots: { filterDropdown: 'filterDropdown' },
-        onFilter: (value, record) => record.shop_name.includes(value.trim())
-      },
-      {
-        title: '平台',
-        dataIndex: 'platform',
-        width: 80,
-        filters: [
-          { text: '美团', value: '美团' },
-          { text: '饿了么', value: '饿了么' }
-        ],
-        filterMultiple: true,
-        onFilter: (value, record) => record.platform == value
-      },
-      {
-        title: '三方配送',
-        dataIndex: 'third_send',
-        align: 'right',
-        width: 100,
-        sorter: (a, b) => a.income - b.income
-        // width: 100
-      },
-      {
-        title: '收入',
-        dataIndex: 'income',
-        align: 'right',
-        width: 100,
-        slots: { customRender: 'income' },
-        sorter: (a, b) => a.income - b.income
-        // width: 100
-      },
-      {
-        title: '平均收入',
-        dataIndex: 'income_avg',
-        align: 'right',
-        width: 100,
-        slots: { customRender: 'incomeAvg' },
-        sorter: (a, b) => a.income_avg - b.income_avg
-      },
-      // {
-      //   title: 'income_sum',
-      //   dataIndex: 'income_sum',
-      //   align: 'right',
-      //   width: 100
-      // },
-      // {
-      //   title: 'cost',
-      //   dataIndex: 'cost',
-      //   align: 'right',
-      //   width: 100
-      //   // width: 100
-      // },
-      // {
-      //   title: 'cost_avg',
-      //   dataIndex: 'cost_avg',
-      //   align: 'right',
-      //   width: 100
-      // },
-      // {
-      //   title: 'cost_sum',
-      //   dataIndex: 'cost_sum',
-      //   align: 'right',
-      //   width: 100
-      // },
-      {
-        title: '成本比例',
-        dataIndex: 'cost_ratio',
-        align: 'right',
-        width: 100,
-        slots: { customRender: 'costRatio' },
-        sorter: (a, b) => a.cost_ratio - b.cost_ratio
-      },
-      // {
-      //   title: 'cost_sum_ratio',
-      //   dataIndex: 'cost_sum_ratio',
-      //   align: 'right',
-      //   width: 100
-      // },
-      // {
-      //   title: 'consume',
-      //   dataIndex: 'consume',
-      //   align: 'right',
-      //   width: 100
-      //   // width: 100
-      // },
-      // {
-      //   title: 'consume_avg',
-      //   dataIndex: 'consume_avg',
-      //   align: 'right',
-      //   width: 100
-      // },
-      // {
-      //   title: 'consume_sum',
-      //   dataIndex: 'consume_sum',
-      //   align: 'right',
-      //   width: 100
-      // },
-      {
-        title: '推广比例',
-        dataIndex: 'consume_ratio',
-        align: 'right',
-        width: 100,
-        slots: { customRender: 'consumeRatio' },
-        sorter: (a, b) => a.consume_ratio - b.consume_ratio
-      },
-      // {
-      //   title: 'consume_sum_ratio',
-      //   dataIndex: 'consume_sum_ratio',
-      //   align: 'right',
-      //   width: 100
-      // },
-      {
-        title: '比30日',
-        dataIndex: 'settlea_30',
-        align: 'right',
-        width: 100,
-        slots: { customRender: 'settlea30' },
-        sorter: (a, b) => a.settlea_30 - b.settlea_30
-      },
-      {
-        title: '比昨日',
-        dataIndex: 'settlea_1',
-        align: 'right',
-        width: 100,
-        sorter: (a, b) => a.settlea_1 - b.settlea_1
-      },
-      {
-        title: '比上周',
-        dataIndex: 'settlea_7',
-        align: 'right',
-        width: 100,
-        sorter: (a, b) => a.settlea_7 - b.settlea_7
-      },
-      {
-        title: '状态',
-        dataIndex: 'op_id',
-        align: 'center',
-        width: 70,
-        slots: { customRender: 'status' }
-      },
-      // {
-      //   title: 'income_score',
-      //   dataIndex: 'income_score',
-      //   align: 'right',
-      //   width: 100
-      // },
-      // {
-      //   title: 'cost_score',
-      //   dataIndex: 'cost_score',
-      //   align: 'right',
-      //   width: 100
-      // },
-      // {
-      //   title: 'consume_score',
-      //   dataIndex: 'consume_score',
-      //   align: 'right',
-      //   width: 100
-      // },
-      {
-        title: '总分',
-        dataIndex: 'score',
-        align: 'right',
-        width: 100,
-        sorter: (a, b) => a.score - b.score
-      },
-      {
-        title: '日期',
-        dataIndex: 'date',
-        align: 'right',
-        width: 100
-      }
-    ]
+    cols() {
+      return [
+        {
+          title: '城市',
+          dataIndex: 'city',
+          width: 70,
+          slots: { filterDropdown: 'filterDropdown' },
+          onFilter: (value, record) => record.city.includes(value.trim())
+        },
+        {
+          title: '负责',
+          dataIndex: 'person',
+          width: 70,
+          filters: [],
+          filterMultiple: true,
+          onFilter: (value, record) => record.platform == value
+        },
+        {
+          title: '物理店',
+          dataIndex: 'real_shop',
+          width: 90,
+          slots: { filterDropdown: 'filterDropdown' },
+          onFilter: (value, record) => record.real_shop.includes(value.trim())
+        },
+        {
+          title: '门店id',
+          dataIndex: 'shop_id',
+          width: 100,
+          slots: { filterDropdown: 'filterDropdown' },
+          onFilter: (value, record) => record.shop_id.includes(value.trim())
+        },
+        {
+          title: '店名',
+          dataIndex: 'shop_name',
+          width: 260,
+          slots: { filterDropdown: 'filterDropdown' },
+          onFilter: (value, record) => record.shop_name.includes(value.trim())
+        },
+        {
+          title: '平台',
+          dataIndex: 'platform',
+          width: 80,
+          filters: [
+            { text: '美团', value: '美团' },
+            { text: '饿了么', value: '饿了么' }
+          ],
+          filterMultiple: true,
+          onFilter: (value, record) => record.platform == value
+        },
+        {
+          title: '三方配送',
+          dataIndex: 'third_send',
+          align: 'right',
+          width: 100,
+          sorter: (a, b) => a.income - b.income
+          // width: 100
+        },
+        {
+          title: '收入',
+          dataIndex: 'income',
+          align: 'right',
+          width: 100,
+          slots: { customRender: 'income' },
+          sorter: (a, b) => a.income - b.income
+          // width: 100
+        },
+        {
+          title: '平均收入',
+          dataIndex: 'income_avg',
+          align: 'right',
+          width: 100,
+          slots: { customRender: 'incomeAvg' },
+          sorter: (a, b) => a.income_avg - b.income_avg
+        },
+        // {
+        //   title: 'income_sum',
+        //   dataIndex: 'income_sum',
+        //   align: 'right',
+        //   width: 100
+        // },
+        // {
+        //   title: 'cost',
+        //   dataIndex: 'cost',
+        //   align: 'right',
+        //   width: 100
+        //   // width: 100
+        // },
+        // {
+        //   title: 'cost_avg',
+        //   dataIndex: 'cost_avg',
+        //   align: 'right',
+        //   width: 100
+        // },
+        // {
+        //   title: 'cost_sum',
+        //   dataIndex: 'cost_sum',
+        //   align: 'right',
+        //   width: 100
+        // },
+        {
+          title: '成本比例',
+          dataIndex: 'cost_ratio',
+          align: 'right',
+          width: 100,
+          slots: { customRender: 'costRatio' },
+          sorter: (a, b) => a.cost_ratio - b.cost_ratio
+        },
+        // {
+        //   title: 'cost_sum_ratio',
+        //   dataIndex: 'cost_sum_ratio',
+        //   align: 'right',
+        //   width: 100
+        // },
+        // {
+        //   title: 'consume',
+        //   dataIndex: 'consume',
+        //   align: 'right',
+        //   width: 100
+        //   // width: 100
+        // },
+        // {
+        //   title: 'consume_avg',
+        //   dataIndex: 'consume_avg',
+        //   align: 'right',
+        //   width: 100
+        // },
+        // {
+        //   title: 'consume_sum',
+        //   dataIndex: 'consume_sum',
+        //   align: 'right',
+        //   width: 100
+        // },
+        {
+          title: '推广比例',
+          dataIndex: 'consume_ratio',
+          align: 'right',
+          width: 100,
+          slots: { customRender: 'consumeRatio' },
+          sorter: (a, b) => a.consume_ratio - b.consume_ratio
+        },
+        // {
+        //   title: 'consume_sum_ratio',
+        //   dataIndex: 'consume_sum_ratio',
+        //   align: 'right',
+        //   width: 100
+        // },
+        {
+          title: '比30日',
+          dataIndex: 'settlea_30',
+          align: 'right',
+          width: 100,
+          slots: { customRender: 'settlea30' },
+          sorter: (a, b) => a.settlea_30 - b.settlea_30
+        },
+        {
+          title: '比昨日',
+          dataIndex: 'settlea_1',
+          align: 'right',
+          width: 100,
+          sorter: (a, b) => a.settlea_1 - b.settlea_1
+        },
+        {
+          title: '比上周',
+          dataIndex: 'settlea_7',
+          align: 'right',
+          width: 100,
+          sorter: (a, b) => a.settlea_7 - b.settlea_7
+        },
+        {
+          title: '状态',
+          dataIndex: 'op_id',
+          align: 'center',
+          width: 70,
+          slots: { customRender: 'status' }
+        },
+        // {
+        //   title: 'income_score',
+        //   dataIndex: 'income_score',
+        //   align: 'right',
+        //   width: 100
+        // },
+        // {
+        //   title: 'cost_score',
+        //   dataIndex: 'cost_score',
+        //   align: 'right',
+        //   width: 100
+        // },
+        // {
+        //   title: 'consume_score',
+        //   dataIndex: 'consume_score',
+        //   align: 'right',
+        //   width: 100
+        // },
+        {
+          title: '总分',
+          dataIndex: 'score',
+          align: 'right',
+          width: 100,
+          sorter: (a, b) => a.score - b.score
+        },
+        {
+          title: '日期',
+          dataIndex: 'date',
+          align: 'right',
+          width: 100
+        }
+      ]
+    }
   },
   methods: {
     expand(expanded, record) {
