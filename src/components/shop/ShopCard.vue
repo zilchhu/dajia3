@@ -1,44 +1,118 @@
 <template lang="pug">
-a-card(:title="card_title" :bordered="false" size="small")
-  qa-form(:items="qa_items")
+a-list-item(:key="shop.id")
+  a-list-item-meta
+    template(#title)
+      .title
+        span.num {{title_num}}
+        a-button(size="small" type="link" @click="detail_click") detail
+    template(#description)
+      shop-form(:as="shop_as" :shop_meta="shop_meta")
+      shop-data(v-if="shop_data_show" :shop_data="shop_data")
 </template>
 
 <script>
-import QAForm from './QAForm'
+import ShopForm from './ShopForm'
+import ShopData from './ShopData'
 
 export default {
   name: 'shop-card',
   components: {
-    QAForm
+    ShopForm,
+    ShopData
   },
   props: {
     shop: Object
   },
+  data() {
+    return {
+      shop_data_show: false
+    }
+  },
   computed: {
-    card_title() {
-      return `${this.shop.shop_name}  ${this.shop.platform}`
-    },
-    qa_items() {
-      if (this.shop.a.length == 0)
-        return {
-          items_filled: [],
-          items_unfilled: this.shop.q.map(x => ({
-            q: x.type,
-            name: this.shop.person,
-            a: '',
-            time: '',
-            operation: 'save'
-          }))
-        }
-
-      let items_filled = this.shop.a.filter(a => a.a.trim().length > 0)
-      let items_unfilled = this.shop.a.filter(a => a.a.trim().length == 0)
-
+    shop_meta() {
       return {
-        items_filled,
-        items_unfilled
+        id: this.shop.id,
+        shop_id: this.shop.shop_id,
+        shop_name: this.shop.shop_name,
+        platform: this.shop.platform
       }
+    },
+    shop_as() {
+      if (this.shop.a.length == 0) {
+        return this.shop.qs.map(q => ({
+          a: '',
+          name: this.shop.person,
+          operation: 'save',
+          q: q.type,
+          time: '',
+          time_parsed: '',
+          value: q.value,
+          threshold: q.threshold
+        }))
+      } else {
+        return this.shop.a.map(a => ({
+          ...a,
+          value: this.shop.qs.find(q => q.type == a.q).value,
+          threshold: this.shop.qs.find(q => q.type == a.q).threshold
+        }))
+      }
+    },
+    title_num() {
+      return `#${this.shop.index + 1}`
+    },
+    shop_data() {
+      return {
+        third_send: this.shop.third_send,
+        orders: this.shop.orders,
+        income: this.shop.income,
+        income_avg: this.shop.income_avg,
+        income_sum: this.shop.income_sum,
+        cost: this.shop.cost,
+        cost_avg: this.shop.cost_avg,
+        cost_sum: this.shop.cost_sum,
+        cost_ratio: this.shop.cost_ratio,
+        cost_sum_ratio: this.shop.cost_sum_ratio,
+        consume: this.shop.consume,
+        consume_avg: this.shop.consume_avg,
+        consume_sum: this.shop.consume_sum,
+        consume_ratio: this.shop.consume_ratio,
+        consume_sum_ratio: this.shop.consume_sum_ratio,
+        settlea_30: this.shop.settlea_30,
+        settlea_1: this.shop.settlea_1,
+        settlea_7: this.shop.settlea_7,
+        settlea_7_3: this.shop.settlea_7_3,
+        income_score: this.shop.income_score,
+        consume_score: this.shop.consume_score,
+        cost_score: this.shop.cost_score,
+        score: this.shop.score
+      }
+    }
+  },
+  methods: {
+    detail_click() {
+      this.shop_data_show = !this.shop_data_show
     }
   }
 }
 </script>
+
+<style lang="sass" scoped>
+.ant-list-split, .ant-list-item
+  border: none
+
+.ant-list-item
+  padding: 12px
+
+.title
+  display: flex
+  justify-content: space-between
+  align-items: center
+
+.ant-btn-link
+  font-size: 9px
+  color: rgba(0, 0, 0, 0.38)
+
+.num
+  font-size: 10px
+  color: rgba(0, 0, 0, 0.38)
+</style>

@@ -6,20 +6,23 @@ a-card(size="small")
         span.title_shopname {{shop_meta.shop_name}}
         span.title_platform {{shop_meta.platform}}
       .title-tags
-        a-checkable-tag(v-for="tag in tags" :key="tag.q" :style="{background: tag.tag_color}" v-model:checked="tag.checked") {{tag.q}}
+        a-tooltip(v-for="tag in tags" :key="tag.q")
+          template(#title)
+            span {{tag.value}}
+          a-checkable-tag(:style="{background: tag.tag_color}" v-model:checked="tag.checked") {{tag.q}}
   a-table(v-if="items_show.length > 0" :columns="columns" :data-source="items_show" rowKey="q" :pagination="false" size="small" :showHeader="false")
     template(#name="{text, record}")
       a-input(:value="text" @change="e => handleChange(e.target.value, record.q, 'name')" size="small")
     template(#a="{text, record}")
-      a-textarea(:value="text" @change="e => handleChange(e.target.value, record.q, 'a')" :autoSize="{minRows: 1}" size="small")
+      a-textarea(:value="text" @change="e => handleChange(e.target.value, record.q, 'a')" :autoSize="{minRows: 1}" style="padding: 1px 7px;")
     template(#operation="{text, record}")
       a-button(@click="e => save(record)" size="small") {{text}}
 </template>
 
 <script>
 import dayjs from 'dayjs'
-// import {message} from 'ant-design-vue'
-// import {updateTableById} from '../../api'
+import {message} from 'ant-design-vue'
+import {updateTableById} from '../../api'
 
 function omit(obj, ks) {
   let newKs = Object.keys(obj).filter(v => !ks.includes(v))
@@ -41,35 +44,37 @@ export default {
       {
         title: '问题',
         dataIndex: 'q',
-        width: 140
+        width: 100
       },
       {
         title: '姓名',
         dataIndex: 'name',
-        width: 140,
+        width: 100,
         slots: { customRender: 'name' }
       },
       {
         title: '优化',
         dataIndex: 'a',
-        width: 400,
+        width: 440,
         slots: { customRender: 'a' }
       },
       {
         title: '操作',
         dataIndex: 'operation',
         slots: { customRender: 'operation' },
-        width: 140
+        width: 120
       },
       {
         title: '时间',
-        dataIndex: 'time'
+        dataIndex: 'time',
+        width: 180
       }
     ]
     return {
       columns,
-      tags: this.as.map(a => ({ ...a, checked: false, saved: a.a.trim().length > 0 }))
-        .map(a=>({...a, tag_color: a.saved ? '#91d5ff99' : '#fefefe' }))
+      tags: this.as
+        .map(a => ({ ...a, checked: false, saved: a.a.trim().length > 0 }))
+        .map(a => ({ ...a, tag_color: a.saved ? '#91d5ff99' : '#fefefe' }))
     }
   },
   computed: {
@@ -94,18 +99,16 @@ export default {
       const target = newItems.filter(item => record.q === item.q)[0]
       if (target) {
         target['time'] = dayjs().format('YYYY/MM/DD HH:mm:ss')
-        let a = JSON.stringify(newItems.map(v => omit(v, ['checked', 'time_parsed'])))
-        // updateTableById(this.record.id, a)
-        //   .then(res => {
-        //     message.success(res)
-        //     this.data = newData
-        //     // this.$emit('save', this.record.id)
-        //   })
-        //   .catch(err => {
-        //     message.error(err)
-        //   })
+        let a = JSON.stringify(newItems.map(v => omit(v, ['checked', 'time_parsed', 'saved', 'tag_color', 'value', 'threshold'])))
+        updateTableById(this.shop_meta.id, a)
+          .then(res => {
+            message.success(res)
+            this.tags = newItems
+          })
+          .catch(err => {
+            message.error(err)
+          })
         console.log(a)
-        this.tags = newItems
       }
     }
   }
@@ -115,7 +118,7 @@ export default {
 <style lang="sass">
 .title
   display: flex
-  align-items: center 
+  align-items: center
   justify-content: space-between
 
 .title_shopname, .title_platform

@@ -364,6 +364,7 @@ export default {
       map.set('shop_name', '店名')
       map.set('platform', '平台')
       map.set('third_send', '三方配送')
+      map.set('orders', '订单')
       map.set('income', '收入')
       map.set('income_avg', '平均收入')
       map.set('income_sum', '总收入')
@@ -472,7 +473,7 @@ export default {
     }
   },
   mounted() {
-    this.scrollY = document.body.clientHeight - 100
+    this.scrollY = document.body.clientHeight - 150
     this.getTableByDate()
   }
 }

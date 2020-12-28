@@ -17,4 +17,8 @@ export default class User {
   single() {
     return instance.get(urls.user.base(this.username, this.date))
   }
+
+  single_acts() {
+    return instance.get(urls.user.acts(this.username, this.date))
+  }
 }

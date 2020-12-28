@@ -3,11 +3,15 @@ a-list-item(:key="activity.time")
   a-list-item-meta
     template(#title)
       p.title {{title}}
-      span.num {{title_num}}
-      span.time {{title_time}}
-      span.time {{activity.time}}
+      .title-meta
+        div
+          span.num {{title_num}}
+          span.time {{title_time}}
+          span.time {{activity.time}}
+        a-button(size="small" type="link" @click="detail_click") detail
     template(#description)
-      shop-form(:as="activity.as" :shop_meta="shop_meta")
+      shop-form(:as="shop_as" :shop_meta="shop_meta")
+      shop-data(v-if="shop_data_show" :shop_data="shop_data")
 </template>
 
 <script>
@@ -25,14 +29,21 @@ dayjs.extend(localeData)
 dayjs.locale('zh-cn')
 
 import ShopForm from '../shop/ShopForm'
+import ShopData from '../shop/ShopData'
 
 export default {
   name: 'activity-card',
   components: {
-    ShopForm
+    ShopForm,
+    ShopData
   },
   props: {
     activity: Object
+  },
+  data() {
+    return {
+      shop_data_show: false
+    }
   },
   computed: {
     title() {
@@ -51,9 +62,48 @@ export default {
     },
     title_time() {
       return dayjs().from(this.activity.time_parsed)
+    },
+    shop_data() {
+      return {
+        third_send: this.activity.third_send,
+        orders: this.activity.orders,
+        income: this.activity.income,
+        income_avg: this.activity.income_avg,
+        income_sum: this.activity.income_sum,
+        cost: this.activity.cost,
+        cost_avg: this.activity.cost_avg,
+        cost_sum: this.activity.cost_sum,
+        cost_ratio: this.activity.cost_ratio,
+        cost_sum_ratio: this.activity.cost_sum_ratio,
+        consume: this.activity.consume,
+        consume_avg: this.activity.consume_avg,
+        consume_sum: this.activity.consume_sum,
+        consume_ratio: this.activity.consume_ratio,
+        consume_sum_ratio: this.activity.consume_sum_ratio,
+        settlea_30: this.activity.settlea_30,
+        settlea_1: this.activity.settlea_1,
+        settlea_7: this.activity.settlea_7,
+        settlea_7_3: this.activity.settlea_7_3,
+        income_score: this.activity.income_score,
+        consume_score: this.activity.consume_score,
+        cost_score: this.activity.cost_score,
+        score: this.activity.score,
+        date: this.activity.date
+      }
+    },
+    shop_as() {
+      return this.activity.as.map(a => ({
+        ...a,
+        value: this.activity.qs.find(q => q.type == a.q).value,
+        threshold: this.activity.qs.find(q => q.type == a.q).threshold
+      }))
     }
   },
-  methods: {}
+  methods: {
+    detail_click() {
+      this.shop_data_show = !this.shop_data_show
+    }
+  }
 }
 </script>
 
@@ -63,14 +113,23 @@ export default {
   font-weight: bold
   margin: 0
 
+.title-meta
+  display: flex
+  justify-content: space-between
+  align-items: center
+
+.ant-btn-link
+  font-size: 9px
+  color: rgba(0, 0, 0, 0.38)
+
 .num, .time
   font-size: 10px
   color: rgba(0, 0, 0, 0.38)
   margin: 4px 16px 10px 0
 
-.ant-list-split, .ant-list-item 
+.ant-list-split, .ant-list-item
   border: none
 
-.ant-list-item 
+.ant-list-item
   padding: 12px
 </style>

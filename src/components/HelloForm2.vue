@@ -80,7 +80,7 @@ export default {
       const newData = [...this.data]
       const target = newData.filter(item => record.q === item.q)[0]
       if (target) {
-        target['time'] = dayjs().format('MM/DD HH:mm:ss')
+        target['time'] = dayjs().format('YYYY/MM/DD HH:mm:ss')
         let a = JSON.stringify(this.data)
         updateTableById(this.record.id, a)
           .then(res => {
