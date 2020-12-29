@@ -6,7 +6,7 @@ a-menu(v-model:selectedKeys="menu_keys" theme="light" mode="horizontal")
     template(#title)
       span persons
     a-menu-item(v-for="name in all_names" :key="name")
-      router-link(:to="{ name: 'user', params: { username: name, date: 1 }}") {{name}}
+      router-link(:to="{ name: 'user', params: { username: name, date: 0 }}") {{name}}
 router-view 
 </template>
 

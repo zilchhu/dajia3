@@ -3,7 +3,7 @@ a-card(size="small")
   template(#title)
     .title
       .title-meta
-        span.title_shopname {{shop_meta.shop_name}}
+        a-button.title_shopname(type="link" @click="shopname_click") {{shop_meta.shop_name}}
         span.title_platform {{shop_meta.platform}}
       .title-tags
         a-tooltip(v-for="tag in tags" :key="tag.q")
@@ -14,15 +14,15 @@ a-card(size="small")
     template(#name="{text, record}")
       a-input(:value="text" @change="e => handleChange(e.target.value, record.q, 'name')" size="small")
     template(#a="{text, record}")
-      a-textarea(:value="text" @change="e => handleChange(e.target.value, record.q, 'a')" :autoSize="{minRows: 1}" style="padding: 1px 7px;")
+      a-textarea(:value="text" @change="e => handleChange(e.target.value, record.q, 'a')" :autoSize="{minRows: 1}")
     template(#operation="{text, record}")
       a-button(@click="e => save(record)" size="small") {{text}}
 </template>
 
 <script>
 import dayjs from 'dayjs'
-import {message} from 'ant-design-vue'
-import {updateTableById} from '../../api'
+import { message } from 'ant-design-vue'
+import { updateTableById } from '../../api'
 
 function omit(obj, ks) {
   let newKs = Object.keys(obj).filter(v => !ks.includes(v))
@@ -99,7 +99,9 @@ export default {
       const target = newItems.filter(item => record.q === item.q)[0]
       if (target) {
         target['time'] = dayjs().format('YYYY/MM/DD HH:mm:ss')
-        let a = JSON.stringify(newItems.map(v => omit(v, ['checked', 'time_parsed', 'saved', 'tag_color', 'value', 'threshold'])))
+        let a = JSON.stringify(
+          newItems.map(v => omit(v, ['checked', 'time_parsed', 'saved', 'tag_color', 'value', 'threshold']))
+        )
         updateTableById(this.shop_meta.id, a)
           .then(res => {
             message.success(res)
@@ -110,6 +112,9 @@ export default {
           })
         console.log(a)
       }
+    },
+    shopname_click() {
+      this.$router.push({ name: 'shop', params: { shopid: this.shop_meta.shop_id } })
     }
   }
 }

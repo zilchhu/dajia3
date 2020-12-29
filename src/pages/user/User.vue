@@ -1,10 +1,13 @@
 <template lang="pug">
 .user
-  h3.header {{username}}
+  .header
+    span.header-name {{username}}
+    div
+      a-date-picker(v-model:value="selected_date" @change="date_change")
   a-tabs(v-model:activeKey="activeKey" @tabClick="tab_click" style="max-width: 960px;")
     a-tab-pane(key="1" :tab="tab_activities")
       a-spin(:spinning="spinning")
-        user-activities(:activities="activities.activities" @fetchMore="fetch_more_acts")
+        user-activities(:activities="activities.activities")
 
     a-tab-pane(key="2" :tab="tab_responsibles")
       a-spin(:spinning="spinning")
@@ -25,7 +28,7 @@
     a-tab-pane(key="3" :tab="tab_success")
       a-spin(:spinning="spinning")
         user-shops(:shops="user.success" type="success" :counts="user.counts.success")
-
+  a-back-top
 </template>
 
 <script>
@@ -33,6 +36,7 @@ import User from '../../api/user'
 import { message } from 'ant-design-vue'
 import UserActivities from './UserActivities'
 import UserShops from './UserShops'
+import dayjs from 'dayjs'
 
 export default {
   components: {
@@ -91,30 +95,11 @@ export default {
           }
         }
       },
-      activities_offset: 0
+      selected_date: null
     }
   },
-  created() {
-    // watch the params of the route to fetch the data again
-    this.$watch(
-      () => this.$route.params,
-      () => {
-        this.fetch_user_single()
-        this.activities_offset = parseInt(this.$route.params.date) - 1
-        this.fetch_user_single_acts(parseInt(this.$route.params.date) - 1)
-      },
-      // fetch the data when the view is created and the data is
-      // already being observed
-      { immediate: true }
-    )
-  },
+  props: ['username', 'date'],
   computed: {
-    username() {
-      return this.$route.params.username
-    },
-    date() {
-      return this.$route.params.date
-    },
     tab_activities() {
       let t = this.activities.counts.activities
       return `动态 ${t.count_a}/${t.count_shop}`
@@ -138,12 +123,16 @@ export default {
     tab_improving() {
       let t = this.user.counts.failure.improving
       return `优化中 ${t.count_a}/${t.count_q}/${t.count_shop}/${t.count_shop_a}`
+    },
+    is_jump() {
+      return this.$route.query.jump
     }
   },
   methods: {
     fetch_user_single() {
       this.spinning = true
-      new User(this.username, this.date)
+      console.log(this.date, typeof this.date)
+      new User(this.username, parseInt(this.date) + 1)
         .single()
         .then(res => {
           this.user = res
@@ -154,9 +143,9 @@ export default {
           this.spinning = false
         })
     },
-    fetch_user_single_acts(d) {
+    fetch_user_single_acts() {
       this.spinning = true
-      new User(this.username, d)
+      new User(this.username, parseInt(this.date))
         .single_acts()
         .then(res => {
           this.activities = res
@@ -169,15 +158,28 @@ export default {
     },
     tab_click(key) {
       if (this.activeKey == key) {
-        this.fetch_user_single()
-        this.activities_offset = parseInt(this.date) - 1
-        this.fetch_user_single_acts(this.activities_offset)
+        this.mounted()
       }
     },
-    fetch_more_acts() {
-      this.activities_offset += 1
-      this.fetch_user_single_acts(this.activities_offset)
+    date_change(date, date_str) {
+      let date1 = dayjs()
+        .startOf('day')
+        .diff(dayjs(date_str), 'day')
+      this.$router.replace({ name: 'user', params: { username: this.username, date: date1 } })
+    },
+    init() {
+      this.fetch_user_single()
+      this.fetch_user_single_acts()
     }
+  },
+  created() {
+    // this.selected_date = dayjs()
+    //   .startOf('day')
+    //   .subtract(parseInt(this.date), 'day')
+    this.init()
+  },
+  watch: {
+    '$route': 'init'
   }
 }
 </script>
@@ -191,8 +193,13 @@ export default {
   background: #fbfbfb
 
 .header
-  flex-basis: 60px
-  line-height: 60px
-  text-align: center
-  align-self: center
+  display: flex
+  max-width: 960px
+  width: 100%
+  height: 60px
+  justify-content: space-between
+  align-items: center
+
+.header-name
+  font-size: 1.3em
 </style>

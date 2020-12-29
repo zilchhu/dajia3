@@ -84,7 +84,8 @@ export default {
         income_score: this.shop.income_score,
         consume_score: this.shop.consume_score,
         cost_score: this.shop.cost_score,
-        score: this.shop.score
+        score: this.shop.score,
+        date: this.shop.date
       }
     }
   },

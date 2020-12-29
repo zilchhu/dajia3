@@ -1,5 +1,5 @@
 <template lang="pug">
-a-list(:dataSource="shops")
+a-list(:dataSource="shops" :split="false")
   template(#header)
     p.header {{header}}
   template(#renderItem="{item, index}")

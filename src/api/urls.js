@@ -8,7 +8,11 @@ const urls = {
     }
   },
   date: 'date',
-  shop: 'shop'
+  shop: {
+    base(shopid) {
+      return `/shop/${shopid}`
+    }
+  }
 }
 
 export default urls

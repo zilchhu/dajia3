@@ -6,6 +6,7 @@ a-list-item(:key="activity.time")
       .title-meta
         div
           span.num {{title_num}}
+          a-button.name(type="link" @click="name_click") {{title_name}}
           span.time {{title_time}}
           span.time {{activity.time}}
         a-button(size="small" type="link" @click="detail_click") detail
@@ -60,6 +61,9 @@ export default {
     title_num() {
       return `#${this.activity.index + 1}`
     },
+    title_name() {
+      return this.activity.name
+    },
     title_time() {
       return dayjs().from(this.activity.time_parsed)
     },
@@ -102,6 +106,9 @@ export default {
   methods: {
     detail_click() {
       this.shop_data_show = !this.shop_data_show
+    },
+    name_click() {
+      this.$router.push({ name: 'user', params: { username: this.title_name, date: 0 } })
     }
   }
 }
@@ -122,7 +129,10 @@ export default {
   font-size: 9px
   color: rgba(0, 0, 0, 0.38)
 
-.num, .time
+.ant-btn-link:hover
+  color: #40a9ff
+
+.num, .name, .time
   font-size: 10px
   color: rgba(0, 0, 0, 0.38)
   margin: 4px 16px 10px 0
