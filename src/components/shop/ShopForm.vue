@@ -3,7 +3,7 @@ a-card(size="small")
   template(#title)
     .title
       .title-meta
-        a-button.title_shopname(type="link" @click="shopname_click") {{shop_meta.shop_name}}
+        router-link.title_shopname(:to="{name: 'shop', params: {shopid: shop_meta.shop_id}}") {{shop_meta.shop_name}}
         span.title_platform {{shop_meta.platform}}
       .title-tags
         a-tooltip(v-for="tag in tags" :key="tag.q")

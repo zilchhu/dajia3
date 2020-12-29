@@ -1,13 +1,14 @@
 <template lang="pug">
-a-menu(v-model:selectedKeys="menu_keys" theme="light" mode="horizontal")
-  a-menu-item(key="date:1")
-    router-link(:to="{ name: 'index'}") overview
-  a-sub-menu
-    template(#title)
-      span persons
-    a-menu-item(v-for="name in all_names" :key="name")
-      router-link(:to="{ name: 'user', params: { username: name, date: 0 }}") {{name}}
-router-view 
+div
+  a-menu(v-model:selectedKeys="menu_keys" theme="light" mode="horizontal")
+    a-menu-item(key="date:1")
+      router-link(:to="{ name: 'index'}") overview
+    a-sub-menu
+      template(#title)
+        span persons
+      a-menu-item(v-for="name in all_names" :key="name")
+        router-link(:to="{ name: 'user', params: { username: name, date: $route.params.date || 0 }}") {{name}}
+  router-view 
 </template>
 
 <script>

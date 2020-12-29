@@ -59,7 +59,7 @@ export default {
 <style lang="sass" scoped>
 .shop
   display: flex
-  width: 100vw
+  width: 100%
   min-height: 100vh
   flex-direction: column
   align-items: center

@@ -4,7 +4,7 @@
     span.header-name {{username}}
     div
       a-date-picker(v-model:value="selected_date" @change="date_change")
-  a-tabs(v-model:activeKey="activeKey" @tabClick="tab_click" style="max-width: 960px;")
+  a-tabs(v-model:activeKey="activeKey" @tabClick="tab_click" style="width: 960px;")
     a-tab-pane(key="1" :tab="tab_activities")
       a-spin(:spinning="spinning")
         user-activities(:activities="activities.activities")
@@ -37,6 +37,7 @@ import { message } from 'ant-design-vue'
 import UserActivities from './UserActivities'
 import UserShops from './UserShops'
 import dayjs from 'dayjs'
+import moment from 'moment'
 
 export default {
   components: {
@@ -98,8 +99,13 @@ export default {
       selected_date: null
     }
   },
-  props: ['username', 'date'],
   computed: {
+    username() {
+      return this.$route.params.username
+    },
+    date() {
+      return this.$route.params.date
+    },
     tab_activities() {
       let t = this.activities.counts.activities
       return `动态 ${t.count_a}/${t.count_shop}`
@@ -131,7 +137,6 @@ export default {
   methods: {
     fetch_user_single() {
       this.spinning = true
-      console.log(this.date, typeof this.date)
       new User(this.username, parseInt(this.date) + 1)
         .single()
         .then(res => {
@@ -168,18 +173,19 @@ export default {
       this.$router.replace({ name: 'user', params: { username: this.username, date: date1 } })
     },
     init() {
+      this.selected_date = moment().startOf('day').subtract(this.date, 'days')
       this.fetch_user_single()
       this.fetch_user_single_acts()
     }
   },
   created() {
-    // this.selected_date = dayjs()
-    //   .startOf('day')
-    //   .subtract(parseInt(this.date), 'day')
     this.init()
   },
   watch: {
-    '$route': 'init'
+    $route(route) {
+      if(route.name != 'user') return
+      this.init()
+    }
   }
 }
 </script>
@@ -190,6 +196,7 @@ export default {
   flex-direction: column
   align-items: center
   width: 100%
+  min-height: 100vh
   background: #fbfbfb
 
 .header

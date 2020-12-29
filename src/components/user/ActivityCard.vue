@@ -6,8 +6,9 @@ a-list-item(:key="activity.time")
       .title-meta
         div
           span.num {{title_num}}
-          a-button.name(type="link" @click="name_click") {{title_name}}
+          router-link.name(:to="{name: 'user', params: {username: title_name, date: 0}}") {{title_name}}
           span.time {{title_time}}
+          span.time {{title_weekday}}
           span.time {{activity.time}}
         a-button(size="small" type="link" @click="detail_click") detail
     template(#description)
@@ -20,14 +21,24 @@ import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import duration from 'dayjs/plugin/duration'
 import localeData from 'dayjs/plugin/localeData'
+import weekday from 'dayjs/plugin/weekday'
+import updateLocale from 'dayjs/plugin/updateLocale'
 
 import 'dayjs/locale/zh-cn'
 
 dayjs.extend(duration)
 dayjs.extend(relativeTime)
 dayjs.extend(localeData)
+dayjs.extend(weekday)
+dayjs.extend(updateLocale)
 
 dayjs.locale('zh-cn')
+
+dayjs.updateLocale('zh-cn', {
+  weekdays: [
+    "周日", "周一", "周二", "周三", "周四", "周五", "周六"
+  ]
+})
 
 import ShopForm from '../shop/ShopForm'
 import ShopData from '../shop/ShopData'
@@ -66,6 +77,9 @@ export default {
     },
     title_time() {
       return dayjs().from(this.activity.time_parsed)
+    },
+    title_weekday() {
+      return dayjs.weekdays()[dayjs(this.activity.time_parsed).day()]
     },
     shop_data() {
       return {
@@ -106,9 +120,6 @@ export default {
   methods: {
     detail_click() {
       this.shop_data_show = !this.shop_data_show
-    },
-    name_click() {
-      this.$router.push({ name: 'user', params: { username: this.title_name, date: 0 } })
     }
   }
 }
@@ -129,7 +140,7 @@ export default {
   font-size: 9px
   color: rgba(0, 0, 0, 0.38)
 
-.ant-btn-link:hover
+.name:hover
   color: #40a9ff
 
 .num, .name, .time
