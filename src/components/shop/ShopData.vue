@@ -1,6 +1,6 @@
 <template lang="pug">
 a-card(size="small")
-  a-card-grid(style="width: 100px; padding: 4px;" v-for="key in Object.keys(shop_data)" :key="key")
+  a-card-grid(style="width: 115px; padding: 0 7px;" v-for="key in Object.keys(shop_data)" :key="key")
     a-statistic(:title="en2zh.get(key)" :value="shop_data[key]" valueStyle="font-size: 1em;")
       template(#formatter="{value}")
         p.truncate {{emptyVal(value)}}

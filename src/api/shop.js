@@ -8,4 +8,8 @@ export default class Shop {
   single() {
     return instance.get(urls.shop.base(this.shopid))
   }
+
+  single_history() {
+    return instance.get(urls.shop.history(this.shopid))
+  }
 }

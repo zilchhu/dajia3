@@ -4,28 +4,34 @@ a-list-item(:key="shop.id")
     template(#title)
       .title
         span.num {{title_num}}
-        a-button(size="small" type="link" @click="detail_click") detail
+        div
+          a-button(size="small" type="link" @click="history_click") history
+          a-button(size="small" type="link" @click="detail_click") detail
     template(#description)
       shop-form(:as="shop_as" :shop_meta="shop_meta")
       shop-data(v-if="shop_data_show" :shop_data="shop_data")
+      shop-history(v-if="shop_history_show" :shopid="shop_meta.shop_id")
 </template>
 
 <script>
 import ShopForm from './ShopForm'
 import ShopData from './ShopData'
+import ShopHistory from '../shop/ShopHistory'
 
 export default {
   name: 'shop-card',
   components: {
     ShopForm,
-    ShopData
+    ShopData,
+    ShopHistory
   },
   props: {
     shop: Object
   },
   data() {
     return {
-      shop_data_show: false
+      shop_data_show: false,
+      shop_history_show: false
     }
   },
   computed: {
@@ -92,6 +98,9 @@ export default {
   methods: {
     detail_click() {
       this.shop_data_show = !this.shop_data_show
+    },
+    history_click() {
+      this.shop_history_show = !this.shop_history_show
     }
   }
 }

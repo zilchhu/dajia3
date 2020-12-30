@@ -163,17 +163,19 @@ export default {
     },
     tab_click(key) {
       if (this.activeKey == key) {
-        this.mounted()
+        this.init()
       }
     },
     date_change(date, date_str) {
       let date1 = dayjs()
         .startOf('day')
-        .diff(dayjs(date_str), 'day')
+        .diff(dayjs(date_str).startOf('day'), 'day')
       this.$router.replace({ name: 'user', params: { username: this.username, date: date1 } })
     },
     init() {
-      this.selected_date = moment().startOf('day').subtract(this.date, 'days')
+      this.selected_date = moment()
+        .startOf('day')
+        .subtract(this.date, 'days')
       this.fetch_user_single()
       this.fetch_user_single_acts()
     }
@@ -183,7 +185,7 @@ export default {
   },
   watch: {
     $route(route) {
-      if(route.name != 'user') return
+      if (route.name != 'user') return
       this.init()
     }
   }
@@ -206,7 +208,8 @@ export default {
   height: 60px
   justify-content: space-between
   align-items: center
+  padding: 12px
 
 .header-name
-  font-size: 1.3em
+  font-size: 1.1em
 </style>

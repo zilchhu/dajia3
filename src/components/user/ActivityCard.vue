@@ -6,14 +6,18 @@ a-list-item(:key="activity.time")
       .title-meta
         div
           span.num {{title_num}}
+          span.type {{activity.q}}
           router-link.name(:to="{name: 'user', params: {username: title_name, date: 0}}") {{title_name}}
           span.time {{title_time}}
           span.time {{title_weekday}}
-          span.time {{activity.time}}
-        a-button(size="small" type="link" @click="detail_click") detail
+          router-link.time.time-href(:to="{name: 'user', params: {username: title_name, date: time2date}}") {{activity.time}}
+        div
+          a-button(size="small" type="link" @click="history_click") history
+          a-button(size="small" type="link" @click="detail_click") detail
     template(#description)
       shop-form(:as="shop_as" :shop_meta="shop_meta")
       shop-data(v-if="shop_data_show" :shop_data="shop_data")
+      shop-history(v-if="shop_history_show" :shopid="shop_meta.shop_id")
 </template>
 
 <script>
@@ -35,26 +39,27 @@ dayjs.extend(updateLocale)
 dayjs.locale('zh-cn')
 
 dayjs.updateLocale('zh-cn', {
-  weekdays: [
-    "周日", "周一", "周二", "周三", "周四", "周五", "周六"
-  ]
+  weekdays: ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 })
 
 import ShopForm from '../shop/ShopForm'
 import ShopData from '../shop/ShopData'
+import ShopHistory from '../shop/ShopHistory'
 
 export default {
   name: 'activity-card',
   components: {
     ShopForm,
-    ShopData
+    ShopData,
+    ShopHistory
   },
   props: {
     activity: Object
   },
   data() {
     return {
-      shop_data_show: false
+      shop_data_show: false,
+      shop_history_show: false
     }
   },
   computed: {
@@ -115,11 +120,19 @@ export default {
         value: this.activity.qs.find(q => q.type == a.q).value,
         threshold: this.activity.qs.find(q => q.type == a.q).threshold
       }))
+    },
+    time2date() {
+      return dayjs()
+        .startOf('day')
+        .diff(dayjs(this.activity.time_parsed).startOf('day'), 'day')
     }
   },
   methods: {
     detail_click() {
       this.shop_data_show = !this.shop_data_show
+    },
+    history_click() {
+      this.shop_history_show = !this.shop_history_show
     }
   }
 }
@@ -140,10 +153,10 @@ export default {
   font-size: 9px
   color: rgba(0, 0, 0, 0.38)
 
-.name:hover
+.name:hover, .time-href:hover
   color: #40a9ff
 
-.num, .name, .time
+.num, .name, .time, .type
   font-size: 10px
   color: rgba(0, 0, 0, 0.38)
   margin: 4px 16px 10px 0

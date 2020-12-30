@@ -11,6 +11,9 @@ const urls = {
   shop: {
     base(shopid) {
       return `/shop/${shopid}`
+    },
+    history(shopid) {
+      return `/shop_history/${shopid}`
     }
   }
 }

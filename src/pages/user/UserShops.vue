@@ -34,3 +34,8 @@ export default {
   }
 }
 </script>
+
+<style lang="sass" scoped>
+.header
+  padding: 0 12px
+</style>

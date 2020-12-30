@@ -7,6 +7,7 @@
   .content(style="width: 960px;")
     a-spin(:spinning="spinning")
       user-activities(:activities="shops")
+  a-back-top
 </template>
 
 <script>
@@ -19,7 +20,7 @@ export default {
   components: {
     UserActivities
   },
-  props: ['shopid'],
+  props: ['shopid', 'id'],
   data() {
     return {
       spinning: false,
@@ -75,9 +76,7 @@ export default {
   align-items: center
   font-size: 1.1em
 
-.platform
-  flex-basis: 80px
+.platform, .shopid
+  padding-right: 20px
 
-.shopid
-  flex-basis: 90px
 </style>

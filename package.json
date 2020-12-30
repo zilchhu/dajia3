@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "ant-design-vue": "^2.0.0-rc.3",
+    "clipboard": "^2.0.6",
     "core-js": "^3.6.5",
     "moment": "^2.29.1",
     "omit": "^1.0.1",
