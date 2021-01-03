@@ -5,7 +5,8 @@ import dayjs from 'dayjs'
 const store = createStore({
   state() {
     return {
-      table: null
+      table: null,
+      user_active_key: '1'
     }
   },
   getters: {
@@ -28,6 +29,9 @@ const store = createStore({
       state.table.data[index].op_name = payload.op_name
       state.table.data[index].q = payload.q
       state.table.data[index].a = payload.a
+    },
+    saveUserActiveKey(state, payload) {
+      state.user_active_key = payload
     }
   },
   actions: {

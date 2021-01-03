@@ -1,64 +1,65 @@
 <template lang="pug">
-a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :loading="tableLoading" @expand="expand" :expandRowByClick="true" :pagination="{showSizeChanger: true, defaultPageSize: 20}" size="small" :scroll="{x: scrollX, y: scrollY}")
-  template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-    a-row(type="flex")
-      a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width}px;`")
-          a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-      a-col(flex="60px")
-        a-button(type="link" @click="confirm") confirm
-        br
-        a-button(type="link" @click="clearFilters") reset
-  //- 染色
-  template(v-for="col in ruleIdx" #[col]="{text, record}")
-    .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
- 
+div
+  a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :row-selection="rowSelection" :loading="tableLoading" @expand="expand" :expandRowByClick="true" :expandIconAsCell="false" :expandIconColumnIndex="-1" :pagination="{showSizeChanger: true, defaultPageSize: 20}" size="small" :scroll="{x: scrollX, y: scrollY}")
+    template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
+      a-row(type="flex")
+        a-col(flex="auto")
+          a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width}px;`")
+            a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
+        a-col(flex="60px")
+          a-button(type="link" @click="confirm") confirm
+          br
+          a-button(type="link" @click="clearFilters") reset
+    //- 染色
+    template(v-for="col in ruleIdx" #[col]="{text, record}")
+      .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
+  
 
-  template(#expandedRowRender="{record}")
-    a-collapse(v-model:activeKey="collapseKey" :bordered="false")
-      a-collapse-panel(:key="`${record.id}-a`" style="border: none;")
-        template(#header)
-          span.small 昨日
-        a-card(style="width: 100vw;" size="small")
-          a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
-            template(#title)
-              .tip {{`${record[key]}${thresholdSuffix(key, record.platform)}`}}
-            a-card-grid(style="width: 130px; padding: 4px;")
-              a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
-                template(v-if="ruleIdx.includes(key)" #formatter="{value}")
-                  p.truncate(:class="{unsatisfied: rules2fn[record.platform][key](value)}") {{emptyVal(value)}}
-                  //- template(v-else-if="key == 'score'")
-                  //-   p.truncate(:class="{success: value == 100}") {{value}}
-                template(v-else #formatter="{value}")
-                  p.truncate {{emptyVal(value)}}
-        hello-form2(:record="record" @save="onSave")
-      //- a-tab-pane(key="1" tab="1") 1
-      a-collapse-panel(:key="`${record.id}-b`" style="border: none;") 
-        template(#header)
-          span.small 往日
-        a-table(:columns="shopTableCols" :data-source="tablesByShop.get(record.shop_id)" rowKey="date" :loading="tablesByShopLoading.has(record.shop_id)" :expandRowByClick="true" :pagination="{showSizeChanger: true, defaultPageSize: 10}" size="small" :scroll="{x: shopScrollX}" style="width: calc(100vw - 80px);")
-          //- 染色
-          template(v-for="col in ruleIdx" #[col]="{text, record}")
-            .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
+    template(#expandedRowRender="{record}")
+      a-collapse(v-model:activeKey="collapseKey" :bordered="false")
+        a-collapse-panel(:key="`${record.id}-a`" style="border: none;")
+          template(#header)
+            span.small 昨日
+          a-card(style="width: 100vw;" size="small")
+            a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
+              template(#title)
+                .tip {{`${record[key]}${thresholdSuffix(key, record.platform)}`}}
+              a-card-grid(style="width: 130px; padding: 4px;")
+                a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
+                  template(v-if="ruleIdx.includes(key)" #formatter="{value}")
+                    p.truncate(:class="{unsatisfied: rules2fn[record.platform][key](value)}") {{emptyVal(value)}}
+                    //- template(v-else-if="key == 'score'")
+                    //-   p.truncate(:class="{success: value == 100}") {{value}}
+                  template(v-else #formatter="{value}")
+                    p.truncate {{emptyVal(value)}}
+          hello-form2(:record="record" @save="onSave")
+        //- a-tab-pane(key="1" tab="1") 1
+        a-collapse-panel(:key="`${record.id}-b`" style="border: none;") 
+          template(#header)
+            span.small 往日
+          a-table(:columns="shopTableCols" :data-source="tablesByShop.get(record.shop_id)" rowKey="date" :loading="tablesByShopLoading.has(record.shop_id)" :expandRowByClick="true" :pagination="{showSizeChanger: true, defaultPageSize: 10}" size="small" :scroll="{x: shopScrollX}" style="width: calc(100vw - 80px);")
+            //- 染色
+            template(v-for="col in ruleIdx" #[col]="{text, record}")
+              .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
 
-          template(#expandedRowRender="{record}")
-            a-tabs(size="small")
-              a-tab-pane(:key="`${record.id}`-1" tab="详情" size="small")
-                a-card(size="small")
-                  a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
-                    template(#title)
-                      .tip {{`${record[key]}${thresholdSuffix(key, record.platform)}`}}
-                    a-card-grid(style="width: 130px; padding: 4px;")
-                      a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
-                        template(v-if="ruleIdx.includes(key)" #formatter="{value}")
-                          p.truncate(:class="{unsatisfied: rules2fn[record.platform][key](value)}") {{emptyVal(value)}}
-                        template(v-else #formatter="{value}")
-                          p.truncate {{emptyVal(value)}}
-              a-tab-pane(:key="`${record.id}`-2" tab="优化" size="small")
-                hello-form2(:record="record" @save="onSave")
-
-      
-
+            template(#expandedRowRender="{record}")
+              a-tabs(size="small")
+                a-tab-pane(:key="`${record.id}`-1" tab="详情" size="small")
+                  a-card(size="small")
+                    a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
+                      template(#title)
+                        .tip {{`${record[key]}${thresholdSuffix(key, record.platform)}`}}
+                      a-card-grid(style="width: 130px; padding: 4px;")
+                        a-statistic(:title="en2zh.get(key)" :value="record[key]" valueStyle="font-size: 1em;")
+                          template(v-if="ruleIdx.includes(key)" #formatter="{value}")
+                            p.truncate(:class="{unsatisfied: rules2fn[record.platform][key](value)}") {{emptyVal(value)}}
+                          template(v-else #formatter="{value}")
+                            p.truncate {{emptyVal(value)}}
+                a-tab-pane(:key="`${record.id}`-2" tab="优化" size="small")
+                  hello-form2(:record="record" @save="onSave")
+  a-modal(v-model:visible="editRowKeysModal" :footer="null" centered :width="540")
+    a-textarea(v-model:value="editedRowKeys" placeholder="导入门店ID（慎用）" :autoSize="{minRows: 10, maxRows: 10}")
+    all-shop-form(:shop_metas="selectedShopMetas")
         
 </template>
 
@@ -66,6 +67,13 @@ a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :loading="tab
 import { message } from 'ant-design-vue'
 import { getTableByDate, getTableByShop } from './api'
 import HelloForm2 from './components/HelloForm2'
+import AllShopForm from './components/shop/AllShopForm'
+function distinct(s) {
+  let ns = s.trim().split('\n')
+  ns = ns.map(v => v.trim())
+  ns = Array.from(new Set(ns))
+  return ns.filter(v => /\d+/.test(v))
+}
 
 export default {
   name: 'App2',
@@ -85,11 +93,15 @@ export default {
       elmRules: [['income', '<', 1000]],
       ruleIdx: ['income', 'income_avg', 'consume_ratio', 'cost_ratio', 'settlea_30'],
       collapseKey: [],
-      scrollY: 900
+      scrollY: 900,
+      selectedRowKeys: [],
+      editRowKeysModal: false,
+      editedRowKeys: ''
     }
   },
   components: {
-    HelloForm2
+    HelloForm2,
+    AllShopForm
   },
   computed: {
     tablePersonColFilters() {
@@ -393,7 +405,7 @@ export default {
       let mt = [...this.rules, ...this.mtRules]
       let elm = [...this.rules, ...this.elmRules]
       const fnBody = r => `
-      let v = 0  
+      let v = 0
       try {
         v = parseFloat(val)
       } catch (e) { console.error(e) }
@@ -414,6 +426,33 @@ export default {
         美团: mt,
         饿了么: elm
       }
+    },
+    rowSelection() {
+      const { selectedRowKeys } = this
+      return {
+        selectedRowKeys,
+        onChange: this.onSelectChange,
+        hideDefaultSelections: true,
+        selections: [
+          {
+            key: 'by id',
+            text: 'by id',
+            onSelect: () => {
+              this.editRowKeysModal = true
+            }
+          }
+        ]
+      }
+    },
+    selectedShopMetas() {
+      let r = distinct(this.editedRowKeys)
+      r = r
+        .map(r => ({
+          id: this.table.find(v => v.shop_id == r) ? this.table.find(v => v.shop_id == r).id : null,
+          shop_id: r
+        }))
+        .filter(r => r.id != null)
+      return r
     }
   },
   methods: {
@@ -470,6 +509,10 @@ export default {
     },
     emptyVal(val) {
       return val == null || val == undefined ? '-' : val
+    },
+    onSelectChange(selectedRowKeys) {
+      this.selectedRowKeys = selectedRowKeys
+      this.editedRowKeys = distinct(`${this.editRowKeys}\n${this.selectedRowKeys.join('\n')}`).join('\n')
     }
   },
   mounted() {

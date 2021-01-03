@@ -184,9 +184,8 @@ export default {
     this.init()
   },
   watch: {
-    $route(route) {
-      if (route.name != 'user') return
-      this.init()
+    $route(route, old_route) {
+      if (route.name == 'user' && old_route.name == 'user') this.init()
     }
   }
 }

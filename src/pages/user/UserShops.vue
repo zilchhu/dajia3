@@ -37,5 +37,6 @@ export default {
 
 <style lang="sass" scoped>
 .header
+  font-size: 13px
   padding: 0 12px
 </style>

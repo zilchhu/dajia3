@@ -20,7 +20,6 @@ export default {
   components: {
     UserActivities
   },
-  props: ['shopid', 'id'],
   data() {
     return {
       spinning: false,
@@ -33,6 +32,9 @@ export default {
     },
     platform() {
       return this.shops.length > 0 ? this.shops[0].platform : ''
+    },
+    shopid() {
+      return this.$route.params.shopid
     }
   },
   methods: {
@@ -51,8 +53,13 @@ export default {
         })
     }
   },
-  mounted() {
+  created() {
     this.fetch_shop_single()
+  },
+  watch: {
+    $route(route) {
+      if (route.name == 'shop') this.fetch_shop_single()
+    }
   }
 }
 </script>
@@ -78,5 +85,4 @@ export default {
 
 .platform, .shopid
   padding-right: 20px
-
 </style>

@@ -15,6 +15,9 @@ const urls = {
     history(shopid) {
       return `/shop_history/${shopid}`
     }
+  },
+  plan: {
+    multi: 'plans'
   }
 }
 

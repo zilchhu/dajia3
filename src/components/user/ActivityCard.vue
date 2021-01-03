@@ -143,6 +143,7 @@ export default {
   font-size: 1.1em
   font-weight: bold
   margin: 0
+  white-space: pre-wrap
 
 .title-meta
   display: flex

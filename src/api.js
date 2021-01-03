@@ -21,7 +21,8 @@ const urls = {
   table: 'table',
   tableByDate: 'tableByDate',
   tableByShop: 'tableByShop',
-  plan: 'plan'
+  plan: 'plan',
+  plans: 'plans'
 }
 
 export async function getTableByDate(day_from_today = 1) {
@@ -36,7 +37,11 @@ export async function updateTableById(id, a) {
   return inst.post(urls.plan, { id, a })
 }
 
+export async function updateTableByShopIds(shopids, date, a) {
+  return inst.post(urls.plans, { shopids, date, a })
+}
+
 export function getTable() {
-  // mock 
+  // mock
   return { err: null, data: [] }
 }
