@@ -96,7 +96,8 @@ export default {
           }
         }
       },
-      selected_date: null
+      selected_date: null,
+      last_user_route: { path: '' }
     }
   },
   computed: {
@@ -184,8 +185,11 @@ export default {
     this.init()
   },
   watch: {
-    $route(route, old_route) {
-      if (route.name == 'user' && old_route.name == 'user') this.init()
+    $route(route) {
+      if (route.name == 'user' && route.path != this.last_user_route.path) {
+        this.init()
+        this.last_user_route = route
+      }
     }
   }
 }

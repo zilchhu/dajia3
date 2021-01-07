@@ -6,11 +6,11 @@ a-list-item(:key="activity.time")
       .title-meta
         div
           span.num {{title_num}}
-          span.type {{activity.q}}
+          span.type {{`${activity.q} ${title_value}`}}
           router-link.name(:to="{name: 'user', params: {username: title_name, date: 0}}") {{title_name}}
           span.time {{title_time}}
           span.time {{title_weekday}}
-          router-link.time.time-href(:to="{name: 'user', params: {username: title_name, date: time2date}}") {{activity.time}}
+          router-link.time.time-href(:to="{name: 'user', params: {username: title_name, date: time2date}}") {{title_time_}}
         div
           a-button(size="small" type="link" @click="history_click") history
           a-button(size="small" type="link" @click="detail_click") detail
@@ -39,7 +39,7 @@ dayjs.extend(updateLocale)
 dayjs.locale('zh-cn')
 
 dayjs.updateLocale('zh-cn', {
-  weekdays: ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+  weekdays: ['周日', '一', '二', '三', '四', '五', '六']
 })
 
 import ShopForm from '../shop/ShopForm'
@@ -83,8 +83,14 @@ export default {
     title_time() {
       return dayjs().from(this.activity.time_parsed)
     },
+    title_time_() {
+      return dayjs(this.activity.time_parsed).format('MM/DD HH:mm:ss')
+    },
     title_weekday() {
       return dayjs.weekdays()[dayjs(this.activity.time_parsed).day()]
+    },
+    title_value() {
+      return this.activity.qs.find(q=>q.type == this.activity.q).value
     },
     shop_data() {
       return {

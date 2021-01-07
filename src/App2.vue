@@ -13,7 +13,8 @@ div
     //- 染色
     template(v-for="col in ruleIdx" #[col]="{text, record}")
       .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
-  
+    template(#shop_id="{text, record}")
+      router-link.cell(:to="{name: 'shop', params: {shopid: text}}") {{text}}
 
     template(#expandedRowRender="{record}")
       a-collapse(v-model:activeKey="collapseKey" :bordered="false")
@@ -142,7 +143,7 @@ export default {
           title: '门店id',
           dataIndex: 'shop_id',
           width: 100,
-          slots: { filterDropdown: 'filterDropdown' },
+          slots: { filterDropdown: 'filterDropdown', customRender: 'shop_id' },
           onFilter: (value, record) => record.shop_id == value
         },
         {

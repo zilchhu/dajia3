@@ -1,12 +1,19 @@
 import App2 from './App2.vue'
 import User from './pages/user/User'
 import Shop from './pages/shop/Shop'
+import Tools from './pages/tools/Tools'
+import ToolsFreshMt from './pages/tools/ToolsFreshMt'
 // import Date from './pages/date/Date'
 import { createWebHistory, createRouter } from 'vue-router'
 
 const routes = [
   { path: '/shop/:shopid(\\d+)', name: 'shop', component: Shop },
   { path: '/user/:username/:date(\\d+)', name: 'user', component: User },
+  {
+    path: '/tools',
+    component: Tools,
+    children: [{ path: 'fresh/mt', name: 'tools-fresh-mt', component: ToolsFreshMt }]
+  },
   { path: '/', name: 'index', component: App2 }
 ]
 

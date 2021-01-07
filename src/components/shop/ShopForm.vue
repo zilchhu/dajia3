@@ -12,11 +12,12 @@ a-card(size="small")
           a-checkable-tag(:style="{background: tag.tag_color}" v-model:checked="tag.checked") {{tag.q}}
   a-table(v-if="items_show.length > 0" :columns="columns" :data-source="items_show" rowKey="q" :pagination="false" size="small" :showHeader="false")
     template(#name="{text, record}")
-      a-input(:value="text" @change="e => handleChange(e.target.value, record.q, 'name')" size="small")
+      a-input(:value="text" @change="e => handleChange(e.target.value, record, 'name')" size="small")
     template(#a="{text, record}")
-      a-textarea(:value="text" @change="e => handleChange(e.target.value, record.q, 'a')" :autoSize="{minRows: 1}")
-    template(#operation="{text, record}")
-      a-button(@click="e => save(record)" size="small") {{text}}
+      a-textarea(:value="text" @change="e => handleChange(e.target.value, record, 'a')" :autoSize="{minRows: 1}")
+    template(#time="{text, record}")
+      a-spin(:spinning="saving" size="small") 
+        span {{text}}
 </template>
 
 <script>
@@ -55,18 +56,13 @@ export default {
       {
         title: '优化',
         dataIndex: 'a',
-        width: 440,
+        width: 500,
         slots: { customRender: 'a' }
-      },
-      {
-        title: '操作',
-        dataIndex: 'operation',
-        slots: { customRender: 'operation' },
-        width: 120
       },
       {
         title: '时间',
         dataIndex: 'time',
+        slots: { customRender: 'time' },
         width: 180
       }
     ]
@@ -74,7 +70,9 @@ export default {
       columns,
       tags: this.as
         .map(a => ({ ...a, checked: false, saved: a.a.trim().length > 0 }))
-        .map(a => ({ ...a, tag_color: a.saved ? '#91d5ff99' : '#fefefe' }))
+        .map(a => ({ ...a, tag_color: a.saved ? '#91d5ff99' : '#fefefe' })),
+      debounce_save: null,
+      saving: false
     }
   },
   computed: {
@@ -86,18 +84,20 @@ export default {
     }
   },
   methods: {
-    handleChange(value, key, column) {
+    handleChange(value, record, column) {
       const newTags = [...this.tags]
-      const target = newTags.filter(item => key === item.q)[0]
+      const target = newTags.filter(item => record.q === item.q)[0]
       if (target) {
         target[column] = value
         this.tags = newTags
+        this.debounce_save(record)
       }
     },
     save(record) {
       const newItems = [...this.tags]
       const target = newItems.filter(item => record.q === item.q)[0]
       if (target) {
+        this.saving = true
         target['time'] = dayjs().format('YYYY/MM/DD HH:mm:ss')
         let a = JSON.stringify(
           newItems.map(v => omit(v, ['checked', 'time_parsed', 'saved', 'tag_color', 'value', 'threshold']))
@@ -106,16 +106,28 @@ export default {
           .then(res => {
             message.success(res)
             this.tags = newItems
+            this.saving = false
           })
           .catch(err => {
             message.error(err)
+            this.saving = false
           })
         console.log(a)
       }
     },
     shopname_click() {
       this.$router.push({ name: 'shop', params: { shopid: this.shop_meta.shop_id } })
+    },
+    debounce(fn) {
+      let timeout = null
+      return function() {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => fn.apply(this, arguments), 600)
+      }
     }
+  },
+  created() {
+    this.debounce_save = this.debounce(this.save)
   }
 }
 </script>

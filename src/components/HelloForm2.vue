@@ -1,11 +1,12 @@
 <template lang="pug">
 a-table(:columns="columns" :data-source="data" rowKey="q" :scroll={x: scrollX} :pagination="false" size="small")
   template(#name="{text, record}")
-    a-input(:value="text" @change="e => handleChange(e.target.value, record.q, 'name')")
+    a-input(:value="text" @change="e => handleChange(e.target.value, record, 'name')")
   template(#a="{text, record}")
-    a-textarea(:value="text" @change="e => handleChange(e.target.value, record.q, 'a')" :autoSize="{minRows: 1}")
-  template(#operation="{text, record}")
-    a-button(@click="e => save(record)") {{text}}
+    a-textarea(:value="text" @change="e => handleChange(e.target.value, record, 'a')" :autoSize="{minRows: 1}")
+  template(#time="{text, record}")
+    a-spin(:spinning="saving" size="small") 
+      span {{text}}
 </template>
 
 <script>
@@ -27,18 +28,13 @@ const columns = [
   {
     title: '优化',
     dataIndex: 'a',
-    width: 400,
+    width: 580,
     slots: { customRender: 'a' }
   },
   {
-    title: '操作',
-    dataIndex: 'operation',
-    slots: { customRender: 'operation' },
-    width: 140
-  },
-  {
     title: '时间',
-    dataIndex: 'time'
+    dataIndex: 'time',
+    slots: { customRender: 'time' }
   }
 ]
 
@@ -59,7 +55,9 @@ export default {
         }))
     return {
       data,
-      columns
+      columns,
+      saving: false,
+      debounce_save: null
     }
   },
   computed: {
@@ -68,28 +66,32 @@ export default {
     }
   },
   methods: {
-    handleChange(value, key, column) {
+    handleChange(value, record, column) {
       const newData = [...this.data]
-      const target = newData.filter(item => key === item.q)[0]
+      const target = newData.filter(item => record.q === item.q)[0]
       if (target) {
         target[column] = value
         this.data = newData
+        this.debounce_save(record)
       }
     },
     save(record) {
       const newData = [...this.data]
       const target = newData.filter(item => record.q === item.q)[0]
       if (target) {
+        this.saving = true
         target['time'] = dayjs().format('YYYY/MM/DD HH:mm:ss')
         let a = JSON.stringify(this.data)
         updateTableById(this.record.id, a)
           .then(res => {
             message.success(res)
             this.data = newData
+            this.saving = false
             // this.$emit('save', this.record.id)
           })
           .catch(err => {
             message.error(err)
+            this.saving = false
           })
       }
     },
@@ -164,7 +166,17 @@ export default {
     },
     unSatisfiesProblems(record) {
       return Array.from(new Set(this.unSatisfies(record).map(v => v.problem)))
+    },
+    debounce(fn) {
+      let timeout = null
+      return function() {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => fn.apply(this, arguments), 600)
+      }
     }
+  },
+  created() {
+    this.debounce_save = this.debounce(this.save)
   }
 }
 </script>
