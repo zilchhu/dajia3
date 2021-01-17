@@ -1,7 +1,7 @@
 <template lang="pug">
 .user
   .header
-    span.header-name {{username}}
+    span(@click="open_drawer").header-name {{username}}
     div
       a-date-picker(v-model:value="selected_date" @change="date_change")
   a-tabs(v-model:activeKey="activeKey" @tabClick="tab_click" style="width: 960px;")
@@ -29,12 +29,15 @@
       a-spin(:spinning="spinning")
         user-shops(:shops="user.success" type="success" :counts="user.counts.success")
   a-back-top
+  a-drawer(title="Acts Overview" placement="right" v-model:visible="drawer_visible") 
+    user-acts-overview(:username="username")
 </template>
 
 <script>
 import User from '../../api/user'
 import { message } from 'ant-design-vue'
 import UserActivities from './UserActivities'
+import UserActsOverview from './UserActsOverview'
 import UserShops from './UserShops'
 import dayjs from 'dayjs'
 import moment from 'moment'
@@ -42,6 +45,7 @@ import moment from 'moment'
 export default {
   components: {
     UserActivities,
+    UserActsOverview,
     UserShops
   },
   data() {
@@ -97,7 +101,8 @@ export default {
         }
       },
       selected_date: null,
-      last_user_route: { path: '' }
+      last_user_route: { path: '' },
+      drawer_visible: false
     }
   },
   computed: {
@@ -173,6 +178,9 @@ export default {
         .diff(dayjs(date_str).startOf('day'), 'day')
       this.$router.replace({ name: 'user', params: { username: this.username, date: date1 } })
     },
+    open_drawer() {
+      this.drawer_visible = true
+    },
     init() {
       this.selected_date = moment()
         .startOf('day')
@@ -215,4 +223,5 @@ export default {
 
 .header-name
   font-size: 1.1em
+  cursor: pointer
 </style>

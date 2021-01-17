@@ -12,6 +12,7 @@ const routes = [
   {
     path: '/tools',
     component: Tools,
+    name: 'tools',
     children: [{ path: 'fresh/mt', name: 'tools-fresh-mt', component: ToolsFreshMt }]
   },
   { path: '/', name: 'index', component: App2 }

@@ -21,4 +21,8 @@ export default class User {
   single_acts() {
     return instance.get(urls.user.acts(this.username, this.date))
   }
+
+  all_acts() {
+    return instance.get(urls.user.acts(this.username, ':all'))
+  }
 }

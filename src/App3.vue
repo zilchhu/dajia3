@@ -8,6 +8,8 @@ div
         span users
       a-menu-item(v-for="name in all_names" :key="name")
         router-link(:to="{ name: 'user', params: { username: name, date: $route.params.date || 0 }}") {{name}}
+    //- a-menu-item(key="tools")
+      //- router-link(:to="{ name: 'tools'}") tools
   router-view(v-slot="{ Component }")
     transition
       keep-alive

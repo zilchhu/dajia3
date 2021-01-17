@@ -14,7 +14,9 @@ div
     template(v-for="col in ruleIdx" #[col]="{text, record}")
       .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
     template(#shop_id="{text, record}")
-      router-link.cell(:to="{name: 'shop', params: {shopid: text}}") {{text}}
+      router-link.cell(:to="{name: 'shop', params: {shopid: text}}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
+    template(#person="{text, record}")
+      router-link.cell(:to="{ name: 'user', params: { username: text || '-', date: 0 }}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
 
     template(#expandedRowRender="{record}")
       a-collapse(v-model:activeKey="collapseKey" :bordered="false")
@@ -130,6 +132,7 @@ export default {
           width: 70,
           filters: this.tablePersonColFilters,
           filterMultiple: true,
+          slots: { customRender: 'person' },
           onFilter: (value, record) => record.person == value
         },
         {
@@ -523,7 +526,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 .cell
   display: inline-block
   width: 100%
@@ -556,4 +559,7 @@ export default {
 
 .small
   font-size: .9em
+
+.ant-table-thead > tr > th
+  border: none
 </style>

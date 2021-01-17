@@ -18,6 +18,9 @@ const urls = {
   },
   plan: {
     multi: 'plans'
+  },
+  fresh: {
+    mt: '/fresh/mt'
   }
 }
 
