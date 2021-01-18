@@ -21,6 +21,10 @@ const urls = {
   },
   fresh: {
     mt: '/fresh/mt'
+  },
+  tests: {
+    sync: '/tests/sync',
+    del: '/tests/del'
   }
 }
 

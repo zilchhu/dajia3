@@ -90,7 +90,7 @@ export default {
       return dayjs.weekdays()[dayjs(this.activity.time_parsed).day()]
     },
     title_value() {
-      return this.activity.qs.find(q=>q.type == this.activity.q).value
+      return this.activity.qs.find(q=>q.type == this.activity.q).value.toFixed(2)
     },
     shop_data() {
       return {

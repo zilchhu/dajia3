@@ -15,7 +15,7 @@
       a-radio(:value="4") 择优扣点
       a-radio(:value="5") 仅限
     a-button(@click="run" :loading="loading" size="small") run
-  a-list(:dataSource="tasks" :split="false" :loading="loading")
+  a-list(:dataSource="tasks" :split="false" :loading="loading" :grid="{ gutter: 6, column: 2 }")
     template(#renderItem="{item, index}")
       a-list-item(:key="item.key")
         a-list-item-meta
@@ -44,7 +44,15 @@ export default {
         { key: 5, name: '集点返券', checked: true, res: null },
         { key: 6, name: '满减活动', checked: true, res: null },
         { key: 7, name: '超值换购', checked: true, res: null },
-        { key: 8, name: '老板推荐', checked: true, res: null }
+
+        { key: 8, name: '老板推荐', checked: true, res: null },
+        { key: 9, name: '减配送费', checked: true, res: null },
+        { key: 10, name: '到店自取', checked: true, res: null },
+        { key: 11, name: '极速退款', checked: true, res: null },
+        { key: 12, name: '青山公益', checked: true, res: null },
+        { key: 13, name: '营业设置', checked: true, res: null },
+        { key: 14, name: '开具发票', checked: true, res: null },
+        { key: 15, name: '门店公告', checked: true, res: null },
       ],
       loading: false
     }

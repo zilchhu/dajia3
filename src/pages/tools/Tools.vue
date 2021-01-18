@@ -4,6 +4,8 @@
     a-sub-menu(key="new-shop-setting" title="新店设置")
       a-menu-item(key="new-shop-setting:mt") 
         router-link(:to="{name: 'tools-fresh-mt'}") 美团
+    a-menu-item(key="tests:sync/del") 
+      router-link(:to="{name: 'tools-tests'}") 测试产品
   router-view
 </template>
 

@@ -3,6 +3,7 @@ import User from './pages/user/User'
 import Shop from './pages/shop/Shop'
 import Tools from './pages/tools/Tools'
 import ToolsFreshMt from './pages/tools/ToolsFreshMt'
+import ToolsTests from './pages/tools/ToolsTests'
 // import Date from './pages/date/Date'
 import { createWebHistory, createRouter } from 'vue-router'
 
@@ -13,7 +14,10 @@ const routes = [
     path: '/tools',
     component: Tools,
     name: 'tools',
-    children: [{ path: 'fresh/mt', name: 'tools-fresh-mt', component: ToolsFreshMt }]
+    children: [
+      { path: 'fresh/mt', name: 'tools-fresh-mt', component: ToolsFreshMt },
+      { path: 'tests', name: 'tools-tests', component: ToolsTests }
+    ]
   },
   { path: '/', name: 'index', component: App2 }
 ]

@@ -118,7 +118,7 @@ export default {
     },
     tab_responsibles() {
       let t = this.user.counts.responsibles
-      return `负责 ${t.count_a}/${t.count_q}/${t.count_shop}/${t.count_shop_a}`
+      return `负责 ${t.count_a}/${t.count_q}/${t.count_shop_a}/${t.count_shop}`
     },
     tab_success() {
       let t = this.user.counts.success
@@ -134,7 +134,7 @@ export default {
     },
     tab_improving() {
       let t = this.user.counts.failure.improving
-      return `优化中 ${t.count_a}/${t.count_q}/${t.count_shop}/${t.count_shop_a}`
+      return `优化中 ${t.count_a}/${t.count_q}/${t.count_shop_a}/${t.count_shop}`
     },
     is_jump() {
       return this.$route.query.jump
