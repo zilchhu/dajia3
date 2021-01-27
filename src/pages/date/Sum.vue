@@ -10,6 +10,12 @@ a-table(:columns="sum_columns" :data-source="sum_data.shops" rowKey="real_shop" 
         a-button(type="link" @click="confirm") confirm
         br
         a-button(type="link" @click="clearFilters") reset
+  template(#consume_sum_ratio="{text, record}")
+    .cell(:class="{unsatisfied: text ? toNum(text) > 4.5 : false}") {{text}}
+
+  template(#cost_sum_ratio="{text, record}")
+    .cell(:class="{unsatisfied: text ? toNum(text) > 50 : false}") {{text}}
+
 </template>
 
 <script>
@@ -29,32 +35,38 @@ export default {
     }
   },
   computed: {
+    day() {
+      return this.$route.params.day
+    },
     sum_columns() {
       let fiexed_cols = [
         {
           title: '城市',
           dataIndex: 'city',
+          key: 'city',
           width: 70,
-          fixed: 'left',
           slots: { filterDropdown: 'filterDropdown' },
           filterMultiple: true,
+          fixed: 'left',
           onFilter: (value, record) => record.city == value
         },
         {
           title: '负责',
           dataIndex: 'person',
+          key: 'person',
           width: 70,
-          fixed: 'left',
           filters: this.getColFilters('person'),
           filterMultiple: true,
+          fixed: 'left',
           onFilter: (value, record) => record.person == value
         },
         {
           title: '物理店',
           dataIndex: 'real_shop',
-          width: 100,
-          fixed: 'left',
+          key: 'real_shop',
+          width: 120,
           slots: { filterDropdown: 'filterDropdown' },
+          fixed: 'left',
           onFilter: (value, record) => record.real_shop == value
         }
       ]
@@ -64,6 +76,7 @@ export default {
           {
             title: '营业收入',
             dataIndex: `income_sum_${v}`,
+            key: `income_sum_${v}`,
             align: 'right',
             width: 100,
             sorter: (a, b) => this.toNum(a[`income_sum_${v}`]) - this.toNum(b[`income_sum_${v}`])
@@ -71,6 +84,7 @@ export default {
           {
             title: '推广费用',
             dataIndex: `consume_sum_${v}`,
+            key: `consume_sum_${v}`,
             align: 'right',
             width: 100,
             sorter: (a, b) => this.toNum(a[`consume_sum_${v}`]) - this.toNum(b[`consume_sum_${v}`])
@@ -78,13 +92,16 @@ export default {
           {
             title: '推广比例',
             dataIndex: `consume_sum_ratio_${v}`,
+            key: `consume_sum_ratio_${v}`,
             align: 'right',
             width: 100,
+            slots: { customRender: 'consume_sum_ratio' },
             sorter: (a, b) => this.toNum(a[`consume_sum_ratio_${v}`]) - this.toNum(b[`consume_sum_ratio_${v}`])
           },
           {
             title: '成本',
             dataIndex: `cost_sum_${v}`,
+            key: `cost_sum_${v}`,
             align: 'right',
             width: 100,
             sorter: (a, b) => this.toNum(a[`cost_sum_${v}`]) - this.toNum(b[`cost_sum_${v}`])
@@ -92,8 +109,10 @@ export default {
           {
             title: '成本比例',
             dataIndex: `cost_sum_ratio_${v}`,
+            key: `cost_sum_ratio_${v}`,
             align: 'right',
             width: 100,
+            slots: { customRender: 'cost_sum_ratio' },
             sorter: (a, b) => this.toNum(a[`cost_sum_ratio_${v}`]) - this.toNum(b[`cost_sum_ratio_${v}`])
           }
         ]
@@ -102,14 +121,21 @@ export default {
       return [...fiexed_cols, ...dates_cols]
     },
     scrollX() {
-      return this.sum_columns.reduce(
-        (sum, { width, children }) => (sum + width ? width : children.reduce((s, { w }) => s + w, 0)),
-        50
-      )
+      let x = this.reduce_width(this.sum_columns)
+      // let x = 3000
+      console.log(x)
       // return 3000
+      return x
     }
   },
   methods: {
+    reduce_width(nodes) {
+      return nodes.reduce((sw, c) => {
+        if (c.width) return sw + c.width
+        if (c.children) return sw + this.reduce_width(c.children)
+        return sw
+      }, 10)
+    },
     toNum(str) {
       try {
         return parseFloat(str)
@@ -122,7 +148,7 @@ export default {
     },
     fetch_sum_single() {
       this.spinning = true
-      new Sum(3)
+      new Sum(this.day)
         .single()
         .then(res => {
           this.sum_data = res
@@ -138,6 +164,24 @@ export default {
   mounted() {
     this.scrollY = document.body.clientHeight - 150
     this.fetch_sum_single()
+  },
+  watch: {
+    $route(route) {
+      if (route.name == 'sum') {
+        this.fetch_sum_single()
+      }
+    }
   }
 }
 </script>
+
+
+<style lang="sass" scoped>
+.cell
+  display: inline-block
+  width: 100%
+  text-align: right
+
+.unsatisfied
+  color: #fa541c
+</style>

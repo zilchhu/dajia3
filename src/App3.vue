@@ -1,7 +1,9 @@
 <template lang="pug">
 div
   a-menu(v-model:selectedKeys="menu_keys" theme="light" mode="horizontal")
-    a-menu-item(key="date:1")
+    a-menu-item(key="sum:3")
+      router-link(:to="{ name: 'sum', params: { day: 7 }}") aggre
+    a-menu-item(key="date")
       a-date-picker(v-model:value="selected_date" @change="date_change" :disabledDate="disabledDate" :allowClear="false" size="small")
     a-sub-menu
       template(#title)
