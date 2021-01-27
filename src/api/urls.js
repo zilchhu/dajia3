@@ -8,6 +8,11 @@ const urls = {
     }
   },
   date: 'date',
+  sum: {
+    base(date) {
+      return `/sum/${date}`
+    }
+  },
   shop: {
     base(shopid) {
       return `/shop/${shopid}`

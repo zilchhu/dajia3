@@ -5,6 +5,7 @@ import Tools from './pages/tools/Tools'
 import ToolsFreshMt from './pages/tools/ToolsFreshMt'
 import ToolsTests from './pages/tools/ToolsTests'
 import Date from './pages/date/Date'
+import Sum from './pages/date/Sum'
 import { createWebHistory, createRouter } from 'vue-router'
 
 const routes = [
@@ -20,6 +21,7 @@ const routes = [
     ]
   },
   {path: '/date/:day', name: 'date', component: Date},
+  {path: '/sum/:day', name: 'sum', component: Sum},
   { path: '/', name: 'index', redirect: '/date/1' }
 ]
 
