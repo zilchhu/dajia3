@@ -9,7 +9,7 @@ export default class Shop {
     return instance.get(urls.shop.base(this.shopid))
   }
 
-  single_history() {
-    return instance.get(urls.shop.history(this.shopid))
+  single_history(oneday) {
+    return instance.get(urls.shop.history(this.shopid), { params: { oneday } })
   }
 }

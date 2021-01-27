@@ -1,10 +1,10 @@
-import App2 from './App2.vue'
+// import App2 from './App2.vue'
 import User from './pages/user/User'
 import Shop from './pages/shop/Shop'
 import Tools from './pages/tools/Tools'
 import ToolsFreshMt from './pages/tools/ToolsFreshMt'
 import ToolsTests from './pages/tools/ToolsTests'
-// import Date from './pages/date/Date'
+import Date from './pages/date/Date'
 import { createWebHistory, createRouter } from 'vue-router'
 
 const routes = [
@@ -19,7 +19,8 @@ const routes = [
       { path: 'tests', name: 'tools-tests', component: ToolsTests }
     ]
   },
-  { path: '/', name: 'index', component: App2 }
+  {path: '/date/:day', name: 'date', component: Date},
+  { path: '/', name: 'index', redirect: '/date/1' }
 ]
 
 const router = createRouter({

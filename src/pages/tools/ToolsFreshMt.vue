@@ -3,18 +3,24 @@
   .header
     span.title new-shop-setting:mt
   .form
-    a-input(v-model:value="wmPoiId" placeholder="poi_id" size="small" style="width: 160px; flex: 1 1 auto;")
+    a-input(v-model:value="wmPoiId" placeholder="门店ID" size="small" style="width: 160px; flex: 1 1 auto;")
+    a-input(v-model:value="sourcePoiId" placeholder="折扣商品源门店ID" size="small" style="width: 160px; flex: 1 1 auto;")
 
     a-radio-group(name="poi_type" v-model:value="poi_type" size="small")
       a-radio(value="甜品") 甜品
       a-radio(value="贡茶") 贡茶
-    a-radio-group(name="poi_plan_type" v-model:value="poi_plan_type" size="small")
-      a-radio(:value="1") 正常
-      a-radio(:value="2") 择优
-      a-radio(:value="3") 扣点
-      a-radio(:value="4") 择优扣点
-      a-radio(:value="5") 仅限
-    a-button(@click="run" :loading="loading" size="small") run
+    a-radio-group(name="poi_reduc_type" v-model:value="poi_reduc_type" size="small")
+      a-radio(value="甜品") 甜品
+      a-radio(value="甜品择优") 甜品择优
+      a-radio(value="贡茶") 贡茶
+      a-radio(value="贡茶择优") 贡茶择优
+      a-radio(value="原价扣点") 原价扣点
+    a-popconfirm(
+      title="警告！这是新店设置操作，请确认后执行。"
+      ok-text="确定"
+      cancel-text="取消"
+      @confirm="run")
+      a-button(:loading="loading" size="small") run
   a-list(:dataSource="tasks" :split="false" :loading="loading" :grid="{ gutter: 6, column: 2 }")
     template(#renderItem="{item, index}")
       a-list-item(:key="item.key")
@@ -34,8 +40,9 @@ export default {
   data() {
     return {
       wmPoiId: '10085676',
+      sourcePoiId: '',
       poi_type: '甜品',
-      poi_plan_type: 1,
+      poi_reduc_type: '甜品',
       tasks: [
         { key: 1, name: '下单返券', checked: true, res: null },
         { key: 2, name: '店内领券', checked: true, res: null },
@@ -53,6 +60,11 @@ export default {
         { key: 13, name: '营业设置', checked: true, res: null },
         { key: 14, name: '开具发票', checked: true, res: null },
         { key: 15, name: '门店公告', checked: true, res: null },
+        { key: 16, name: '折扣商品', checked: true, res: null },
+        { key: 17, name: '品类头像', checked: true, res: null },
+        { key: 18, name: '店内海报', checked: true, res: null },
+        { key: 19, name: '品牌故事', checked: true, res: null },
+        { key: 20, name: '店铺招牌', checked: true, res: null },
       ],
       loading: false
     }
@@ -61,7 +73,7 @@ export default {
     run() {
       this.loading = true
       let userTasks = this.tasks.filter(v => v.checked).map(v => ({ name: v.name }))
-      let userRule = { wmPoiId: this.wmPoiId, wmPoiType: this.poi_type }
+      let userRule = { wmPoiId: this.wmPoiId, wmPoiType: this.poi_type, wmPoiReducType: this.poi_reduc_type, sourcePoiId: this.sourcePoiId }
       new Fresh(userTasks, userRule)
         .mt()
         .then(result => {

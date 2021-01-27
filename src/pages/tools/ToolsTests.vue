@@ -4,7 +4,7 @@
     span.title tests:sync/del
   .form
     a-input(v-model:value="wmPoiId" placeholder="wmPoiId" size="small" style="width: 160px; flex: 1 1 auto;")
-    a-button(@click="sync" :loading="loading_sync" size="small") 同步
+    a-button(@click="sync" :loading="loading_sync" size="small" :disabled="false") 同步
     a-button(@click="del" :loading="loading_del" size="small") 删除
   .txt {{res_sync}}
   .txt {{res_del}}

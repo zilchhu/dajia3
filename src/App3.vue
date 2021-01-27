@@ -2,7 +2,7 @@
 div
   a-menu(v-model:selectedKeys="menu_keys" theme="light" mode="horizontal")
     a-menu-item(key="date:1")
-      router-link(:to="{ name: 'index'}") overview
+      a-date-picker(v-model:value="selected_date" @change="date_change" :disabledDate="disabledDate" :allowClear="false" size="small")
     a-sub-menu
       template(#title)
         span users
@@ -18,11 +18,15 @@ div
 
 <script>
 import User from './api/user'
+import dayjs from 'dayjs'
+import moment from 'moment'
+
 export default {
   data() {
     return {
       menu_keys: [],
-      all_names: []
+      all_names: [],
+      selected_date: moment().subtract(1, 'days')
     }
   },
   methods: {
@@ -33,6 +37,15 @@ export default {
           this.all_names = res
         })
         .catch(err => console.error(err))
+    },
+    date_change(date, date_str) {
+      let date1 = dayjs()
+        .startOf('day')
+        .diff(dayjs(date_str).startOf('day'), 'day')
+      this.$router.replace({ name: 'date', params: { day: date1 } })
+    },
+    disabledDate(currentDate) {
+      return currentDate.isAfter(moment().subtract(1, 'days'))
     }
   },
   mounted() {

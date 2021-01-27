@@ -1,9 +1,13 @@
 <template lang="pug">
 a-card(size="small")
   a-card-grid(style="width: 115px; padding: 0 7px;" v-for="key in Object.keys(shop_data)" :key="key")
-    a-statistic(:title="en2zh.get(key)" :value="shop_data[key]" valueStyle="font-size: 1em;")
-      template(#formatter="{value}")
-        p.truncate {{emptyVal(value)}}
+    a-dropdown(:trigger="['contextmenu']")
+      a-statistic(:title="en2zh.get(key)" :value="shop_data[key]" valueStyle="font-size: 1em;")
+        template(#formatter="{value}")
+          p.truncate {{emptyVal(value)}}
+      template(#overlay)
+        a-menu
+          a-menu-item(key="1" @click="e => click(key)") item1
 
 </template>
 
@@ -53,6 +57,9 @@ export default {
   methods: {
     emptyVal(val) {
       return val == null || val == undefined ? '-' : val
+    },
+    click(key) {
+      console.log(key)
     }
   }
 }
