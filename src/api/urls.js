@@ -25,7 +25,8 @@ const urls = {
     multi: 'plans'
   },
   fresh: {
-    mt: '/fresh/mt'
+    mt: '/fresh/mt',
+    elm: '/fresh/elm'
   },
   tests: {
     sync: '/tests/sync',

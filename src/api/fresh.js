@@ -9,4 +9,8 @@ export default class Fresh {
   mt() {
     return instance2.post(urls.fresh.mt, { userTasks: this.userTasks, userRule: this.userRule })
   }
+
+  elm() {
+    return instance2.post(urls.fresh.elm, { userTasks: this.userTasks, userRule: this.userRule }) 
+  }
 }

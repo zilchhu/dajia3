@@ -1,6 +1,6 @@
 <template lang="pug">
 a-table(:columns="sum_columns" :data-source="sum_data.shops" rowKey="real_shop" :loading="spinning" 
-  :pagination="{showSizeChanger: true, defaultPageSize: 20, pageSizeOptions: ['20', '40', '80', '160']}" size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
+  :pagination="{showSizeChanger: true, defaultPageSize: 20, pageSizeOptions: ['20', '40', '80', '160'], size: 'small'}" size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     a-row(type="flex")
       a-col(flex="auto")
@@ -21,6 +21,23 @@ a-table(:columns="sum_columns" :data-source="sum_data.shops" rowKey="real_shop" 
 <script>
 import { message } from 'ant-design-vue'
 import Sum from '../../api/sum'
+import dayjs from 'dayjs'
+import localeData from 'dayjs/plugin/localeData'
+import weekday from 'dayjs/plugin/weekday'
+import updateLocale from 'dayjs/plugin/updateLocale'
+
+import 'dayjs/locale/zh-cn'
+
+dayjs.extend(localeData)
+dayjs.extend(weekday)
+dayjs.extend(updateLocale)
+
+dayjs.locale('zh-cn')
+
+dayjs.updateLocale('zh-cn', {
+  weekdays: ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+})
+
 
 export default {
   name: 'sum',
@@ -71,7 +88,7 @@ export default {
         }
       ]
       let dates_cols = this.sum_data.dates.map(v => ({
-        title: v,
+        title: `${v} ${dayjs.weekdays()[dayjs(v+'', 'YYYYMMDD').day()]}`,
         children: [
           {
             title: '营业收入',
@@ -122,9 +139,6 @@ export default {
     },
     scrollX() {
       let x = this.reduce_width(this.sum_columns)
-      // let x = 3000
-      console.log(x)
-      // return 3000
       return x
     }
   },

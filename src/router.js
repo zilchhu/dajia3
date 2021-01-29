@@ -3,6 +3,7 @@ import User from './pages/user/User'
 import Shop from './pages/shop/Shop'
 import Tools from './pages/tools/Tools'
 import ToolsFreshMt from './pages/tools/ToolsFreshMt'
+import ToolsFreshElm from './pages/tools/ToolsFreshElm'
 import ToolsTests from './pages/tools/ToolsTests'
 import Date from './pages/date/Date'
 import Sum from './pages/date/Sum'
@@ -17,6 +18,7 @@ const routes = [
     name: 'tools',
     children: [
       { path: 'fresh/mt', name: 'tools-fresh-mt', component: ToolsFreshMt },
+      { path: 'fresh/elm', name: 'tools-fresh-elm', component: ToolsFreshElm },
       { path: 'tests', name: 'tools-tests', component: ToolsTests }
     ]
   },

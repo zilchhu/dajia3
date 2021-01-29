@@ -4,7 +4,7 @@ import urls_ from './urls'
 const instance2 = axios.create({
   baseURL: 'http://192.168.3.3:9010',
   responseType: 'json',
-  timeout: 30 * 1000
+  timeout: 300 * 1000
 })
 
 instance2.interceptors.response.use(
