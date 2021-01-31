@@ -4,7 +4,7 @@ a-card(size="small")
     .title
       .title-meta
         router-link.title_shopname(:to="{name: 'shop', params: {shopid: shop_meta.shop_id}}") {{shop_meta.shop_name}}
-        span.title_platform {{shop_meta.platform}}
+        i.title_platform.iconfont.icon-meituan1(v-show="shop_meta.platform == '美团'" :title="shop_meta.platform") 
       .title-tags
         a-tooltip(v-for="tag in tags" :key="tag.q")
           template(#title)

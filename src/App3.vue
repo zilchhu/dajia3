@@ -1,17 +1,26 @@
 <template lang="pug">
 div
   a-menu(v-model:selectedKeys="menu_keys" theme="light" mode="horizontal")
-    a-menu-item(key="sum:3")
-      router-link(:to="{ name: 'sum', params: { day: 7 }}") aggre
+    a-sub-menu
+      template(#title)
+        span aggre
+      a-menu-item(key="sum:3")
+        router-link(:to="{ name: 'sum', params: { day: 7 }}") 营推
+      a-menu-item(key="fresh-shop")
+        router-link(:to="{ name: 'fresh-shop' }") 新店
+
     a-menu-item(key="date")
       a-date-picker(v-model:value="selected_date" @change="date_change" :disabledDate="disabledDate" :allowClear="false" size="small")
+
     a-sub-menu
       template(#title)
         span users
       a-menu-item(v-for="name in all_names" :key="name")
         router-link(:to="{ name: 'user', params: { username: name, date: $route.params.date || 0 }}") {{name}}
+
     a-menu-item(key="tools")
       router-link(:to="{ name: 'tools'}") tools
+
   router-view(v-slot="{ Component }")
     transition
       keep-alive

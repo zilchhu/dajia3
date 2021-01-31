@@ -4,7 +4,7 @@ a-table(:columns="fresh_shop_columns" :data-source="fresh_shop_data.shops" rowKe
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     a-row(type="flex")
       a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width * 1.8}px;`")
+        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${240}px;`")
           a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
       a-col(flex="60px")
         a-button(type="link" @click="confirm") confirm
@@ -15,8 +15,8 @@ a-table(:columns="fresh_shop_columns" :data-source="fresh_shop_data.shops" rowKe
   template(#value="{text, record}")
     .cell(:class="{unsatisfied: isUnsatisfy(record, text)}") {{text}}
 
-  //- template(#cost_sum_ratio="{text, record}")
-  //-   .cell(:class="{unsatisfied: text ? toNum(text) > 50 : false}") {{text}}
+  template(#field="{text, record}")
+    .cell(:title="record.name") {{text}}
 
 </template>
 
@@ -58,13 +58,13 @@ export default {
         {
           title: '门店',
           dataIndex: 'name',
-          width: 80,
+          width: 75,
           slots: { filterDropdown: 'filterDropdown' },
           filterMultiple: true,
           fixed: 'left',
           customRender: ({ text, index }) => {
             const obj = {
-              children: <div style="writing-mode: vertical-lr">{text}</div>,
+              children: <div style="writing-mode: vertical-lr; white-space: pre-wrap">{text}</div>,
               props: {}
             }
             if (index % 17 == 0) {
@@ -83,6 +83,7 @@ export default {
           filters: this.getColFilters('field'),
           filterMultiple: true,
           fixed: 'left',
+          slots: { customRender: 'field' },
           onFilter: (value, record) => record.field == value
         }
       ]
@@ -91,8 +92,8 @@ export default {
         dataIndex: v,
         align: 'right',
         width: 80,
-        slots: { customRender: 'value' },
-        sorter: (a, b) => this.toNum(a[v]) - this.toNum(b[v])
+        slots: { customRender: 'value' }
+        // sorter: (a, b) => this.toNum(a[v]) - this.toNum(b[v])
       }))
       // console.log([...fiexed_cols, ...dates_cols])
       return [...fiexed_cols, ...dates_cols]
