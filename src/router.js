@@ -1,6 +1,7 @@
 // import App2 from './App2.vue'
 import User from './pages/user/User'
 import Shop from './pages/shop/Shop'
+import FreshShop from './pages/shop/FreshShop'
 import Tools from './pages/tools/Tools'
 import ToolsFreshMt from './pages/tools/ToolsFreshMt'
 import ToolsFreshElm from './pages/tools/ToolsFreshElm'
@@ -24,6 +25,7 @@ const routes = [
   },
   {path: '/date/:day', name: 'date', component: Date},
   {path: '/sum/:day', name: 'sum', component: Sum},
+  {path: '/freshshop', name: 'fresh-shop', component: FreshShop},
   { path: '/', name: 'index', redirect: '/date/1' }
 ]
 

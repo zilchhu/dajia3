@@ -13,6 +13,7 @@ const urls = {
       return `/sum/${date}`
     }
   },
+  fresh_shop: '/fresh',
   shop: {
     base(shopid) {
       return `/shop/${shopid}`
