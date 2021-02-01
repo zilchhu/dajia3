@@ -64,3 +64,9 @@ export default {
   }
 }
 </script>
+
+<style lang="sass">
+::-webkit-scrollbar
+  width: 8px
+  height: 8px
+</style>
