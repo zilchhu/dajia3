@@ -3,8 +3,8 @@
   .header
     span(@click="open_drawer").header-name {{username}}
     div
-      a-date-picker(v-model:value="selected_date" @change="date_change")
-  a-tabs(v-model:activeKey="activeKey" @tabClick="tab_click" style="width: 960px;")
+      a-date-picker(v-model:value="selected_date" @change="date_change" size="small")
+  a-tabs(v-model:activeKey="activeKey" @tabClick="tab_click" style="width: 960px;" size="small")
     a-tab-pane(key="1" :tab="tab_activities")
       a-spin(:spinning="spinning")
         user-activities(:activities="activities.activities")

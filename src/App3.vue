@@ -69,4 +69,7 @@ export default {
 ::-webkit-scrollbar
   width: 8px
   height: 8px
+
+.ant-table-pagination.ant-pagination
+  margin: 6px 0 !important
 </style>

@@ -153,7 +153,7 @@ export default {
     }
   },
   mounted() {
-    this.scrollY = document.body.clientHeight - 150
+    this.scrollY = document.body.clientHeight - 124
     this.fetch_fresh_shop()
   },
   watch: {

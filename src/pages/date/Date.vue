@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :row-selection="rowSelection" :loading="tableLoading" @expand="expand" :expandRowByClick="true" :expandIconAsCell="false" :expandIconColumnIndex="-1" :pagination="{showSizeChanger: true, defaultPageSize: 20}" size="small" :scroll="{x: scrollX, y: scrollY}")
+  a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :row-selection="rowSelection" :loading="tableLoading" @expand="expand" :expandRowByClick="true" :expandIconAsCell="false" :expandIconColumnIndex="-1" :pagination="{showSizeChanger: true, defaultPageSize: 30}" size="small" :scroll="{x: scrollX, y: scrollY}")
     template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
       a-row(type="flex")
         a-col(flex="auto")
@@ -523,7 +523,7 @@ export default {
     }
   },
   mounted() {
-    this.scrollY = document.body.clientHeight - 150
+    this.scrollY = document.body.clientHeight - 124
     this.getTableByDate()
   },
   watch: {
