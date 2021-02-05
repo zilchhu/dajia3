@@ -523,7 +523,7 @@ export default {
     }
   },
   mounted() {
-    this.scrollY = document.body.clientHeight - 124
+    this.scrollY = document.body.clientHeight - 126
     this.getTableByDate()
   },
   watch: {

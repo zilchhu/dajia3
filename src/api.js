@@ -40,7 +40,7 @@ export async function updateTableById(id, a) {
 export async function updateTableByShopIds(shopids, date, a) {
   return inst.post(urls.plans, { shopids, date, a })
 }
-
+//
 export function getTable() {
   // mock
   return { err: null, data: [] }

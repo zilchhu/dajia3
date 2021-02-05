@@ -11,7 +11,7 @@
     "@antv/g2plot": "^2.3.8",
     "ant-design-vue": "^2.0.0-rc.3",
     "calendar": "^0.1.1",
-    "clipboard": "^2.0.6",
+    "clipboardy": "^2.3.0",
     "core-js": "^3.6.5",
     "flatten": "^1.0.3",
     "moment": "^2.29.1",

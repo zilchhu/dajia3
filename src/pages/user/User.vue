@@ -30,7 +30,10 @@
         user-shops(:shops="user.success" type="success" :counts="user.counts.success")
   a-back-top
   a-drawer(title="Acts Overview" placement="right" v-model:visible="drawer_visible") 
-    user-acts-overview(:username="username")
+    div(style="display: flex; flex-direction: column; justify-content: space-between;")
+      user-acts-overview(:username="username")
+      router-link(:to="{name: 'user-acts', params: {username}}") acts
+
 </template>
 
 <script>
@@ -38,6 +41,7 @@ import User from '../../api/user'
 import { message } from 'ant-design-vue'
 import UserActivities from './UserActivities'
 import UserActsOverview from './UserActsOverview'
+
 import UserShops from './UserShops'
 import dayjs from 'dayjs'
 import moment from 'moment'

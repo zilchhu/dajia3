@@ -1,5 +1,6 @@
 // import App2 from './App2.vue'
 import User from './pages/user/User'
+import UserActsOvTable from './pages/user/UserActsOvTable'
 import Shop from './pages/shop/Shop'
 import FreshShop from './pages/shop/FreshShop'
 import Tools from './pages/tools/Tools'
@@ -13,6 +14,7 @@ import { createWebHistory, createRouter } from 'vue-router'
 const routes = [
   { path: '/shop/:shopid(\\d+)', name: 'shop', component: Shop },
   { path: '/user/:username/:date(\\d+)', name: 'user', component: User },
+  { path: '/user/:username/acts', name: 'user-acts', component: UserActsOvTable },
   {
     path: '/tools',
     component: Tools,

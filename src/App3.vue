@@ -67,8 +67,8 @@ export default {
 
 <style lang="sass">
 ::-webkit-scrollbar
-  width: 8px
-  height: 8px
+  width: 10px
+  height: 10px
 
 .ant-table-pagination.ant-pagination
   margin: 6px 0 !important

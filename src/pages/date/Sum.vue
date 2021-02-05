@@ -176,7 +176,7 @@ export default {
     }
   },
   mounted() {
-    this.scrollY = document.body.clientHeight - 164
+    this.scrollY = document.body.clientHeight - 166
     this.fetch_sum_single()
   },
   watch: {

@@ -1,6 +1,6 @@
 <template lang="pug">
 a-table(:columns="fresh_shop_columns" :data-source="fresh_shop_data.shops" rowKey="key" :loading="spinning" 
-  :pagination="{showSizeChanger: true, defaultPageSize: 34, pageSizeOptions: ['34', '68', '136', '272'], size: 'small'}" size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
+  :pagination="{showSizeChanger: true, defaultPageSize: 36, pageSizeOptions: ['36', '72', '144', '288'], size: 'small'}" size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     a-row(type="flex")
       a-col(flex="auto")
@@ -62,13 +62,23 @@ export default {
           slots: { filterDropdown: 'filterDropdown' },
           filterMultiple: true,
           fixed: 'left',
-          customRender: ({ text, index }) => {
+          customRender: ({ text, record, index }) => {
             const obj = {
-              children: <div style="writing-mode: vertical-lr; white-space: pre-wrap">{text}</div>,
+              children: (
+                <div
+                  onclick={() =>
+                    this.$router.push({ name: 'shop', params: { shopid: record.wmPoiId } })
+                    
+                  }
+                  style="writing-mode: vertical-lr; white-space: pre-wrap; color: rgba(0,0,0,.65);"
+                >
+                  {text}
+                </div>
+              ),
               props: {}
             }
-            if (index % 17 == 0) {
-              obj.props.rowSpan = 17
+            if (index % 18 == 0) {
+              obj.props.rowSpan = 18
             } else {
               obj.props.rowSpan = 0
             }
@@ -139,26 +149,28 @@ export default {
         })
     },
     isUnsatisfy(record, text) {
-      if(record.field == '评论数') return this.toNum(text) < 20
-      if(record.field == '评分') return this.toNum(text) < 4.8
-      if(record.field == '推广') return this.toNum(text) < 50 || this.toNum(text) > 150
-      if(record.field == '客单价') return this.toNum(text) < 12 
-      if(record.field == '曝光量') return this.toNum(text) < 3000
-      if(record.field == '进店率') return this.toNum(text) < 8
-      if(record.field == '下单率') return this.toNum(text) < 25
-      if(record.field == '下架产品量') return this.toNum(text) > 5
-      if(record.field == '下架产品量') return this.toNum(text) > 5
-      if(record.field == '商圈排名') return this.toNum(text) > 2
-      if(record.field == '延迟发单') return this.toNum(text) < 5
+      if (record.field == '评论数') return this.toNum(text) < 20
+      if (record.field == '评分') return this.toNum(text) < 4.8
+      if (record.field == '推广') return this.toNum(text) < 50 || this.toNum(text) > 150
+      if (record.field == '客单价') return this.toNum(text) < 12
+      if (record.field == '曝光量') return this.toNum(text) < 3000
+      if (record.field == '进店率') return this.toNum(text) < 8
+      if (record.field == '下单率') return this.toNum(text) < 25
+      if (record.field == '下架产品量') return this.toNum(text) > 5
+      if (record.field == '下架产品量') return this.toNum(text) > 5
+      if (record.field == '商圈排名') return this.toNum(text) > 2
+      if (record.field == '延迟发单') return this.toNum(text) < 5
+      if (record.field == '评论/单量') return this.toNum(text) < 20
+      if (record.field == '成本比例') return this.toNum(text) > 50
     }
   },
   mounted() {
-    this.scrollY = document.body.clientHeight - 124
+    this.scrollY = document.body.clientHeight - 126
     this.fetch_fresh_shop()
   },
   watch: {
     $route(route) {
-      if (route.name == 'freshshop') {
+      if (route.name == 'fresh-shop') {
         this.fetch_fresh_shop()
       }
     }
