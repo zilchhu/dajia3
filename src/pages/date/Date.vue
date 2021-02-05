@@ -1,6 +1,7 @@
 <template lang="pug">
 div
-  a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :row-selection="rowSelection" :loading="tableLoading" @expand="expand" :expandRowByClick="true" :expandIconAsCell="false" :expandIconColumnIndex="-1" :pagination="{showSizeChanger: true, defaultPageSize: 30}" size="small" :scroll="{x: scrollX, y: scrollY}")
+  a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :row-selection="rowSelection" :loading="tableLoading" @expand="expand" :expandRowByClick="true" :expandIconAsCell="false" :expandIconColumnIndex="-1" :pagination="{showSizeChanger: true, defaultPageSize}"
+    @change="table_change" size="small" :scroll="{x: scrollX, y: scrollY}")
     template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
       a-row(type="flex")
         a-col(flex="auto")
@@ -99,7 +100,8 @@ export default {
       scrollY: 900,
       selectedRowKeys: [],
       editRowKeysModal: false,
-      editedRowKeys: ''
+      editedRowKeys: '',
+      defaultPageSize: 30
     }
   },
   components: {
@@ -520,15 +522,20 @@ export default {
     onSelectChange(selectedRowKeys) {
       this.selectedRowKeys = selectedRowKeys
       this.editedRowKeys = distinct(`${this.editRowKeys}\n${this.selectedRowKeys.join('\n')}`).join('\n')
+    },
+    table_change(pagination) {
+      localStorage.setItem('date/defaultPageSize', pagination.pageSize)
     }
   },
-  mounted() {
+  created() {
     this.scrollY = document.body.clientHeight - 126
+    this.defaultPageSize = +localStorage.getItem('date/defaultPageSize') || 30
     this.getTableByDate()
   },
   watch: {
     $route(route) {
       if (route.name == 'date') {
+        this.defaultPageSize = +localStorage.getItem('date/defaultPageSize') || 30
         this.getTableByDate()
       }
     }

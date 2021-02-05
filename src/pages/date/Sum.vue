@@ -1,6 +1,8 @@
 <template lang="pug">
 a-table(:columns="sum_columns" :data-source="sum_data.shops" rowKey="real_shop" :loading="spinning" 
-  :pagination="{showSizeChanger: true, defaultPageSize: 20, pageSizeOptions: ['20', '40', '80', '160'], size: 'small'}" size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
+  :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['20', '40', '80', '160'], size: 'small'}" 
+  @change="table_change"
+  size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     a-row(type="flex")
       a-col(flex="auto")
@@ -38,7 +40,6 @@ dayjs.updateLocale('zh-cn', {
   weekdays: ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
 })
 
-
 export default {
   name: 'sum',
   data() {
@@ -48,7 +49,8 @@ export default {
         shops: []
       },
       spinning: false,
-      scrollY: 900
+      scrollY: 900,
+      defaultPageSize: 40
     }
   },
   computed: {
@@ -88,7 +90,7 @@ export default {
         }
       ]
       let dates_cols = this.sum_data.dates.map(v => ({
-        title: `${v} ${dayjs.weekdays()[dayjs(v+'', 'YYYYMMDD').day()]}`,
+        title: `${v} ${dayjs.weekdays()[dayjs(v + '', 'YYYYMMDD').day()]}`,
         children: [
           {
             title: '营业收入',
@@ -173,22 +175,26 @@ export default {
           message.error(e)
           this.spinning = false
         })
+    },
+    table_change(pagination) {
+      localStorage.setItem('sum/defaultPageSize', pagination.pageSize)
     }
   },
-  mounted() {
+  created() {
     this.scrollY = document.body.clientHeight - 166
+    this.defaultPageSize = +localStorage.getItem('sum/defaultPageSize') || 40
     this.fetch_sum_single()
   },
   watch: {
     $route(route) {
       if (route.name == 'sum') {
+        this.defaultPageSize = +localStorage.getItem('sum/defaultPageSize') || 40
         this.fetch_sum_single()
       }
     }
   }
 }
 </script>
-
 
 <style lang="sass" scoped>
 .cell

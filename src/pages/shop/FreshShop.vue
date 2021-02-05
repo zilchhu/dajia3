@@ -1,6 +1,8 @@
 <template lang="pug">
 a-table(:columns="fresh_shop_columns" :data-source="fresh_shop_data.shops" rowKey="key" :loading="spinning" 
-  :pagination="{showSizeChanger: true, defaultPageSize: 36, pageSizeOptions: ['36', '72', '144', '288'], size: 'small'}" size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
+  :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['36', '72', '144', '288'], size: 'small'}" 
+  @change="table_change"
+  size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     a-row(type="flex")
       a-col(flex="auto")
@@ -49,7 +51,8 @@ export default {
         shops: []
       },
       spinning: false,
-      scrollY: 900
+      scrollY: 900,
+      defaultPageSize: 36
     }
   },
   computed: {
@@ -66,10 +69,7 @@ export default {
             const obj = {
               children: (
                 <div
-                  onclick={() =>
-                    this.$router.push({ name: 'shop', params: { shopid: record.wmPoiId } })
-                    
-                  }
+                  onclick={() => this.$router.push({ name: 'shop', params: { shopid: record.wmPoiId } })}
                   style="writing-mode: vertical-lr; white-space: pre-wrap; color: rgba(0,0,0,.65);"
                 >
                   {text}
@@ -162,15 +162,20 @@ export default {
       if (record.field == '延迟发单') return this.toNum(text) < 5
       if (record.field == '评论/单量') return this.toNum(text) < 20
       if (record.field == '成本比例') return this.toNum(text) > 50
+    },
+    table_change(pagination) {
+      localStorage.setItem('freshShop/defaultPageSize', pagination.pageSize)
     }
   },
-  mounted() {
+  created() {
     this.scrollY = document.body.clientHeight - 126
+    this.defaultPageSize = +localStorage.getItem('freshShop/defaultPageSize') || 36
     this.fetch_fresh_shop()
   },
   watch: {
     $route(route) {
       if (route.name == 'fresh-shop') {
+        this.defaultPageSize = +localStorage.getItem('freshShop/defaultPageSize') || 36
         this.fetch_fresh_shop()
       }
     }
