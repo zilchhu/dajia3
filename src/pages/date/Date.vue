@@ -142,6 +142,7 @@ export default {
           dataIndex: 'real_shop',
           width: 100,
           slots: { filterDropdown: 'filterDropdown' },
+          defaultFilteredValue: this.$route.query.real_shop ? this.$route.query.real_shop.split(',') : [] ,
           onFilter: (value, record) => record.real_shop == value
         },
         {
@@ -535,6 +536,7 @@ export default {
   watch: {
     $route(route) {
       if (route.name == 'date') {
+        
         this.defaultPageSize = +localStorage.getItem('date/defaultPageSize') || 30
         this.getTableByDate()
       }

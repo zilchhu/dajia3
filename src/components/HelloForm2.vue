@@ -1,5 +1,5 @@
 <template lang="pug">
-a-table(v-if="data && data.length > 0" :columns="columns" :data-source="data" rowKey="q" :scroll={x: scrollX} :pagination="false" size="small")
+a-table(v-if="data && data.length > 0" :columns="columns" :data-source="data" rowKey="q" :showHeader="false" :scroll={x: scrollX} :pagination="false" size="small")
   template(#name="{text, record}")
     a-input(:value="text" @change="e => handleChange(e.target.value, record, 'name')")
   template(#a="{text, record}")

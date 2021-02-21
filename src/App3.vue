@@ -67,8 +67,14 @@ export default {
 
 <style lang="sass">
 ::-webkit-scrollbar
+  display: block
   width: 10px
   height: 10px
+  background: rgba(241,241,241,.7)
+  overflow: auto
+
+::-webkit-scrollbar-thumb
+  background: rgba(168,168,168,.6)
 
 .ant-table-pagination.ant-pagination
   margin: 6px 0 !important

@@ -18,6 +18,8 @@ a-table(:columns="sum_columns" :data-source="sum_data.shops" rowKey="real_shop" 
   template(#cost_sum_ratio="{text, record}")
     .cell(:class="{unsatisfied: text ? toNum(text) > 50 : false}") {{text}}
 
+  template(#real_shop="{text, record}")
+    router-link.cell(:to="{ name: 'date', params: { day: 1 }, query: {real_shop: text} }" style="color: rgba(0, 0, 0, 0.65);") {{text}}
 </template>
 
 <script>
@@ -84,7 +86,7 @@ export default {
           dataIndex: 'real_shop',
           key: 'real_shop',
           width: 120,
-          slots: { filterDropdown: 'filterDropdown' },
+          slots: { filterDropdown: 'filterDropdown', customRender: 'real_shop' },
           fixed: 'left',
           onFilter: (value, record) => record.real_shop == value
         }
@@ -133,7 +135,39 @@ export default {
             width: 100,
             slots: { customRender: 'cost_sum_ratio' },
             sorter: (a, b) => this.toNum(a[`cost_sum_ratio_${v}`]) - this.toNum(b[`cost_sum_ratio_${v}`])
-          }
+          },
+          {
+            title: '人工成本',
+            dataIndex: `labor_cost_${v}`,
+            key: `labor_cost_${v}`,
+            align: 'right',
+            width: 80,
+            sorter: (a, b) => this.toNum(a[`labor_cost_${v}`]) - this.toNum(b[`labor_cost_${v}`])
+          },
+          {
+            title: '水电成本',
+            dataIndex: `water_electr_cost_${v}`,
+            key: `water_electr_cost_${v}`,
+            align: 'right',
+            width: 80,
+            sorter: (a, b) => this.toNum(a[`water_electr_cost_${v}`]) - this.toNum(b[`water_electr_cost_${v}`])
+          },
+          {
+            title: '好评返现',
+            dataIndex: `cashback_cost_${v}`,
+            key: `cashback_cost_${v}`,
+            align: 'right',
+            width: 80,
+            sorter: (a, b) => this.toNum(a[`cashback_cost_${v}`]) - this.toNum(b[`cashback_cost_${v}`])
+          },
+          {
+            title: '运营成本',
+            dataIndex: `oper_cost_${v}`,
+            key: `oper_cost_${v}`,
+            align: 'right',
+            width: 80,
+            sorter: (a, b) => this.toNum(a[`oper_cost_${v}`]) - this.toNum(b[`oper_cost_${v}`])
+          },
         ]
       }))
       console.log([...fiexed_cols, ...dates_cols])
