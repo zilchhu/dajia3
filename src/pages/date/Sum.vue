@@ -141,7 +141,7 @@ export default {
             dataIndex: `labor_cost_${v}`,
             key: `labor_cost_${v}`,
             align: 'right',
-            width: 80,
+            width: 100,
             sorter: (a, b) => this.toNum(a[`labor_cost_${v}`]) - this.toNum(b[`labor_cost_${v}`])
           },
           {
@@ -149,7 +149,7 @@ export default {
             dataIndex: `water_electr_cost_${v}`,
             key: `water_electr_cost_${v}`,
             align: 'right',
-            width: 80,
+            width: 100,
             sorter: (a, b) => this.toNum(a[`water_electr_cost_${v}`]) - this.toNum(b[`water_electr_cost_${v}`])
           },
           {
@@ -157,7 +157,7 @@ export default {
             dataIndex: `cashback_cost_${v}`,
             key: `cashback_cost_${v}`,
             align: 'right',
-            width: 80,
+            width: 100,
             sorter: (a, b) => this.toNum(a[`cashback_cost_${v}`]) - this.toNum(b[`cashback_cost_${v}`])
           },
           {
@@ -165,7 +165,7 @@ export default {
             dataIndex: `oper_cost_${v}`,
             key: `oper_cost_${v}`,
             align: 'right',
-            width: 80,
+            width: 100,
             sorter: (a, b) => this.toNum(a[`oper_cost_${v}`]) - this.toNum(b[`oper_cost_${v}`])
           },
         ]

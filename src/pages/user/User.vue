@@ -121,6 +121,7 @@ export default {
       return `动态 ${t.count_a}/${t.count_shop}`
     },
     tab_responsibles() {
+      console.log(this.user)
       let t = this.user.counts.responsibles
       return `负责 ${t.count_a}/${t.count_q}/${t.count_shop_a}/${t.count_shop}`
     },
@@ -150,7 +151,7 @@ export default {
       new User(this.username, parseInt(this.date) + 1)
         .single()
         .then(res => {
-          this.user = res
+          if(res && Object.keys(res).length >= 1) this.user = res
           this.spinning = false
         })
         .catch(e => {
@@ -163,7 +164,7 @@ export default {
       new User(this.username, parseInt(this.date))
         .single_acts()
         .then(res => {
-          this.activities = res
+          if(res && Object.keys(res).length >= 1) this.activities = res
           this.spinning = false
         })
         .catch(e => {
