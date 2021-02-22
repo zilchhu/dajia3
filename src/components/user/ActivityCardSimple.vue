@@ -5,12 +5,7 @@ a-list-item(:key="activity.time")
       p.title {{title}}
       .title-meta
         div
-          span.num {{title_num}}
-          span.type {{`${activity.q} ${title_value}`}}
-          router-link.name(:to="{name: 'user', params: {username: title_name, date: 0}}") {{title_name}}
-          span.time {{title_time}}
-          span.time {{title_weekday}}
-          router-link.time.time-href(:to="{name: 'user', params: {username: title_name, date: time2date}}") {{title_time_}}
+          i.num {{title_num}}
         div
           a-button(size="small" type="link" @click="history_click") history
           a-button(size="small" type="link" @click="detail_click") detail
@@ -47,7 +42,7 @@ import ShopData from '../shop/ShopData'
 import ShopHistory from '../shop/ShopHistory'
 
 export default {
-  name: 'activity-card',
+  name: 'activity-card-simple',
   components: {
     ShopForm,
     ShopData,
@@ -66,7 +61,7 @@ export default {
   },
   computed: {
     title() {
-      return this.activity.a
+      return ''
     },
     shop_meta() {
       return {
@@ -77,22 +72,10 @@ export default {
       }
     },
     title_num() {
-      return `#${this.activity.index + 1}`
+      return `*待优化*`
     },
     title_name() {
-      return this.activity.name
-    },
-    title_time() {
-      return dayjs().from(this.activity.time_parsed)
-    },
-    title_time_() {
-      return dayjs(this.activity.time_parsed).format('MM/DD HH:mm:ss')
-    },
-    title_weekday() {
-      return dayjs.weekdays()[dayjs(this.activity.time_parsed).day()]
-    },
-    title_value() {
-      return this.activity.qs.find(q => q.type == this.activity.q).value.toFixed(2)
+      return this.activity.person
     },
     shop_data() {
       return {
@@ -123,16 +106,15 @@ export default {
       }
     },
     shop_as() {
-      return this.activity.as.map(a => ({
-        ...a,
-        value: this.activity.qs.find(q => q.type == a.q).value,
-        threshold: this.activity.qs.find(q => q.type == a.q).threshold
+      return this.activity.qs.map(q => ({
+        ...q,
+        q: q.type,
+        name: this.activity.person,
+        a: '',
+        operation: 'save',
+        time: '',
+        time_parsed: ''
       }))
-    },
-    time2date() {
-      return dayjs()
-        .startOf('day')
-        .diff(dayjs(this.activity.time_parsed).startOf('day'), 'day')
     }
   },
   methods: {
@@ -149,7 +131,7 @@ export default {
         this.shop_data_show = false
         this.shop_history_show = false
         this.last_shop_route = route
-      } else if(route.name == 'user' && route.path != this.last_user_route.path) {
+      } else if (route.name == 'user' && route.path != this.last_user_route.path) {
         this.shop_data_show = false
         this.shop_history_show = false
         this.last_user_route = route

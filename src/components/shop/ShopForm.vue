@@ -128,6 +128,13 @@ export default {
   },
   created() {
     this.debounce_save = this.debounce(this.save)
+  },
+  watch: {
+    as(n) {
+      this.tags = n
+        .map(a => ({ ...a, checked: false, saved: a.a.trim().length > 0 }))
+        .map(a => ({ ...a, tag_color: a.saved ? '#91d5ff99' : '#fefefe' }))
+    }
   }
 }
 </script>
