@@ -12,4 +12,8 @@ export default class Shop {
   single_history(oneday) {
     return instance.get(urls.shop.history(this.shopid), { params: { oneday } })
   }
+
+  shops(platform) {
+    return instance.get(urls.shop.shops(platform))
+  }
 }

@@ -20,6 +20,9 @@ const urls = {
     },
     history(shopid) {
       return `/shop_history/${shopid}`
+    },
+    shops(platform) {
+      return `/shops/${platform}`
     }
   },
   plan: {

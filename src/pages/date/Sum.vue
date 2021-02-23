@@ -48,6 +48,7 @@ export default {
     return {
       sum_data: {
         dates: [],
+        months: [],
         shops: []
       },
       spinning: false,
@@ -137,6 +138,14 @@ export default {
             sorter: (a, b) => this.toNum(a[`cost_sum_ratio_${v}`]) - this.toNum(b[`cost_sum_ratio_${v}`])
           },
           {
+            title: '房租成本',
+            dataIndex: `rent_cost_${v}`,
+            key: `rent_cost_${v}`,
+            align: 'right',
+            width: 100,
+            sorter: (a, b) => this.toNum(a[`rent_cost_${v}`]) - this.toNum(b[`rent_cost_${v}`])
+          },
+          {
             title: '人工成本',
             dataIndex: `labor_cost_${v}`,
             key: `labor_cost_${v}`,
@@ -168,10 +177,29 @@ export default {
             width: 100,
             sorter: (a, b) => this.toNum(a[`oper_cost_${v}`]) - this.toNum(b[`oper_cost_${v}`])
           },
+          {
+            title: '利润',
+            dataIndex: `profit_${v}`,
+            key: `profit_${v}`,
+            align: 'right',
+            width: 100,
+            sorter: (a, b) => this.toNum(a[`profit_${v}`]) - this.toNum(b[`profit_${v}`])
+          }
         ]
       }))
-      console.log([...fiexed_cols, ...dates_cols])
-      return [...fiexed_cols, ...dates_cols]
+      let month_col = {
+        title: '月 利 润',
+        children: this.sum_data.months.map(v => ({
+          title: v,
+          dataIndex: `profit_month_${v}`,
+          key: `profit_month_${v}`,
+          align: 'right',
+          width: 100,
+          sorter: (a, b) => this.toNum(a[`profit_month_${v}`]) - this.toNum(b[`profit_month_${v}`])
+        }))
+      }
+      console.log([...fiexed_cols, month_col, ...dates_cols])
+      return [...fiexed_cols, month_col, ...dates_cols]
     },
     scrollX() {
       let x = this.reduce_width(this.sum_columns)
