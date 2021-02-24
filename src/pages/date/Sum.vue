@@ -53,7 +53,8 @@ export default {
       },
       spinning: false,
       scrollY: 900,
-      defaultPageSize: 40
+      defaultPageSize: 40,
+      last_sum_route: { path: '/sum/7' }
     }
   },
   computed: {
@@ -251,7 +252,10 @@ export default {
     $route(route) {
       if (route.name == 'sum') {
         this.defaultPageSize = +localStorage.getItem('sum/defaultPageSize') || 40
-        this.fetch_sum_single()
+        if (route.path != this.last_sum_route.path) {
+          this.fetch_sum_single()
+        }
+        this.last_sum_route = route
       }
     }
   }

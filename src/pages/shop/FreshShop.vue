@@ -52,7 +52,8 @@ export default {
       },
       spinning: false,
       scrollY: 900,
-      defaultPageSize: 36
+      defaultPageSize: 36,
+      last_fresh_shop_route: {path: '/freshshop'}
     }
   },
   computed: {
@@ -176,7 +177,10 @@ export default {
     $route(route) {
       if (route.name == 'fresh-shop') {
         this.defaultPageSize = +localStorage.getItem('freshShop/defaultPageSize') || 36
-        this.fetch_fresh_shop()
+        if (route.path != this.last_fresh_shop_route.path) {
+          this.fetch_fresh_shop()
+        }
+        this.last_fresh_shop_route = route
       }
     }
   }

@@ -6,6 +6,13 @@
         router-link(:to="{name: 'tools-fresh-mt'}") 美团
       a-menu-item(key="new-shop-setting:elm") 
         router-link(:to="{name: 'tools-fresh-elm'}") 饿了么
+
+    a-sub-menu(key="info-setting" title="信息录入")
+      a-menu-item(key="add-new-shop") 
+        router-link(:to="{name: 'tools-add-fresh'}") 新店
+      a-menu-item(key="add-fengniao") 
+        router-link(:to="{name: 'tools-add-fengniao'}") 蜂鸟
+
     a-menu-item(key="tests:sync/del") 
       router-link(:to="{name: 'tools-tests'}") 测试产品
   router-view
@@ -16,7 +23,7 @@ export default {
   name: 'tools',
   data() {
     return {
-      menu_open_keys: ['new-shop-setting']
+      menu_open_keys: ['new-shop-setting', 'info-setting']
     }
   }
 }

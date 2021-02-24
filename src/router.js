@@ -5,11 +5,13 @@ import Shop from './pages/shop/Shop'
 import FreshShop from './pages/shop/FreshShop'
 import Tools from './pages/tools/Tools'
 import ToolsAddFresh from './pages/tools/ToolsAddFresh'
+import ToolsAddFengniao from './pages/tools/ToolsAddFengniao'
 import ToolsFreshMt from './pages/tools/ToolsFreshMt'
 import ToolsFreshElm from './pages/tools/ToolsFreshElm'
 import ToolsTests from './pages/tools/ToolsTests'
 import Date from './pages/date/Date'
 import Sum from './pages/date/Sum'
+import Perf from './pages/date/Perf'
 import { createWebHistory, createRouter } from 'vue-router'
 
 const routes = [
@@ -22,6 +24,7 @@ const routes = [
     name: 'tools',
     children: [
       { path: 'add/fresh', name: 'tools-add-fresh', component: ToolsAddFresh },
+      { path: 'add/fengniao', name: 'tools-add-fengniao', component: ToolsAddFengniao },
       { path: 'fresh/mt', name: 'tools-fresh-mt', component: ToolsFreshMt },
       { path: 'fresh/elm', name: 'tools-fresh-elm', component: ToolsFreshElm },
       { path: 'tests', name: 'tools-tests', component: ToolsTests }
@@ -29,6 +32,7 @@ const routes = [
   },
   {path: '/date/:day', name: 'date', component: Date},
   {path: '/sum/:day', name: 'sum', component: Sum},
+  {path: '/perf/:day', name: 'perf', component: Perf},
   {path: '/freshshop', name: 'fresh-shop', component: FreshShop},
   { path: '/', name: 'index', redirect: '/date/1' }
 ]

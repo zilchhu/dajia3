@@ -16,4 +16,16 @@ export default class Shop {
   shops(platform) {
     return instance.get(urls.shop.shops(platform))
   }
+
+  real() {
+    return instance.get(urls.shop.real)
+  }
+
+  addNewShop(data) {
+    return instance.post(urls.shop.addNewShop, data)
+  }
+
+  addFengniao(data) {
+    return instance.post(urls.shop.addFengniao, data)
+  }
 }

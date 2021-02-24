@@ -23,7 +23,10 @@ const urls = {
     },
     shops(platform) {
       return `/shops/${platform}`
-    }
+    },
+    real: '/shops/real',
+    addNewShop: '/addNewShop',
+    addFengniao: '/addFengniao'
   },
   plan: {
     multi: 'plans'
@@ -31,6 +34,11 @@ const urls = {
   fresh: {
     mt: '/fresh/mt',
     elm: '/fresh/elm'
+  },
+  perf: {
+    base(date = 31) {
+      return `/perf/${date}`
+    }
   },
   tests: {
     sync: '/tests/sync',

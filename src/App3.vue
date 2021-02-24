@@ -8,6 +8,8 @@ div
         router-link(:to="{ name: 'sum', params: { day: 7 }}") 营推
       a-menu-item(key="fresh-shop")
         router-link(:to="{ name: 'fresh-shop' }") 新店
+      a-menu-item(key="perf:31")
+        router-link(:to="{ name: 'perf', params: { day: 31 }}") 绩效
 
     a-menu-item(key="date")
       a-date-picker(v-model:value="selected_date" @change="date_change" :disabledDate="disabledDate" :allowClear="false" size="small")
