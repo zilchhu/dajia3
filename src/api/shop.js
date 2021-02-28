@@ -28,4 +28,20 @@ export default class Shop {
   addFengniao(data) {
     return instance.post(urls.shop.addFengniao, data)
   }
+
+  delFengniao(data) {
+    return instance.post(urls.shop.delFengniao, data)
+  }
+
+  fengniao() {
+    return instance.get(urls.shop.fengniao)
+  }
+
+  prob(type, platform) {
+    return instance.get(urls.shop.prob.base(type, platform, this.shopid))
+  }
+
+  order(platform, activi, counts) {
+    return instance.get(urls.shop.order.base(this.shopid, platform), { params: { activi, counts } })
+  }
 }

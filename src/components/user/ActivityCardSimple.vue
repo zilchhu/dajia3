@@ -126,7 +126,7 @@ export default {
     }
   },
   watch: {
-    $route(route) {
+   activity(route) {
       if (route.name == 'shop' && route.path != this.last_shop_route.path) {
         this.shop_data_show = false
         this.shop_history_show = false

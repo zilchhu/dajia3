@@ -18,6 +18,8 @@ div
       router-link.cell(:to="{name: 'shop', params: {shopid: text}}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
     template(#person="{text, record}")
       router-link.cell(:to="{ name: 'user', params: { username: text || '-', date: 0 }}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
+    template(#cost_ratio="{text, record}")
+      .cell(:class="{unsatisfied: rules2fn[record.platform]['cost_ratio'](text)}" @click.stop="() => costRatioClick(text, record)" style="cursor: pointer;") {{text}}
 
     template(#expandedRowRender="{record}")
       a-collapse(v-model:activeKey="collapseKey" :bordered="false")
@@ -64,6 +66,9 @@ div
   a-modal(v-model:visible="editRowKeysModal" :footer="null" centered :width="540")
     a-textarea(v-model:value="editedRowKeys" placeholder="导入门店ID（慎用）" :autoSize="{minRows: 10, maxRows: 10}")
     all-shop-form(:shop_metas="selectedShopMetas")
+
+  a-modal(v-model:visible="probClickModal" :footer="null" centered :width="1080")
+    shop-problem(:shop_meta="shop_meta")
         
 </template>
 
@@ -72,6 +77,8 @@ import { message } from 'ant-design-vue'
 import { getTableByDate, getTableByShop } from '../../api'
 import HelloForm2 from '../../components/HelloForm2'
 import AllShopForm from '../../components/shop/AllShopForm'
+import ShopProblem from '../../components/shop/ShopProblem'
+
 function distinct(s) {
   let ns = s.trim().split('\n')
   ns = ns.map(v => v.trim())
@@ -95,18 +102,21 @@ export default {
       ],
       mtRules: [['income', '<', 1500]],
       elmRules: [['income', '<', 1000]],
-      ruleIdx: ['income', 'income_avg', 'consume_ratio', 'cost_ratio', 'settlea_30'],
+      ruleIdx: ['income', 'income_avg', 'consume_ratio', 'settlea_30'],
       collapseKey: [],
       scrollY: 900,
       selectedRowKeys: [],
       editRowKeysModal: false,
+      probClickModal: false,
       editedRowKeys: '',
-      defaultPageSize: 30
+      defaultPageSize: 30,
+      shop_meta: { shopId: null, platform: null }
     }
   },
   components: {
     HelloForm2,
-    AllShopForm
+    AllShopForm,
+    ShopProblem
   },
   computed: {
     tablePersonColFilters() {
@@ -142,7 +152,7 @@ export default {
           dataIndex: 'real_shop',
           width: 100,
           slots: { filterDropdown: 'filterDropdown' },
-          defaultFilteredValue: this.$route.query.real_shop ? this.$route.query.real_shop.split(',') : [] ,
+          defaultFilteredValue: this.$route.query.real_shop ? this.$route.query.real_shop.split(',') : [],
           onFilter: (value, record) => record.real_shop == value
         },
         {
@@ -526,6 +536,13 @@ export default {
     },
     table_change(pagination) {
       localStorage.setItem('date/defaultPageSize', pagination.pageSize)
+    },
+    shopid_click(text) {
+      this.$router.push({ name: 'shop', params: { shopid: text } })
+    },
+    costRatioClick(_, record) {
+      this.shop_meta = { shopId: record.shop_id, platform: record.platform == '美团' ? 'mt' : 'elm' }
+      this.probClickModal = true
     }
   },
   created() {
@@ -536,7 +553,6 @@ export default {
   watch: {
     $route(route) {
       if (route.name == 'date') {
-        
         this.defaultPageSize = +localStorage.getItem('date/defaultPageSize') || 30
         this.getTableByDate()
       }

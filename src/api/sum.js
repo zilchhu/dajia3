@@ -8,4 +8,8 @@ export default class Sum {
   single() {
     return instance.get(urls.sum.base(this.date))
   }
+
+  sum2() {
+    return instance.get(urls.sum.sum2)
+  }
 }

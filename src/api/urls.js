@@ -11,7 +11,8 @@ const urls = {
   sum: {
     base(date) {
       return `/sum/${date}`
-    }
+    },
+    sum2: '/sum2'
   },
   fresh_shop: '/fresh',
   shop: {
@@ -26,7 +27,19 @@ const urls = {
     },
     real: '/shops/real',
     addNewShop: '/addNewShop',
-    addFengniao: '/addFengniao'
+    addFengniao: '/addFengniao',
+    fengniao: '/fengniao',
+    delFengniao: '/delFengniao',
+    prob: {
+      base(type, platform, shopId) {
+        return `/prob/${type}/${platform}/${shopId}`
+      }
+    },
+    order: {
+      base(id, platform) {
+        return `/order/${platform}/${id}`
+      }
+    }
   },
   plan: {
     multi: 'plans'

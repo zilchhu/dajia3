@@ -12,14 +12,17 @@
         a-input(v-model:value="formState.shopName" placeholder="请输入门店名")
 
       a-form-item(label="账号")
-        a-input(v-model:value="formState.loginName" placeholder="请输入账号")
+        a-auto-complete(v-model:value="formState.loginName" placeholder="请输入账号" @change="accountChange")
+          template(#dataSource)
+            a-select-option(v-for="login in fengniaoLogins" :key="login") {{login}}
 
       a-form-item(label="密码")
         a-input(v-model:value="formState.password" placeholder="请输入密码")
       
       a-form-item(:wrapper-col="{ span: 14, offset: 6 }")
         a-button(type="primary" :loading="loading" @click="onSubmit") 保存
-
+        a-button(:loading="loading" @click="onDel" style='margin-left: 10px;') 删除
+       
     p {{res}}
 
 </template>
@@ -39,10 +42,41 @@ export default {
         password: ''
       },
       loading: false,
-      res: ''
+      res: '',
+      fengniaos: []
+    }
+  },
+  computed: {
+    fengniaoLogins() {
+      return Array.from(new Set(this.fengniaos.map(v => v.loginName)))
     }
   },
   methods: {
+    fetchFengniao() {
+      this.loading = false
+      new Shop()
+        .fengniao()
+        .then(res => {
+          this.fengniaos = res
+          this.loading = false
+        })
+        .catch(err => {
+          message.error(err)
+          this.loading = false
+        })
+    },
+    accountChange(value) {
+      let f = this.fengniaos.find(v => v.loginName == value)
+      if (f) {
+        this.formState.shopId = f.shop_id
+        this.formState.shopName = f.shop_name
+        this.formState.password = f.password
+      } else {
+        this.formState.shopId = ''
+        this.formState.shopName = ''
+        this.formState.password = ''
+      }
+    },
     onSubmit() {
       console.log(this.formState)
       this.loading = true
@@ -56,7 +90,24 @@ export default {
           message.error(err)
           this.loading = false
         })
+    },
+    onDel() {
+      console.log(this.formState)
+      this.loading = true
+      new Shop()
+        .delFengniao(this.formState)
+        .then(res => {
+          this.res = res
+          this.loading = false
+        })
+        .catch(err => {
+          message.error(err)
+          this.loading = false
+        })
     }
+  },
+  created() {
+    this.fetchFengniao()
   }
 }
 </script>

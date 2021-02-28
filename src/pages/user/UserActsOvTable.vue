@@ -55,7 +55,7 @@ export default {
           title: '店名',
           dataIndex: 'shop_name',
           key: 'shop_name',
-          width: 120,
+          width: 160,
           slots: { filterDropdown: 'filterDropdown' },
           filterMultiple: true,
           fixed: 'left',

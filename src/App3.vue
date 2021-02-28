@@ -5,7 +5,9 @@ div
       template(#title)
         span aggre
       a-menu-item(key="sum:3")
-        router-link(:to="{ name: 'sum', params: { day: 7 }}") 营推
+        router-link(:to="{ name: 'sum', params: { day: 7 }}") 营推(天)
+      a-menu-item(key="sum2")
+        router-link(:to="{ name: 'sum2' }") 营推(月)
       a-menu-item(key="fresh-shop")
         router-link(:to="{ name: 'fresh-shop' }") 新店
       a-menu-item(key="perf:31")

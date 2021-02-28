@@ -11,6 +11,7 @@ import ToolsFreshElm from './pages/tools/ToolsFreshElm'
 import ToolsTests from './pages/tools/ToolsTests'
 import Date from './pages/date/Date'
 import Sum from './pages/date/Sum'
+import Sum2 from './pages/date/Sum2'
 import Perf from './pages/date/Perf'
 import { createWebHistory, createRouter } from 'vue-router'
 
@@ -32,6 +33,7 @@ const routes = [
   },
   {path: '/date/:day', name: 'date', component: Date},
   {path: '/sum/:day', name: 'sum', component: Sum},
+  {path: '/sum2', name: 'sum2', component: Sum2},
   {path: '/perf/:day', name: 'perf', component: Perf},
   {path: '/freshshop', name: 'fresh-shop', component: FreshShop},
   { path: '/', name: 'index', redirect: '/date/1' }
