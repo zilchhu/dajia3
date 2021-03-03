@@ -37,6 +37,30 @@ export default class Shop {
     return instance.get(urls.shop.fengniao)
   }
 
+  addDada(data) {
+    return instance.post(urls.shop.addDada, data)
+  }
+
+  delDada(data) {
+    return instance.post(urls.shop.delDada, data)
+  }
+
+  dada() {
+    return instance.get(urls.shop.dada)
+  }
+
+  addMyt(data) {
+    return instance.post(urls.shop.addMyt, data)
+  }
+
+  delMyt(data) {
+    return instance.post(urls.shop.delMyt, data)
+  }
+
+  myt() {
+    return instance.get(urls.shop.myt)
+  }
+
   prob(type, platform) {
     return instance.get(urls.shop.prob.base(type, platform, this.shopid))
   }

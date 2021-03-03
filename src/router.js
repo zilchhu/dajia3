@@ -6,6 +6,8 @@ import FreshShop from './pages/shop/FreshShop'
 import Tools from './pages/tools/Tools'
 import ToolsAddFresh from './pages/tools/ToolsAddFresh'
 import ToolsAddFengniao from './pages/tools/ToolsAddFengniao'
+import ToolsAddDada from './pages/tools/ToolsAddDada'
+import ToolsAddMyt from './pages/tools/ToolsAddMyt'
 import ToolsFreshMt from './pages/tools/ToolsFreshMt'
 import ToolsFreshElm from './pages/tools/ToolsFreshElm'
 import ToolsTests from './pages/tools/ToolsTests'
@@ -26,6 +28,8 @@ const routes = [
     children: [
       { path: 'add/fresh', name: 'tools-add-fresh', component: ToolsAddFresh },
       { path: 'add/fengniao', name: 'tools-add-fengniao', component: ToolsAddFengniao },
+      { path: 'add/dada', name: 'tools-add-dada', component: ToolsAddDada },
+      { path: 'add/myt', name: 'tools-add-myt', component: ToolsAddMyt },
       { path: 'fresh/mt', name: 'tools-fresh-mt', component: ToolsFreshMt },
       { path: 'fresh/elm', name: 'tools-fresh-elm', component: ToolsFreshElm },
       { path: 'tests', name: 'tools-tests', component: ToolsTests }

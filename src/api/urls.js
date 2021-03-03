@@ -30,6 +30,12 @@ const urls = {
     addFengniao: '/addFengniao',
     fengniao: '/fengniao',
     delFengniao: '/delFengniao',
+    addDada: '/addDada',
+    dada: '/dada',
+    delDada: '/delDada',
+    addMyt: '/addMyt',
+    myt: '/myt',
+    delMyt: '/delMyt',
     prob: {
       base(type, platform, shopId) {
         return `/prob/${type}/${platform}/${shopId}`
@@ -56,6 +62,11 @@ const urls = {
   tests: {
     sync: '/tests/sync',
     del: '/tests/del'
+  },
+  expo: {
+    perf(date) {
+      return `/绩效表${date}`
+    }
   }
 }
 

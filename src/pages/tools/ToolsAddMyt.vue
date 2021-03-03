@@ -1,20 +1,17 @@
 <template lang="pug">
 .add-fengniao
   .header
-    span.title add-fengniao
+    span.title add-myt
   .form
     a-form(:model="formState" :label-col="{span: 2, offset: 4}" labelAlign="left" :wrapper-col="{span: 14}")
 
       a-form-item(label="shopId")
         a-input(v-model:value="formState.shopId" placeholder="请输入shopId")
 
-      a-form-item(label="门店名")
-        a-input(v-model:value="formState.shopName" placeholder="请输入门店名")
-
       a-form-item(label="账号")
         a-auto-complete(v-model:value="formState.loginName" placeholder="请输入账号" @change="accountChange")
           template(#dataSource)
-            a-select-option(v-for="login in fengniaoLogins" :key="login") {{login}}
+            a-select-option(v-for="login in mytLogins" :key="login") {{login}}
 
       a-form-item(label="密码")
         a-input(v-model:value="formState.password" placeholder="请输入密码")
@@ -32,33 +29,32 @@ import Shop from '../../api/shop'
 import { message } from 'ant-design-vue'
 
 export default {
-  name: 'tools-add-fengniao',
+  name: 'tools-add-myt',
   data() {
     return {
       formState: {
         shopId: '',
-        shopName: '',
         loginName: '',
         password: ''
       },
       loading: false,
       loading_del: false,
       res: '',
-      fengniaos: []
+      myts: []
     }
   },
   computed: {
-    fengniaoLogins() {
-      return Array.from(new Set(this.fengniaos.map(v => v.loginName)))
+    mytLogins() {
+      return Array.from(new Set(this.myts.map(v => v.login_name)))
     }
   },
   methods: {
-    fetchFengniao() {
+    fetchMyt() {
       this.loading = false
       new Shop()
-        .fengniao()
+        .myt()
         .then(res => {
-          this.fengniaos = res
+          this.myts = res
           this.loading = false
         })
         .catch(err => {
@@ -67,14 +63,12 @@ export default {
         })
     },
     accountChange(value) {
-      let f = this.fengniaos.find(v => v.loginName == value)
+      let f = this.myts.find(v => v.login_name == value)
       if (f) {
         this.formState.shopId = f.shop_id
-        this.formState.shopName = f.shop_name
-        this.formState.password = f.password
+        this.formState.password = f.pw
       } else {
         this.formState.shopId = ''
-        this.formState.shopName = ''
         this.formState.password = ''
       }
     },
@@ -82,7 +76,7 @@ export default {
       console.log(this.formState)
       this.loading = true
       new Shop()
-        .addFengniao(this.formState)
+        .addMyt(this.formState)
         .then(res => {
           this.res = res
           this.loading = false
@@ -96,7 +90,7 @@ export default {
       console.log(this.formState)
       this.loading_del = true
       new Shop()
-        .delFengniao(this.formState)
+        .delMyt(this.formState)
         .then(res => {
           this.res = res
           this.loading_del = false
@@ -108,7 +102,7 @@ export default {
     }
   },
   created() {
-    this.fetchFengniao()
+    this.fetchMyt()
   }
 }
 </script>

@@ -1,21 +1,22 @@
 <template lang="pug">
-a-table(:columns="perf_columns" :data-source="perfs" rowKey="key" :loading="spinning" 
-  :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['40', '80', '160', '320'], size: 'small'}" 
-  @change="table_change"
-  size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
-  template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-    a-row(type="flex")
-      a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${240}px;`")
-          a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-      a-col(flex="60px")
-        a-button(type="link" @click="confirm") confirm
-        br
-        a-button(type="link" @click="clearFilters") reset
+div
+  a-table(:columns="perf_columns" :data-source="perfs" rowKey="key" :loading="spinning" 
+    :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['40', '80', '160', '320'], size: 'small'}" 
+    @change="table_change"
+    size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
+    template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
+      a-row(type="flex")
+        a-col(flex="auto")
+          a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${240}px;`")
+            a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
+        a-col(flex="60px")
+          a-button(type="link" @click="confirm") confirm
+          br
+          a-button(type="link" @click="clearFilters") reset
 
-  template(#person="{text, record}")
-      router-link(:to="{ name: 'user', params: { username: text || '-', date: 0 }}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
-
+    template(#person="{text, record}")
+        router-link(:to="{ name: 'user', params: { username: text || '-', date: 0 }}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
+  a.expo(:href="`http://192.168.3.3:9040/绩效表${yesterday}.xlsx`" target="_blank") export
 </template>
 
 <script>
@@ -52,6 +53,9 @@ export default {
   computed: {
     day() {
       return this.$route.params.day
+    },
+    yesterday() {
+      return dayjs().subtract(1, 'day').format('YYYYMMDD')
     },
     perf_columns() {
       let fiexed_cols = [
@@ -285,4 +289,11 @@ export default {
 
 .unsatisfied
   color: #fa541c
+
+.expo
+  display: block
+  position: absolute
+  bottom: 10px
+  left: 10px
+  z-index: 100
 </style>

@@ -16,7 +16,7 @@ let cols = [
   {
     title: '门店',
     dataIndex: 'shop_name',
-    width: 160
+    width: 180
   },
   {
     title: '商品数',

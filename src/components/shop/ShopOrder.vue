@@ -1,13 +1,13 @@
 <template lang="pug">
-a-table(:columns="cols" :data-source="data" rowKey="订单id" :loading="loading"
+a-table.ant-table-striped(:columns="cols" :data-source="data" rowKey="订单id" :loading="loading"
   :expandRowByClick="true" :pagination="false" :expandIconAsCell="false" :expandIconColumnIndex="-1"
-  size="small" style="width: 1000px;")
+  size="small" style="width: 1000px;" :rowClassName="(record, index) => (index % 2 === 1 ? 'table-striped' : null)")
   //- template(#expandedRowRender="{record}")
   //-   shop-data(:shop_data="omit(record, history_hiddens)" style="width: 936px;")
   template(#订单id="{text}")
     div(style="font-size: 10px") {{text}}
   template(#订单信息="{text}")
-    div(style="white-space: pre-wrap;") {{text}}
+    div(style="white-space: pre-wrap; font-size: 0.93em;") {{text}}
 </template>
 
 <script>
@@ -118,3 +118,9 @@ export default {
   }
 }
 </script>
+
+<style lang="sass" scoped>
+.ant-table-striped :deep(.table-striped) 
+  background-color: #fafafa
+
+</style>

@@ -1,7 +1,7 @@
 <template lang="pug">
 .add-fengniao
   .header
-    span.title add-fengniao
+    span.title add-dada
   .form
     a-form(:model="formState" :label-col="{span: 2, offset: 4}" labelAlign="left" :wrapper-col="{span: 14}")
 
@@ -12,12 +12,15 @@
         a-input(v-model:value="formState.shopName" placeholder="请输入门店名")
 
       a-form-item(label="账号")
-        a-auto-complete(v-model:value="formState.loginName" placeholder="请输入账号" @change="accountChange")
+        a-auto-complete(v-model:value="formState.username" placeholder="请输入账号" @change="accountChange")
           template(#dataSource)
-            a-select-option(v-for="login in fengniaoLogins" :key="login") {{login}}
+            a-select-option(v-for="login in dadaLogins" :key="login") {{login}}
 
       a-form-item(label="密码")
-        a-input(v-model:value="formState.password" placeholder="请输入密码")
+        a-input(v-model:value="formState.password" placeholder="请输入密码" @change="passwordChange")
+
+      a-form-item(label="MD5密码")
+        a-input(v-model:value="formState.password_md5")
       
       a-form-item(:wrapper-col="{ span: 14, offset: 6 }")
         a-button(type="primary" :loading="loading" @click="onSubmit") 保存
@@ -30,35 +33,37 @@
 <script>
 import Shop from '../../api/shop'
 import { message } from 'ant-design-vue'
+import md5 from 'md5'
 
 export default {
-  name: 'tools-add-fengniao',
+  name: 'tools-add-dada',
   data() {
     return {
       formState: {
         shopId: '',
         shopName: '',
-        loginName: '',
-        password: ''
+        username: '',
+        password: '',
+        password_md5: ''
       },
       loading: false,
       loading_del: false,
       res: '',
-      fengniaos: []
+      dadas: []
     }
   },
   computed: {
-    fengniaoLogins() {
-      return Array.from(new Set(this.fengniaos.map(v => v.loginName)))
+    dadaLogins() {
+      return Array.from(new Set(this.dadas.map(v => v.username)))
     }
   },
   methods: {
-    fetchFengniao() {
+    fetchDada() {
       this.loading = false
       new Shop()
-        .fengniao()
+        .dada()
         .then(res => {
-          this.fengniaos = res
+          this.dadas = res
           this.loading = false
         })
         .catch(err => {
@@ -67,22 +72,27 @@ export default {
         })
     },
     accountChange(value) {
-      let f = this.fengniaos.find(v => v.loginName == value)
+      let f = this.dadas.find(v => v.username == value)
       if (f) {
         this.formState.shopId = f.shop_id
         this.formState.shopName = f.shop_name
-        this.formState.password = f.password
+        this.formState.password = ''
+        this.formState.password_md5 = f.pw
       } else {
         this.formState.shopId = ''
         this.formState.shopName = ''
         this.formState.password = ''
+        this.formState.password_md5 = ''
       }
     },
+    passwordChange() {
+      this.formState.password_md5 = md5(this.formState.password)
+    },
     onSubmit() {
-      console.log(this.formState)
+      console.log({ ...this.formState, password: this.formState.password_md5 })
       this.loading = true
       new Shop()
-        .addFengniao(this.formState)
+        .addDada({ ...this.formState, password: this.formState.password_md5 })
         .then(res => {
           this.res = res
           this.loading = false
@@ -96,7 +106,7 @@ export default {
       console.log(this.formState)
       this.loading_del = true
       new Shop()
-        .delFengniao(this.formState)
+        .delDada(this.formState)
         .then(res => {
           this.res = res
           this.loading_del = false
@@ -108,7 +118,7 @@ export default {
     }
   },
   created() {
-    this.fetchFengniao()
+    this.fetchDada()
   }
 }
 </script>

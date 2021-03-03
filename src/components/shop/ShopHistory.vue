@@ -3,7 +3,7 @@ a-table(:columns="shopTableCols" :data-source="history" rowKey="date" :loading="
   :expandRowByClick="true" :pagination="{showSizeChanger: true, defaultPageSize: 10}" :expandIconAsCell="false" :expandIconColumnIndex="-1"
   :scroll="{x: shopScrollX}" size="small" style="width: 936px;")
   template(#expandedRowRender="{record}")
-    shop-data(:shop_data="omit(record, history_hiddens)" style="width: 936px;")
+    shop-data(:shop_data="omit(record, history_hiddens)" style="width: 936px;" :shop_meta="{shop_id: shopid, platform: record.platform}")
 </template>
 
 <script>

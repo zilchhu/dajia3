@@ -12,6 +12,10 @@
         router-link(:to="{name: 'tools-add-fresh'}") 新店
       a-menu-item(key="add-fengniao") 
         router-link(:to="{name: 'tools-add-fengniao'}") 蜂鸟
+      a-menu-item(key="add-dada") 
+        router-link(:to="{name: 'tools-add-dada'}") 达达
+      a-menu-item(key="add-myt") 
+        router-link(:to="{name: 'tools-add-myt'}") 麦芽田
 
     a-menu-item(key="tests:sync/del") 
       router-link(:to="{name: 'tools-tests'}") 测试产品

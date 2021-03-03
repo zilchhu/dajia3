@@ -1,21 +1,35 @@
 <template lang="pug">
-a-card(size="small")
-  a-card-grid(style="width: 115px; padding: 0 7px;" v-for="key in Object.keys(shop_data)" :key="key")
-    a-dropdown(:trigger="['contextmenu']")
-      a-statistic(:title="en2zh.get(key)" :value="shop_data[key]" valueStyle="font-size: 1em;")
-        template(#formatter="{value}")
-          p.truncate {{emptyVal(value)}}
-      template(#overlay)
-        a-menu
-          a-menu-item(key="1" @click="e => click(key)") item1
+div
+  a-card(size="small")
+    a-card-grid(style="width: 115px; padding: 0 7px;" v-for="key in Object.keys(shop_data)" :key="key")
+      a-dropdown(:trigger="['contextmenu']")
+        a-statistic(:title="en2zh.get(key)" :value="shop_data[key]" valueStyle="font-size: 1em;" @click="() => statisticClick(key)")
+          template(#formatter="{value}")
+            p.truncate {{emptyVal(value)}}
+        template(#overlay)
+          a-menu
+            a-menu-item(key="1" @click="e => click(key)") item1
+  a-modal(v-model:visible="probClickModal" :footer="null" centered :width="1080")
+    shop-problem(:shop_meta="{shopId: shop_meta.shop_id, platform: shop_meta.platform == '美团' ? 'mt' : 'elm'}")
 
 </template>
 
 <script>
+import ShopProblem from './ShopProblem'
+
 export default {
   name: 'shop-data',
+  components: {
+    ShopProblem
+  },
   props: {
-    shop_data: Object
+    shop_data: Object,
+    shop_meta: Object
+  },
+  data() {
+    return {
+      probClickModal: false
+    }
   },
   computed: {
     en2zh() {
@@ -60,6 +74,9 @@ export default {
     },
     click(key) {
       console.log(key)
+    },
+    statisticClick(key) {
+      if (key == 'cost') this.probClickModal = true
     }
   }
 }
