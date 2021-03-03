@@ -181,6 +181,13 @@ export default {
           onFilter: (value, record) => record.platform == value
         },
         {
+          title: '评分',
+          dataIndex: 'rating',
+          align: 'right',
+          width: 100,
+          sorter: (a, b) => this.toNum(a.rating) - this.toNum(b.rating)
+        },
+        {
           title: '总收入',
           dataIndex: 'income_sum',
           align: 'right',
@@ -392,7 +399,9 @@ export default {
       map.set('shop_id', '门店id')
       map.set('shop_name', '店名')
       map.set('platform', '平台')
+      map.set('rating', '评分')
       map.set('third_send', '三方配送')
+      map.set('unit_price', '单价')
       map.set('orders', '订单')
       map.set('income', '收入')
       map.set('income_avg', '平均收入')
