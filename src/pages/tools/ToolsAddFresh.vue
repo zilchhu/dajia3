@@ -182,6 +182,7 @@ export default {
       this.fetchRealShops()
     },
     onSubmit() {
+      ['realName', 'person', 'bd', 'phone', 'roomId'].map(k => (this.formState[k] = this.formState[k].trim()))
       let data = {
         ...this.formState,
         shopId: this.formState.shop.split('|')[0],

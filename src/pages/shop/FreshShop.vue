@@ -2,7 +2,7 @@
 a-table(:columns="fresh_shop_columns" :data-source="fresh_shop_data.shops" rowKey="key" :loading="spinning" 
   :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['36', '72', '144', '288'], size: 'small'}" 
   @change="table_change"
-  size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
+  size="small" :scroll="{ x: scrollX, y: scrollY}" bordered :style="`max-width: ${scrollX + 10}px;`")
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     a-row(type="flex")
       a-col(flex="auto")

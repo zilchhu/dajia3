@@ -45,6 +45,11 @@ const urls = {
       base(id, platform) {
         return `/order/${platform}/${id}`
       }
+    },
+    indices: {
+      base(platform, shopId, day) {
+        return `/indices/${platform}/${shopId}/${day}`
+      }
     }
   },
   plan: {

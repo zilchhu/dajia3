@@ -20,6 +20,8 @@ div
       router-link.cell(:to="{ name: 'user', params: { username: text || '-', date: 0 }}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
     template(#cost_ratio="{text, record}")
       .cell(:class="{unsatisfied: rules2fn[record.platform]['cost_ratio'](text)}" @click.stop="() => costRatioClick(text, record)" style="cursor: pointer;") {{text}}
+    template(#rating="{text, record}")
+      .cell(@click.stop="() => ratingClick(record)" style="cursor: pointer;") {{text}}
 
     template(#expandedRowRender="{record}")
       a-collapse(v-model:activeKey="collapseKey" :bordered="false")
@@ -69,6 +71,9 @@ div
 
   a-modal(v-model:visible="probClickModal" :footer="null" centered :width="1080")
     shop-problem(:shop_meta="shop_meta")
+
+  a-modal(v-model:visible="ratesClickModal" :footer="null" centered :width="800")
+    shop-indices(:shop_meta="shop_meta")
         
 </template>
 
@@ -78,6 +83,7 @@ import { getTableByDate, getTableByShop } from '../../api'
 import HelloForm2 from '../../components/HelloForm2'
 import AllShopForm from '../../components/shop/AllShopForm'
 import ShopProblem from '../../components/shop/ShopProblem'
+import ShopIndices from '../../components/shop/ShopIndices'
 
 function distinct(s) {
   let ns = s.trim().split('\n')
@@ -108,6 +114,7 @@ export default {
       selectedRowKeys: [],
       editRowKeysModal: false,
       probClickModal: false,
+      ratesClickModal: false,
       editedRowKeys: '',
       defaultPageSize: 30,
       shop_meta: { shopId: null, platform: null }
@@ -116,7 +123,8 @@ export default {
   components: {
     HelloForm2,
     AllShopForm,
-    ShopProblem
+    ShopProblem,
+    ShopIndices
   },
   computed: {
     tablePersonColFilters() {
@@ -184,7 +192,8 @@ export default {
           title: '评分',
           dataIndex: 'rating',
           align: 'right',
-          width: 100,
+          width: 70,
+          slots: {customRender: 'rating'},
           sorter: (a, b) => this.toNum(a.rating) - this.toNum(b.rating)
         },
         {
@@ -552,6 +561,10 @@ export default {
     costRatioClick(_, record) {
       this.shop_meta = { shopId: record.shop_id, platform: record.platform == '美团' ? 'mt' : 'elm' }
       this.probClickModal = true
+    },
+    ratingClick(record) {
+      this.shop_meta = { shopId: record.shop_id, platform: record.platform == '美团' ? 'mt' : 'elm' }
+      this.ratesClickModal = true
     }
   },
   created() {

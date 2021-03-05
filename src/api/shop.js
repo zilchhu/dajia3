@@ -68,4 +68,8 @@ export default class Shop {
   order(platform, activi, counts) {
     return instance.get(urls.shop.order.base(this.shopid, platform), { params: { activi, counts } })
   }
+
+  indices(platform, day = 7) {
+    return instance.get(urls.shop.indices.base(platform, this.shopid, day))
+  }
 }
