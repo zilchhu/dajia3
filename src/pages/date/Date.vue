@@ -29,7 +29,7 @@ div
           template(#header)
             span.small 昨日
           a-card(style="width: 100vw;" size="small")
-            a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
+            a-tooltip(v-for="key in Object.keys(record).filter(v=>!['a','comments'].includes(v))" :key="key")
               template(#title)
                 .tip {{`${record[key]}${thresholdSuffix(key, record.platform)}`}}
               a-card-grid(style="width: 130px; padding: 4px;")
@@ -54,7 +54,7 @@ div
               a-tabs(size="small")
                 a-tab-pane(:key="`${record.id}`-1" tab="详情" size="small")
                   a-card(size="small")
-                    a-tooltip(v-for="key in Object.keys(record).filter(v=>v!='a')" :key="key")
+                    a-tooltip(v-for="key in Object.keys(record).filter(v=>!['a','comments'].includes(v))" :key="key")
                       template(#title)
                         .tip {{`${record[key]}${thresholdSuffix(key, record.platform)}`}}
                       a-card-grid(style="width: 130px; padding: 4px;")
@@ -73,7 +73,7 @@ div
     shop-problem(:shop_meta="shop_meta")
 
   a-modal(v-model:visible="ratesClickModal" :footer="null" centered :width="800")
-    shop-indices(:shop_meta="shop_meta")
+    shop-indices(:shop_meta="shop_meta_rates")
         
 </template>
 
@@ -117,7 +117,8 @@ export default {
       ratesClickModal: false,
       editedRowKeys: '',
       defaultPageSize: 30,
-      shop_meta: { shopId: null, platform: null }
+      shop_meta: { shopId: null, platform: null },
+      shop_meta_rates: { shopId: null, platform: null }
     }
   },
   components: {
@@ -193,7 +194,7 @@ export default {
           dataIndex: 'rating',
           align: 'right',
           width: 70,
-          slots: {customRender: 'rating'},
+          slots: { customRender: 'rating' },
           sorter: (a, b) => this.toNum(a.rating) - this.toNum(b.rating)
         },
         {
@@ -563,7 +564,7 @@ export default {
       this.probClickModal = true
     },
     ratingClick(record) {
-      this.shop_meta = { shopId: record.shop_id, platform: record.platform == '美团' ? 'mt' : 'elm' }
+      this.shop_meta_rates = { shopId: record.shop_id, platform: record.platform == '美团' ? 'mt' : 'elm' }
       this.ratesClickModal = true
     }
   },
