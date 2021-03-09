@@ -23,6 +23,11 @@
           template(#dataSource)
             a-select-option(v-for="person in realShopPersons" :key="person") {{person}}
 
+      a-form-item(label="新店负责人")
+        a-auto-complete(v-model:value="formState.newPerson" placeholder="请输入新店负责人")
+          template(#dataSource)
+            a-select-option(v-for="newPerson in realShopNewPersons" :key="newPerson") {{newPerson}}
+
       a-form-item(label="bd")
         a-auto-complete(v-model:value="formState.bd" placeholder="请输入bd")
           template(#dataSource)
@@ -64,6 +69,7 @@ export default {
         shop: '',
         realName: '',
         person: '',
+        newPerson: '',
         bd: '',
         phone: '',
         isDM: [],
@@ -83,6 +89,9 @@ export default {
     },
     realShopPersons() {
       return Array.from(new Set(this.realShops.map(v => v.person)))
+    },
+    realShopNewPersons() {
+      return Array.from(new Set(this.realShops.map(v => v.new_person)))
     },
     realShopNames() {
       return Array.from(new Set(this.realShops.map(v => v.real_shop_name)))
@@ -141,13 +150,16 @@ export default {
       return option.props.value.includes(input.trim())
     },
     shopSelect(value) {
+      let shopId = value.split('|')[0]
       let shopName = value.split('|')[1]
       let shopNameSimple = RegExp('.*[(, （](.*)店', 'g').exec(shopName)
-      if (shopNameSimple) {
-        let real = this.realShops.find(v => v.real_shop_name.includes(shopNameSimple[1]))
+      if (shopId || shopNameSimple) {
+        let real = this.realShops.find(v => v.shop_id == shopId)
+        if(!real) real = this.realShops.find(v => v.real_shop_name.includes(shopNameSimple[1]))
         if (real) {
           this.formState.realName = real.real_shop_name
           this.formState.person = real.person
+          this.formState.newPerson = real.new_person
           this.formState.bd = real.bd
           this.formState.phone = real.shop_phone
           this.formState.rent = real.rent + ''
@@ -158,6 +170,7 @@ export default {
         } else {
           this.formState.realName = ''
           this.formState.person = ''
+          this.formState.newPerson = ''
           this.formState.bd = ''
           this.formState.phone = ''
           this.formState.rent = ''
@@ -170,6 +183,7 @@ export default {
       this.formState.shop = ''
       this.formState.realName = ''
       this.formState.person = ''
+      this.formState.newPerson = ''
       this.formState.bd = ''
       this.formState.phone = ''
       this.formState.rent = ''
@@ -182,7 +196,9 @@ export default {
       this.fetchRealShops()
     },
     onSubmit() {
-      ['realName', 'person', 'bd', 'phone', 'roomId'].map(k => (this.formState[k] = this.formState[k].trim()))
+      ['realName', 'person', 'newPerson', 'bd', 'phone', 'roomId']
+        .filter(k => this.formState[k] != null)
+        .map(k => (this.formState[k] = this.formState[k].trim()))
       let data = {
         ...this.formState,
         shopId: this.formState.shop.split('|')[0],

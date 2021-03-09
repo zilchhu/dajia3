@@ -1,8 +1,9 @@
 <template lang="pug">
-a-table(:columns="fresh_shop_columns" :data-source="fresh_shop_data.shops" rowKey="key" :loading="spinning" 
-  :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['36', '72', '144', '288'], size: 'small'}" 
+a-table.ant-table-fresh(:columns="fresh_shop_columns" :data-source="fresh_shop_data.shops" rowKey="key" :loading="spinning" 
+  :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['19', '38', '76', '152'], size: 'small'}" 
   @change="table_change"
-  size="small" :scroll="{ x: scrollX, y: scrollY}" bordered :style="`max-width: ${scrollX + 10}px;`")
+  size="small" :scroll="{ x: scrollX, y: scrollY}" bordered :style="`max-width: ${scrollX + 10}px;`"
+  :rowClassName="(record) => record.field == '评论数' ? 'table-freshed' : null")
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     a-row(type="flex")
       a-col(flex="auto")
@@ -52,8 +53,8 @@ export default {
       },
       spinning: false,
       scrollY: 900,
-      defaultPageSize: 36,
-      last_fresh_shop_route: {path: '/freshshop'}
+      defaultPageSize: 19,
+      last_fresh_shop_route: { path: '/freshshop' }
     }
   },
   computed: {
@@ -78,14 +79,42 @@ export default {
               ),
               props: {}
             }
-            if (index % 18 == 0) {
-              obj.props.rowSpan = 18
+            if (index % 19 == 0) {
+              obj.props.rowSpan = 19
             } else {
               obj.props.rowSpan = 0
             }
             return obj
           },
           onFilter: (value, record) => record.name == value
+        },
+        {
+          title: '负责人',
+          dataIndex: 'new_person',
+          width: 85,
+          slots: { filterDropdown: 'filterDropdown' },
+          filterMultiple: true,
+          fixed: 'left',
+          customRender: ({ text, record, index }) => {
+            const obj = {
+              children: (
+                <div
+                  onclick={() => this.$router.push({ name: 'user', params: { username: record.new_person, date: 0 } })}
+                  style="writing-mode: vertical-lr; white-space: pre-wrap; color: rgba(0,0,0,.65);"
+                >
+                  {text}
+                </div>
+              ),
+              props: {}
+            }
+            if (index % 19 == 0) {
+              obj.props.rowSpan = 19
+            } else {
+              obj.props.rowSpan = 0
+            }
+            return obj
+          },
+          onFilter: (value, record) => record.new_person == value
         },
         {
           title: '项目',
@@ -170,13 +199,13 @@ export default {
   },
   created() {
     this.scrollY = document.body.clientHeight - 126
-    this.defaultPageSize = +localStorage.getItem('freshShop/defaultPageSize') || 36
+    this.defaultPageSize = +localStorage.getItem('freshShop/defaultPageSize') || 19
     this.fetch_fresh_shop()
   },
   watch: {
     $route(route) {
       if (route.name == 'fresh-shop') {
-        this.defaultPageSize = +localStorage.getItem('freshShop/defaultPageSize') || 36
+        this.defaultPageSize = +localStorage.getItem('freshShop/defaultPageSize') || 19
         if (route.path != this.last_fresh_shop_route.path) {
           this.fetch_fresh_shop()
         }
@@ -195,4 +224,5 @@ export default {
 
 .unsatisfied
   color: #fa541c
+
 </style>

@@ -75,11 +75,13 @@ div
   a-modal(v-model:visible="ratesClickModal" :footer="null" centered :width="800")
     shop-indices(:shop_meta="shop_meta_rates")
         
+  a.expo(:href="`http://192.168.3.3:9040/营推表${yesterday}.xlsx`" target="_blank") export
 </template>
 
 <script>
 import { message } from 'ant-design-vue'
 import { getTableByDate, getTableByShop } from '../../api'
+import dayjs from 'dayjs'
 import HelloForm2 from '../../components/HelloForm2'
 import AllShopForm from '../../components/shop/AllShopForm'
 import ShopProblem from '../../components/shop/ShopProblem'
@@ -492,7 +494,10 @@ export default {
     },
     day() {
       return this.$route.params.day
-    }
+    },
+    yesterday() {
+      return dayjs().subtract(1, 'day').format('YYYYMMDD')
+    },
   },
   methods: {
     getTableByDate() {
@@ -617,6 +622,13 @@ export default {
 
 .small
   font-size: .9em
+
+.expo
+  display: block
+  position: absolute
+  bottom: 10px
+  left: 10px
+  z-index: 100
 
 .ant-table-thead > tr > th
   border: none

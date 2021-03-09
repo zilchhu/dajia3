@@ -3,6 +3,7 @@ import User from './pages/user/User'
 import UserActsOvTable from './pages/user/UserActsOvTable'
 import Shop from './pages/shop/Shop'
 import FreshShop from './pages/shop/FreshShop'
+import Change from './pages/change/Change'
 import Tools from './pages/tools/Tools'
 import ToolsAddFresh from './pages/tools/ToolsAddFresh'
 import ToolsAddFengniao from './pages/tools/ToolsAddFengniao'
@@ -22,6 +23,7 @@ const routes = [
   { path: '/shop/:shopid(\\d+)', name: 'shop', component: Shop },
   { path: '/user/:username/:date(\\d+)', name: 'user', component: User },
   { path: '/user/:username/acts', name: 'user-acts', component: UserActsOvTable },
+  { path: '/changes', name: 'changes', component: Change },
   {
     path: '/tools',
     component: Tools,

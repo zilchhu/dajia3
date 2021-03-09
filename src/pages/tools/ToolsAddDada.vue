@@ -89,7 +89,9 @@ export default {
       this.formState.password_md5 = md5(this.formState.password)
     },
     onSubmit() {
-      Object.keys(this.formState).map(k => this.formState[k] = this.formState[k].trim())
+      Object.keys(this.formState)
+        .filter(k => this.formState[k] != null)
+        .map(k => (this.formState[k] = this.formState[k].trim()))
       console.log({ ...this.formState, password: this.formState.password_md5 })
       this.loading = true
       new Shop()

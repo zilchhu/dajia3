@@ -52,6 +52,14 @@ const urls = {
       }
     }
   },
+  change: {
+    base() {
+      return '/shopActsDiff'
+    },
+    save() {
+      return '/saveShopActsDiff'
+    }
+  },
   plan: {
     multi: 'plans'
   },

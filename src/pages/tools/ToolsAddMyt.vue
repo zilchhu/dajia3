@@ -73,7 +73,9 @@ export default {
       }
     },
     onSubmit() {
-      Object.keys(this.formState).map(k => this.formState[k] = this.formState[k].trim())
+      Object.keys(this.formState)
+        .filter(k => this.formState[k] != null)
+        .map(k => this.formState[k] = this.formState[k].trim())
       console.log(this.formState)
       this.loading = true
       new Shop()

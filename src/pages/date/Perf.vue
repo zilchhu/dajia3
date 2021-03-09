@@ -16,6 +16,10 @@ div
 
     template(#person="{text, record}")
         router-link(:to="{ name: 'user', params: { username: text || '-', date: 0 }}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
+
+    template(v-for="col in ruleIdx" #[col]="{text, record}")
+      .cell(:class="{unsatisfied: isUnsatisfy(text, col)}") {{text}}
+
   a.expo(:href="`http://192.168.3.3:9040/绩效表${yesterday}.xlsx`" target="_blank") export
 </template>
 
@@ -47,7 +51,8 @@ export default {
       spinning: false,
       scrollY: 900,
       defaultPageSize: 40,
-      last_perf_route: {path: '/perf/31'}
+      last_perf_route: { path: '/perf/31' },
+      ruleIdx: ['income_avg', 'cost_sum_ratio', 'consume_sum_ratio', 'score']
     }
   },
   computed: {
@@ -55,7 +60,9 @@ export default {
       return this.$route.params.day
     },
     yesterday() {
-      return dayjs().subtract(1, 'day').format('YYYYMMDD')
+      return dayjs()
+        .subtract(1, 'day')
+        .format('YYYYMMDD')
     },
     perf_columns() {
       let fiexed_cols = [
@@ -98,6 +105,7 @@ export default {
           dataIndex: 'income_avg',
           align: 'right',
           width: 100,
+          slots: { customRender: 'income_avg' },
           sorter: (a, b) => this.toNum(a.income_avg) - this.toNum(b.income_avg)
         },
         {
@@ -126,6 +134,7 @@ export default {
           dataIndex: 'cost_sum_ratio',
           align: 'right',
           width: 100,
+          slots: { customRender: 'cost_sum_ratio' },
           sorter: (a, b) => this.toNum(a.cost_sum_ratio) - this.toNum(b.cost_sum_ratio)
         },
         {
@@ -161,6 +170,7 @@ export default {
           dataIndex: 'consume_sum_ratio',
           align: 'right',
           width: 100,
+          slots: { customRender: 'consume_sum_ratio' },
           sorter: (a, b) => this.toNum(a.consume_sum_ratio) - this.toNum(b.consume_sum_ratio)
         },
         {
@@ -182,6 +192,7 @@ export default {
           dataIndex: 'score',
           align: 'right',
           width: 100,
+          slots: { customRender: 'score' },
           sorter: (a, b) => this.toNum(a.score) - this.toNum(b.score)
         },
         {
@@ -211,7 +222,11 @@ export default {
           align: 'right',
           fixed: 'right',
           slots: { filterDropdown: 'filterDropdown' },
-          defaultFilteredValue: [+dayjs().subtract(1, 'day').format('YYYYMMDD')],
+          defaultFilteredValue: [
+            +dayjs()
+              .subtract(1, 'day')
+              .format('YYYYMMDD')
+          ],
           width: 100,
           onFilter: (value, record) => record.date == value
         }
@@ -260,6 +275,12 @@ export default {
     },
     table_change(pagination) {
       localStorage.setItem('perf/defaultPageSize', pagination.pageSize)
+    },
+    isUnsatisfy(text, col) {
+      if (col == 'income_avg') return this.toNum(text) < 1500
+      if (col == 'cost_sum_ratio') return this.toNum(text) > 50
+      if (col == 'consume_sum_ratio') return this.toNum(text) > 5
+      if (col == 'score') return this.toNum(text) < 50
     }
   },
   created() {

@@ -4,13 +4,14 @@ a-table(:columns="acts_columns" :data-source="acts_data.shops" rowKey="shop_name
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     a-row(type="flex")
       a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width}px;`")
+        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 200px; width: ${column.width}px;`")
           a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
       a-col(flex="60px")
         a-button(type="link" @click="confirm") confirm
         br
         a-button(type="link" @click="clearFilters") reset
-
+  template(#shop_name="{text, record}")
+    router-link.cell(:to="{name: 'shop', params: {shopid: record.shop_id}}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
 </template>
 
 <script>
@@ -56,7 +57,7 @@ export default {
           dataIndex: 'shop_name',
           key: 'shop_name',
           width: 160,
-          slots: { filterDropdown: 'filterDropdown' },
+          slots: { filterDropdown: 'filterDropdown', customRender: 'shop_name' },
           filterMultiple: true,
           fixed: 'left',
           onFilter: (value, record) => record.shop_name == value

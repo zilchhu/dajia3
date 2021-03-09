@@ -6,6 +6,9 @@ a-table.ant-table-striped(:columns="cols" :data-source="data" rowKey="订单id" 
   //-   shop-data(:shop_data="omit(record, history_hiddens)" style="width: 936px;")
   template(#订单id="{text}")
     div(style="font-size: 10px") {{text}}
+    //- a(v-else
+    //-   :href="`https://melody.shop.ele.me/app/shop/${goods_meta.shopId}/order__searchings#app.shop.order.searchings?searchInfo={"searchType":"orderId","keyWord":"${text}","searchValue":null}`"
+    //-   style="font-size: 10px; color: rgba(0, 0, 0, 0.65);") {{text}}
   template(#订单信息="{text}")
     div(style="white-space: pre-wrap; font-size: 0.93em;") {{text}}
 </template>
