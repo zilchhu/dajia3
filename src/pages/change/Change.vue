@@ -1,5 +1,5 @@
 <template lang="pug">
-a-table.ant-table-striped(:columns="changes_cols" :data-source="changes" rowKey="key" :loading="loading" 
+a-table.ant-table-change(:columns="changes_cols" :data-source="changes" rowKey="key" :loading="loading" 
   :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['50', '100', '200', '400'], size: 'small'}" 
   @change="table_change" :rowClassName="(record, index) => (index % 2 === 1 ? 'table-striped' : null)"
   size="small" :scroll="{y: scrollY}" bordered)
@@ -14,8 +14,11 @@ a-table.ant-table-striped(:columns="changes_cols" :data-source="changes" rowKey=
         br
         a-button(type="link" @click="clearFilters") reset
 
-  template(#small="{text, record}")
-    .small {{text}}
+  template(#shop_id="{text, record}")
+    router-link.small(:to="{name: 'shop', params: {shopid: text}}") {{text}}
+
+  template(#person="{text, record}")
+    router-link.small(:to="{ name: 'user', params: { username: text || '-', date: 0 }}") {{text}}
 
   template(#rule="{text, record}")
     a-tooltip
@@ -52,14 +55,14 @@ export default {
           title: '门店id',
           dataIndex: 'shop_id',
           width: 90,
-          slots: { filterDropdown: 'filterDropdown', customRender: 'small' },
+          slots: { filterDropdown: 'filterDropdown', customRender: 'shop_id' },
           onFilter: (value, record) => record.shop_id == value
         },
         {
           title: '店名',
           dataIndex: 'shop_name',
           width: 250,
-          slots: { filterDropdown: 'filterDropdown', customRender: 'small' },
+          slots: { filterDropdown: 'filterDropdown' },
           onFilter: (value, record) => record.shop_name == value
         },
         {
@@ -78,7 +81,7 @@ export default {
           title: '负责',
           dataIndex: 'person',
           width: 70,
-          slots: { filterDropdown: 'filterDropdown', customRender: 'small' },
+          slots: { filterDropdown: 'filterDropdown', customRender: 'person' },
           onFilter: (value, record) => record.person == value
         },
         {
@@ -194,17 +197,24 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 .rule
   white-space: pre-wrap
-
-.small
-  font-size: 0.88em
 
 .mini
   font-size: 11px
   color: gray
 
-.ant-table-striped :deep(.table-striped)
+.ant-table-change .ant-table-thead > tr > th
+  background: white
+  border-bottom: 1px solid rgba(180,247,255,.2)
+
+.ant-table-change span.ant-table-column-title, .ant-table-change td, .ant-table-change .ant-input, .ant-table-change .ant-table-thead > tr > th, .small
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
+  font-size: 0.886em
+  color: #2c363c
+
+.ant-table-change .table-striped
   background-color: #fafafa
+
 </style>

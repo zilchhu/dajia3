@@ -16,6 +16,9 @@ div
     a-menu-item(key="date")
       a-date-picker(v-model:value="selected_date" @change="date_change" :disabledDate="disabledDate" :allowClear="false" size="small")
 
+    a-menu-item(key="changes")
+      router-link(:to="{name: 'changes'}") changes
+
     a-sub-menu
       template(#title)
         span users
