@@ -129,12 +129,12 @@ export default {
           title: '处理',
           dataIndex: 'handle',
           filters: [
-            { text: '已处理', value: '.+' },
-            { text: '未处理', value: '^$' }
+            { text: '已处理', value: 1 },
+            { text: '未处理', value: 0 }
           ],
           filterMultiple: true,
           slots: { customRender: 'handle' },
-          onFilter: (value, record) => new RegExp(value).test(record.handle)
+          onFilter: (value, record) => value == 0 ? record.handle[0] == null : record.handle[0] != null
         },
         {
           title: '变化日期',
