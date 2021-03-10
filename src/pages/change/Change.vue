@@ -2,7 +2,7 @@
 a-table.ant-table-change(:columns="changes_cols" :data-source="changes" rowKey="key" :loading="loading" 
   :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['50', '100', '200', '400'], size: 'small'}" 
   @change="table_change" :rowClassName="(record, index) => (index % 2 === 1 ? 'table-striped' : null)"
-  size="small" :scroll="{y: scrollY}" bordered)
+  size="small" :scroll="{y: scrollY}")
 
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     a-row(type="flex")
@@ -20,14 +20,18 @@ a-table.ant-table-change(:columns="changes_cols" :data-source="changes" rowKey="
   template(#person="{text, record}")
     router-link.small(:to="{ name: 'user', params: { username: text || '-', date: 0 }}") {{text}}
 
+  template(#title="{text, record}")
+    .truncate {{text}}
+
   template(#rule="{text, record}")
-    a-tooltip
+    a-tooltip(v-if="text.length < 3")
       template(#title)
         div(v-for="item in text")
           .rule {{item.rule}}
           .rule {{item.date}}
           .mini {{item.insert_date}}
-      .rule {{text.map(v=>v.rule).join('\n')}}
+      .rule(:class="{'after-rule': record.after_rule.length==0, 'before-rule': record.before_rule.length==0}") {{text.map(v=>v.rule).join('\n\n')}}
+    .rule(v-else :class="{'after-rule': record.after_rule.length==0, 'before-rule': record.before_rule.length==0}") {{text.map(v=>v.rule).join('\n\n')}}
 
   template(#handle="{text, record}")
     a-input(:value="text" @change="e => handleChange(e.target.value, record)" size="small")
@@ -88,7 +92,27 @@ export default {
           title: '活动',
           dataIndex: 'title',
           width: 110,
-          slots: { filterDropdown: 'filterDropdown' },
+          slots: { filterDropdown: 'filterDropdown', customRender: 'title' },
+          defaultFilteredValue: [
+            '减配送费',
+            '配送范围',
+            '门店新客立减',
+            '新客立减（平台）',
+            '售卖代金券',
+            '满减活动',
+            '智能满减',
+            '店铺满减',
+            '百亿补贴',
+            '吃货红包',
+            '超级吃货红包',
+            '下单返红包',
+            '集点返红包',
+            '扫码领红包',
+            '下单返券',
+            '提前下单减',
+            '店铺满赠',
+            '店铺分类'
+          ],
           onFilter: (value, record) => record.title == value
         },
         {
@@ -201,9 +225,20 @@ export default {
 .rule
   white-space: pre-wrap
 
+.after-rule, .ant-table-change td:has(> .after-rule)
+  background: #b5efdb
+
+.before-rule, .ant-table-change td:has(> .before-rule)
+  background: #ffc4c1
+
 .mini
   font-size: 11px
   color: gray
+
+.truncate
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
 
 .ant-table-change .ant-table-thead > tr > th
   background: white
@@ -217,4 +252,11 @@ export default {
 .ant-table-change .table-striped
   background-color: #fafafa
 
+.ant-table-change .ant-input-affix-wrapper-sm
+  border: none
+  background: transparent
+
+.ant-table-change .ant-input-affix-wrapper > input.ant-input
+  background: transparent
+  color: #fa821c
 </style>
