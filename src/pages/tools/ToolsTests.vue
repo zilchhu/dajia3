@@ -11,7 +11,9 @@
 </template>
 
 <script>
+import { notification } from 'ant-design-vue'
 import Tests from '../../api/tests'
+import SockJS from 'sockjs-client'
 
 export default {
   name: 'tools-tests',
@@ -21,22 +23,24 @@ export default {
       res_sync: '',
       res_del: '',
       loading_sync: false,
-      loading_del: false
+      loading_del: false,
+      sock: new SockJS('http://192.168.3.3:9999/tests_sync')
     }
   },
   methods: {
     sync() {
       this.loading_sync = true
-      new Tests(this.wmPoiId)
-        .sync()
-        .then(res => {
-          this.res_sync = res
-          this.loading_sync = false
+      this.sock.send(this.wmPoiId)
+      this.sock.onmessage = e => {
+        console.log('message', e.data)
+        this.res_sync = e.data
+        notification.open({
+          message: `${this.wmPoiId}`,
+          description: e.data,
+          duration: 0
         })
-        .catch(err => {
-          this.res_sync = err
-          this.loading_sync = false
-        })
+        this.loading_sync = false
+      }
     },
     del() {
       this.loading_del = true
@@ -50,6 +54,15 @@ export default {
           this.res_del = err
           this.loading_del = false
         })
+    }
+  },
+  created() {
+    this.sock.onopen = function() {
+      console.log('open')
+    }
+
+    this.sock.onclose = function() {
+      console.log('close')
     }
   }
 }
