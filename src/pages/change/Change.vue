@@ -94,24 +94,32 @@ export default {
           width: 110,
           slots: { filterDropdown: 'filterDropdown', customRender: 'title' },
           defaultFilteredValue: [
-            '减配送费',
-            '配送范围',
-            '门店新客立减',
-            '新客立减（平台）',
-            '售卖代金券',
+            '店铺分类',
             '满减活动',
-            '智能满减',
+            '超值换购',
+            '集点返券',
+            '提前下单减',
+            '配送范围',
+            '新客立减（平台）',
+            '门店新客立减',
+            '店内领券',
+            '减配送费',
+            '售卖代金券',
+            '收藏有礼',
+            '下单返券',
             '店铺满减',
             '百亿补贴',
-            '吃货红包',
-            '超级吃货红包',
             '下单返红包',
-            '集点返红包',
-            '扫码领红包',
-            '下单返券',
-            '提前下单减',
+            '吃货红包',
             '店铺满赠',
-            '店铺分类'
+            '扫码领红包',
+            '超级吃货红包',
+            '集点返红包',
+            '智能满减',
+            '单品特价',
+            '店外发券',
+            '满赠活动',
+            '提报非优惠活动'
           ],
           onFilter: (value, record) => record.title == value
         },
@@ -134,7 +142,7 @@ export default {
           ],
           filterMultiple: true,
           slots: { customRender: 'handle' },
-          onFilter: (value, record) => value == 0 ? record.handle[0] == null : record.handle[0] != null
+          onFilter: (value, record) => (value == 0 ? record.handle[0] == null : record.handle[0] != null)
         },
         {
           title: '变化日期',
@@ -148,6 +156,13 @@ export default {
       scrollY: 900,
       debounce_save: null,
       defaultPageSize: 100
+    }
+  },
+  computed: {
+    distinct_titles() {
+      let titles = Array.from(new Set(this.changes.map(v => v.title)))
+      console.log(titles)
+      return titles
     }
   },
   methods: {

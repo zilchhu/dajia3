@@ -14,7 +14,11 @@ const urls = {
     },
     sum2: '/sum2'
   },
-  fresh_shop: '/fresh',
+  fresh_shop: {
+    base: '/fresh',
+    saveA: '/saveFreshA',
+    as: '/freshas'
+  },
   shop: {
     base(shopid) {
       return `/shop/${shopid}`

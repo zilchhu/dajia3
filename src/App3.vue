@@ -86,9 +86,8 @@ export default {
 .ant-table-pagination.ant-pagination
   margin: 6px 0 !important
 
+
 .ant-menu-horizontal 
   line-height: 36px !important
   border: none !important
-
-
 </style>

@@ -1,25 +1,31 @@
 <template lang="pug">
-a-table.ant-table-fresh(:columns="fresh_shop_columns" :data-source="fresh_shop_data.shops" rowKey="key" :loading="spinning" 
-  :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['19', '38', '76', '152'], size: 'small'}" 
-  @change="table_change"
-  size="small" :scroll="{ x: scrollX, y: scrollY}" bordered :style="`max-width: ${scrollX + 10}px;`"
-  :rowClassName="(record) => record.field == '评论数' ? 'table-freshed' : null")
-  template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-    a-row(type="flex")
-      a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${240}px;`")
-          a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-      a-col(flex="60px")
-        a-button(type="link" @click="confirm") confirm
-        br
-        a-button(type="link" @click="clearFilters") reset
+div
+  a-table.ant-table-fresh(:columns="fresh_shop_columns" :data-source="fresh_shop_data.shops" rowKey="key" :loading="spinning" 
+    :pagination="{showSizeChanger: true, defaultPageSize, pageSizeOptions: ['19', '38', '76', '152'], size: 'small'}" 
+    @change="table_change"
+    size="small" :scroll="{ x: scrollX, y: scrollY}" bordered :style="`max-width: ${scrollX + 10}px;`"
+    :rowClassName="(record) => record.field == '评论数' ? 'table-striped' : null")
+    template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
+      a-row(type="flex")
+        a-col(flex="auto")
+          a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${240}px;`")
+            a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
+        a-col(flex="60px")
+          a-button(type="link" @click="confirm") confirm
+          br
+          a-button(type="link" @click="clearFilters") reset
 
-    
-  template(#value="{text, record}")
-    .cell(:class="{unsatisfied: isUnsatisfy(record, text)}") {{text}}
+      
+    template(#value="{text, record}")
+      .cell(:class="{unsatisfied: isUnsatisfy(record, text)}") {{text}}
 
-  template(#field="{text, record}")
-    .cell(:title="record.name") {{text}}
+    template(#field="{text, record}")
+      .cell(:title="record.name") {{text}}
+
+  a-modal(v-model:visible="aModel" :footer="null" centered :width="800")
+    a-table(:columns="fresh_as_columns" :data-source="fresh_as" rowKey="updated_at" :pagination="false" size="small" style="max-width: 700px;")
+      template(#a2="{text, record}")
+        a-textarea(:value="text" @change="e => handleChange(e.target.value, record.wmpoiid, record.updated_at)" :auto-size="{ minRows: 1 }")
 
 </template>
 
@@ -51,8 +57,12 @@ export default {
         dates: [],
         shops: []
       },
+      fresh_as_data: [],
+      fresh_as: [],
+      aModel: false,
       spinning: false,
       scrollY: 900,
+      debounce_save: null,
       defaultPageSize: 19,
       last_fresh_shop_route: { path: '/freshshop' }
     }
@@ -127,16 +137,65 @@ export default {
           onFilter: (value, record) => record.field == value
         }
       ]
-      let dates_cols = this.fresh_shop_data.dates.map(v => ({
+      let dates_cols = this.fresh_shop_data.dates.map((v, i) => ({
         title: dayjs(v, 'YYYYMMDD').format('M/D'),
         dataIndex: v,
         align: 'right',
         width: 80,
-        slots: { customRender: 'value' }
+        // slots: { customRender: 'value' }
+        customRender: ({ text, record, index }) => {
+          const obj2 = {
+            children: (
+              <div
+                className={this.isUnsatisfy(record, text) ? 'unsatisfied' : ''}
+                onClick={() => console.log(text, record, index)}
+              >
+                {text}
+              </div>
+            ),
+            props: {}
+          }
+          const obj3 = {
+            children: (
+              <div style="display: flex; align-items: center; max-width: 1080px;">
+                <a-textarea
+                  placeholder="..."
+                  auto-size={{ minRows: 1 }}
+                  value={
+                    this.fresh_as_data.find(
+                      v => v.wmpoiid == record.wmPoiId && dayjs(v.updated_at).isSame(dayjs(), 'day')
+                    )?.a2
+                  }
+                  onChange={e => this.handleChange(e.target.value, record.wmPoiId, dayjs().format('YYYY-MM-DD'))}
+                />
+                <div onClick={() => this.handleAModel(record)} style="flex-basis: 80px;">
+                  历史记录
+                </div>
+              </div>
+            ),
+            props: { colSpan: i == 0 ? this.fresh_shop_data.dates.length : 0 }
+          }
+          return record.field == '优化' ? obj3 : obj2
+        }
         // sorter: (a, b) => this.toNum(a[v]) - this.toNum(b[v])
       }))
       // console.log([...fiexed_cols, ...dates_cols])
       return [...fiexed_cols, ...dates_cols]
+    },
+    fresh_as_columns() {
+      return [
+        {
+          title: '优化记录',
+          dataIndex: 'a2',
+          width: 600,
+          slots: { customRender: 'a2' }
+        },
+        {
+          title: '时间',
+          dataIndex: 'updated_at',
+          width: 100
+        }
+      ]
     },
     scrollX() {
       let x = this.reduce_width(this.fresh_shop_columns)
@@ -158,6 +217,13 @@ export default {
         return 0
       }
     },
+    debounce(fn) {
+      let timeout = null
+      return function() {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => fn.apply(this, arguments), 800)
+      }
+    },
     getColFilters(colName) {
       return Array.from(new Set(this.fresh_shop_data.shops.map(row => row[colName]))).map(col => ({
         text: col,
@@ -170,6 +236,20 @@ export default {
         .single()
         .then(res => {
           this.fresh_shop_data = res
+          this.spinning = false
+        })
+        .catch(e => {
+          console.error(e)
+          message.error(e)
+          this.spinning = false
+        })
+    },
+    fetch_fresh_as() {
+      this.spinning = true
+      new FreshShop()
+        .getAs()
+        .then(res => {
+          this.fresh_as_data = res
           this.spinning = false
         })
         .catch(e => {
@@ -193,6 +273,38 @@ export default {
       if (record.field == '评论/单量') return this.toNum(text) < 20
       if (record.field == '成本比例') return this.toNum(text) > 50
     },
+    handleChange(value, wmpoiid, updated_at) {
+      const target = this.fresh_as_data.filter(
+        v => v.wmpoiid == wmpoiid && dayjs(v.updated_at).isSame(dayjs(updated_at), 'day')
+      )[0]
+      if (target) {
+        target['a2'] = value
+      } else {
+        this.fresh_as_data = [
+          ...this.fresh_as_data,
+          { wmpoiid, a2: value, updated_at }
+        ]
+      }
+      this.debounce_save(wmpoiid, updated_at)
+    },
+    save(wmpoiid, updated_at) {
+      const target = this.fresh_as_data.filter(v => v.wmpoiid == wmpoiid && dayjs(v.updated_at).isSame(dayjs(updated_at), 'day'))[0]
+      if (target) {
+        new FreshShop()
+          .saveA(target['wmpoiid'], target['a2'], target['updated_at'])
+          .then(res => {
+            console.log(res)
+          })
+          .catch(err => {
+            message.error(err)
+          })
+        console.log(target)
+      }
+    },
+    handleAModel(record) {
+      this.fresh_as = this.fresh_as_data.filter(v => v.wmpoiid == record.wmPoiId)
+      this.aModel = true
+    },
     table_change(pagination) {
       localStorage.setItem('freshShop/defaultPageSize', pagination.pageSize)
     }
@@ -200,7 +312,9 @@ export default {
   created() {
     this.scrollY = document.body.clientHeight - 126
     this.defaultPageSize = +localStorage.getItem('freshShop/defaultPageSize') || 19
+    this.debounce_save = this.debounce(this.save)
     this.fetch_fresh_shop()
+    this.fetch_fresh_as()
   },
   watch: {
     $route(route) {
@@ -216,7 +330,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
 .cell
   display: inline-block
   width: 100%
@@ -225,4 +339,6 @@ export default {
 .unsatisfied
   color: #fa541c
 
+.ant-table-fresh .table-striped
+  background-color: #6ed8c750
 </style>

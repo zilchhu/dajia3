@@ -244,7 +244,7 @@ export default {
     }
   },
   created() {
-    this.scrollY = document.body.clientHeight - 166
+    this.scrollY = document.body.clientHeight - 156
     this.defaultPageSize = +localStorage.getItem('sum/defaultPageSize') || 40
     this.fetch_sum_single()
   },
