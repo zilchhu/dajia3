@@ -28,6 +28,12 @@ div
     a-menu-item(key="tools")
       router-link(:to="{ name: 'tools'}") tools
 
+    a-sub-menu
+      template(#title)
+        span 新人培训
+      a-menu-item(v-for="name in 新人培训" :key="name")
+        a(:href="`http://192.168.3.3:8080/${name}.html`" target="_blank") {{name}}
+
   router-view(v-slot="{ Component }")
     transition
       keep-alive
@@ -44,6 +50,7 @@ export default {
     return {
       menu_keys: [],
       all_names: [],
+      新人培训: ['订单缺陷率', '评价管理', '刷单操作手册', '新店工作安排', '新员工培训流程', '运营工作优化'],
       selected_date: moment().subtract(1, 'days')
     }
   },
@@ -90,4 +97,7 @@ export default {
 .ant-menu-horizontal 
   line-height: 36px !important
   border: none !important
+
+.note-main .ant-list-item-meta-title
+  margin: 0 !important
 </style>

@@ -19,6 +19,11 @@ const urls = {
     saveA: '/saveFreshA',
     as: '/freshas'
   },
+  notes: {
+    base: '/notes',
+    save: '/saveNote',
+    del: '/delNote'
+  },
   shop: {
     base(shopid) {
       return `/shop/${shopid}`

@@ -81,10 +81,9 @@ export default {
             const obj = {
               children: (
                 <div
-                  onclick={() => this.$router.push({ name: 'shop', params: { shopid: record.wmPoiId } })}
                   style="writing-mode: vertical-lr; white-space: pre-wrap; color: rgba(0,0,0,.65);"
                 >
-                  {text}
+                  {text}<br/>{record.wmPoiId}
                 </div>
               ),
               props: {}
@@ -159,7 +158,6 @@ export default {
             children: (
               <div style="display: flex; align-items: center; max-width: 1080px;">
                 <a-textarea
-                  placeholder="..."
                   auto-size={{ minRows: 1 }}
                   value={
                     this.fresh_as_data.find(
@@ -168,9 +166,11 @@ export default {
                   }
                   onChange={e => this.handleChange(e.target.value, record.wmPoiId, dayjs().format('YYYY-MM-DD'))}
                 />
-                <div onClick={() => this.handleAModel(record)} style="flex-basis: 80px;">
-                  历史记录
-                </div>
+                <a-badge count={ this.fresh_as_data.filter(v => v.wmpoiid == record.wmPoiId).length } number-style={{ backgroundColor: '#52c41acc' }} style="flex-basis: 80px;">
+                  <div onClick={() => this.handleAModel(record)} >
+                    历史记录
+                  </div>
+                </a-badge>
               </div>
             ),
             props: { colSpan: i == 0 ? this.fresh_shop_data.dates.length : 0 }
@@ -191,7 +191,7 @@ export default {
           slots: { customRender: 'a2' }
         },
         {
-          title: '时间',
+          title: '日期',
           dataIndex: 'updated_at',
           width: 100
         }

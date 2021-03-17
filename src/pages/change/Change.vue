@@ -119,7 +119,8 @@ export default {
             '单品特价',
             '店外发券',
             '满赠活动',
-            '提报非优惠活动'
+            '提报非优惠活动',
+            '大额互斥红包'
           ],
           onFilter: (value, record) => record.title == value
         },
