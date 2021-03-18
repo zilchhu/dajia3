@@ -23,7 +23,8 @@ const urls = {
     base: '/notes',
     save: '/saveNote',
     del: '/delNote',
-    like: '/likeNote'
+    like: '/likeNote',
+    comment: '/commentNote'
   },
   shop: {
     base(shopid) {

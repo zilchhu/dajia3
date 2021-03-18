@@ -101,6 +101,9 @@ export default {
   line-height: 36px !important
   border: none !important
 
+.ant-comment-inner
+  padding: 0 !important
+
 .note-main .ant-list-item-meta-title
   margin: 0 !important
 

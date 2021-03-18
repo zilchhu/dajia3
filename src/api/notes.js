@@ -26,4 +26,11 @@ export default class Notes {
       key
     })
   }
+
+  comm(key, comment) {
+    return instance.post(urls.notes.comment, {
+      key,
+      comment
+    })
+  }
 }

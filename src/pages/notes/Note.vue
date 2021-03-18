@@ -27,19 +27,36 @@ div.note
                       a-menu
                         a-menu-item(@click="e => del(item)") 删除
               template(#description)
-                .note-item-description {{moment(item.updated_at).fromNow()}} 
+                .note-item-description 
+                  a-tooltip(:title="moment(item.updated_at).format('YYYY-MM-DD HH:mm:ss')")
+                    span {{moment(item.updated_at).fromNow()}}
+
             template(#actions)
               .note-item-actions(@click="e => like(item.key)")
                 LikeOutlined(style="margin-right: 6px;")
                 span {{item.likes != '' ? item.likes.split('|').length : 0}} 
+              .note-item-actions(@click="e => commentsVis[item.key] = !commentsVis[item.key]")
+                MessageOutlined(style="margin-right: 6px;")
+                span {{item.comments ? JSON.parse(item.comments).length : 0}} 
+
             div.note-item-content(contentEditable="true") {{item.content}}
             a-image-preview-group(v-if="item.images")
               a-image(v-for="img in item.images.split('|')" :width="200" :src="`http://192.168.3.3:9005/${img}`")
+            
+            .note-item-comments(v-if="commentsVis[item.key]")
+              a-input(v-model:value="commentsEditors[item.key]" @pressEnter="e => commentEnter(e, item.key)" size="small")
+              a-comment(v-if="item.comments" v-for="com in JSON.parse(item.comments)" :key="com.id")
+                template(#datetime)
+                  a-tooltip(:title="com.inserted_at")
+                    span {{moment(com.inserted_at).fromNow()}}
+                template(#content)
+                  p {{com.comment}}
+              
 </template>
 
 <script>
 import { message } from 'ant-design-vue'
-import { DownOutlined, CloudUploadOutlined, LikeOutlined } from '@ant-design/icons-vue'
+import { DownOutlined, CloudUploadOutlined, LikeOutlined, MessageOutlined  } from '@ant-design/icons-vue'
 import moment from 'moment'
 import { v4 as uuidv4 } from 'uuid'
 import Notes from '../../api/notes'
@@ -50,7 +67,8 @@ export default {
   components: {
     DownOutlined,
     CloudUploadOutlined,
-    LikeOutlined
+    LikeOutlined,
+    MessageOutlined 
   },
   data() {
     return {
@@ -61,6 +79,8 @@ export default {
       loading: false,
       moment,
       imageUploaderVis: false,
+      commentsVis: {},
+      commentsEditors: {},
       imageList: []
     }
   },
@@ -139,6 +159,19 @@ export default {
           message.error(err)
         })
     },
+    commentEnter(e, key) {
+      if(e.target.value.trim() == '') return
+      new Notes()
+        .comm(key, e.target.value)
+        .then(res => {
+          let i = this.noteList.findIndex(v => v.key == key)
+          if (i >= 0) this.noteList[i].comments = res
+          this.commentsEditors[key] = ''
+        })
+        .catch(err => {
+          message.error(err)
+        })
+    },
     fetchNotes() {
       this.loading = true
       new Notes()
@@ -212,9 +245,19 @@ export default {
 
 .note-item-content
   font-size: 1.2em
+  white-space: pre-wrap
 
 .note-item-actions
   display: flex
   align-items: center
   font-size: 12px
+
+.note-item-comments
+  margin-top: 10px
+  background: #f5f5f533
+
+.note-item-comments > input
+  margin: 4px 12px
+  width: calc(100% - 24px)
+  background: #f5f5f533
 </style>
