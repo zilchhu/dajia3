@@ -34,6 +34,9 @@ div
       a-menu-item(v-for="name in 新人培训" :key="name")
         a(:href="`http://192.168.3.3:8080/${name}.html`" target="_blank") {{name}}
 
+    a-menu-item(key="notes")
+      router-link(:to="{ name: 'note'}") notes
+
   router-view(v-slot="{ Component }")
     transition
       keep-alive
@@ -100,4 +103,7 @@ export default {
 
 .note-main .ant-list-item-meta-title
   margin: 0 !important
+
+.note-main .ant-list-vertical .ant-list-item-meta
+  margin-bottom: 0 !important
 </style>

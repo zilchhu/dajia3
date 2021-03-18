@@ -8,7 +8,11 @@ div.note
           a-auto-complete(v-model:value="user" style="width: 80px;")
             template(#dataSource)
               a-select-option(v-for="user in users" :key="user") {{user}}
+          a-button(type="dashed" @click="e => imageUploaderVis = !imageUploaderVis" style="margin-left: 6px;") 图片 
         a-button(type="primary" @click="pub") 发布
+    .editor-image-uploader(v-if="imageUploaderVis")
+      a-upload(action="http://192.168.3.3:9005/upload" list-type="picture-card"  v-model:file-list="imageList" :before-upload="beforeUpload")
+        plus-outlined
     a-spin(:spinning="loading")
       a-list.note-list(:data-source="noteList" item-layout="vertical" :split="false")
         template(#renderItem="{ item }")
@@ -24,12 +28,15 @@ div.note
                         a-menu-item(@click="e => del(item)") 删除
               template(#description)
                 .note-item-description {{moment(item.updated_at).fromNow()}} 
-            div(contentEditable="true") {{item.content}}
+            div.note-item-content(contentEditable="true") {{item.content}}
+            a-image-preview-group(v-if="item.images")
+              a-image(v-for="img in item.images.split('|')" :width="200" :src="`http://192.168.3.3:9005/${img}`")
 </template>
 
 <script>
 import { message } from 'ant-design-vue'
 import { DownOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined } from '@ant-design/icons-vue'
 import moment from 'moment'
 import { v4 as uuidv4 } from 'uuid'
 import Notes from '../../api/notes'
@@ -38,29 +45,19 @@ import Shop from '../../api/shop'
 export default {
   name: 'Note',
   components: {
-    DownOutlined
+    DownOutlined,
+    PlusOutlined
   },
   data() {
     return {
       user: '匿名',
       editorText: '',
-      noteList: [
-        {
-          key: '1',
-          title: 'title',
-          description: 'description',
-          content: 'content'
-        },
-        {
-          key: '2',
-          title: 'title',
-          description: 'description',
-          content: 'content'
-        }
-      ],
+      noteList: [],
       realShops: [],
       loading: false,
-      moment
+      moment,
+      imageUploaderVis: false,
+      imageList: []
     }
   },
   computed: {
@@ -71,7 +68,7 @@ export default {
       return Array.from(new Set(this.realShops.map(v => v.new_person).filter(v => v)))
     },
     users() {
-      return ['匿名', ...this.realShopPersons, ...this.realShopNewPersons]
+      return ['匿名', '苏其昌', ...this.realShopPersons, ...this.realShopNewPersons]
     }
   },
   methods: {
@@ -80,19 +77,26 @@ export default {
       this.loading = true
       let key = uuidv4()
       let description = ''
+      let images = this.imageList
+        .filter(v => v.status == 'done' && v.response.code == 1)
+        .map(v => v.response.res.filename)
+        .join('|')
       new Notes()
-        .save(key, this.user, description, this.editorText)
+        .save(key, this.user, description, this.editorText, images)
         .then(res => {
           this.noteList = [
             {
               key,
               title: this.user,
               description,
-              content: this.editorText
+              content: this.editorText,
+              images
             },
             ...this.noteList
           ]
           this.editorText = ''
+          this.imageList = []
+          this.imageUploaderVis = false
           message.success(res)
           this.loading = false
         })
@@ -159,9 +163,6 @@ export default {
   align-items: center
   width: 100%
   min-height: 100vh
-  background: no-repeat url("https://img.t.sinajs.cn/t6/skin/skin048/images/body_bg.jpg?id=201503261330")
-  background-attachment: fixed
-  background-size: cover
 
 .note-main
   max-width: 960px
@@ -181,12 +182,17 @@ export default {
 .note-item-title
   display: flex
   justify-content: space-between
-  font-size: 0.7em
+  font-size: 12px
+  color: #00000073
 
-.note-item-title > span
-  font-size: 0.886em
+.note-item-title > span:first-child
+  font-size: 1.05em
   font-weight: bold
+  color: black
 
 .note-item-description
-  font-size: 12px
+  font-size: 0.7em
+
+.note-item-content
+  font-size: 1.2em
 </style>

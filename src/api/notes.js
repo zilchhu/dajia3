@@ -5,12 +5,13 @@ export default class Notes {
     return instance.get(urls.notes.base)
   }
 
-  save(key, title, description, content) {
+  save(key, title, description, content, images) {
     return instance.post(urls.notes.save, {
       key,
       title,
       description,
-      content
+      content,
+      images
     })
   }
 
