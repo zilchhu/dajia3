@@ -11,8 +11,8 @@ div.note
           a-button(type="dashed" @click="e => imageUploaderVis = !imageUploaderVis" style="margin-left: 6px;") 图片 
         a-button(type="primary" @click="pub") 发布
     .editor-image-uploader(v-if="imageUploaderVis")
-      a-upload(action="http://192.168.3.3:9005/upload" list-type="picture-card"  v-model:file-list="imageList" :before-upload="beforeUpload")
-        plus-outlined
+      a-upload(action="http://192.168.3.3:9005/upload" list-type="picture-card"  v-model:file-list="imageList")
+        CloudUploadOutlined
     a-spin(:spinning="loading")
       a-list.note-list(:data-source="noteList" item-layout="vertical" :split="false")
         template(#renderItem="{ item }")
@@ -28,6 +28,10 @@ div.note
                         a-menu-item(@click="e => del(item)") 删除
               template(#description)
                 .note-item-description {{moment(item.updated_at).fromNow()}} 
+            template(#actions)
+              .note-item-actions(@click="e => like(item.key)")
+                LikeOutlined(style="margin-right: 6px;")
+                span {{item.likes != '' ? item.likes.split('|').length : 0}} 
             div.note-item-content(contentEditable="true") {{item.content}}
             a-image-preview-group(v-if="item.images")
               a-image(v-for="img in item.images.split('|')" :width="200" :src="`http://192.168.3.3:9005/${img}`")
@@ -35,8 +39,7 @@ div.note
 
 <script>
 import { message } from 'ant-design-vue'
-import { DownOutlined } from '@ant-design/icons-vue'
-import { PlusOutlined } from '@ant-design/icons-vue'
+import { DownOutlined, CloudUploadOutlined, LikeOutlined } from '@ant-design/icons-vue'
 import moment from 'moment'
 import { v4 as uuidv4 } from 'uuid'
 import Notes from '../../api/notes'
@@ -46,7 +49,8 @@ export default {
   name: 'Note',
   components: {
     DownOutlined,
-    PlusOutlined
+    CloudUploadOutlined,
+    LikeOutlined
   },
   data() {
     return {
@@ -90,7 +94,8 @@ export default {
               title: this.user,
               description,
               content: this.editorText,
-              images
+              images,
+              likes: 0
             },
             ...this.noteList
           ]
@@ -106,7 +111,7 @@ export default {
         })
     },
     del(item) {
-      console.log(item)
+      this.loading = true
       new Notes()
         .delete(item.key)
         .then(res => {
@@ -120,6 +125,18 @@ export default {
         .catch(err => {
           message.error(err)
           this.loading = false
+        })
+    },
+    like(key) {
+      new Notes()
+        .like(key)
+        .then(res => {
+          console.log(res)
+          let i = this.noteList.findIndex(v => v.key == key)
+          if (i >= 0) this.noteList[i].likes += 1
+        })
+        .catch(err => {
+          message.error(err)
         })
     },
     fetchNotes() {
@@ -195,4 +212,9 @@ export default {
 
 .note-item-content
   font-size: 1.2em
+
+.note-item-actions
+  display: flex
+  align-items: center
+  font-size: 12px
 </style>

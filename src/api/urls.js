@@ -22,7 +22,8 @@ const urls = {
   notes: {
     base: '/notes',
     save: '/saveNote',
-    del: '/delNote'
+    del: '/delNote',
+    like: '/likeNote'
   },
   shop: {
     base(shopid) {

@@ -20,4 +20,10 @@ export default class Notes {
       key
     })
   }
+
+  like(key) {
+    return instance.post(urls.notes.like, {
+      key
+    })
+  }
 }
