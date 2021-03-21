@@ -4,6 +4,7 @@ import UserActsOvTable from './pages/user/UserActsOvTable'
 import Shop from './pages/shop/Shop'
 import FreshShop from './pages/shop/FreshShop'
 import Change from './pages/change/Change'
+import Prob from './pages/probs/Prob'
 import Tools from './pages/tools/Tools'
 import ToolsAddFresh from './pages/tools/ToolsAddFresh'
 import ToolsAddFengniao from './pages/tools/ToolsAddFengniao'
@@ -25,6 +26,7 @@ const routes = [
   { path: '/user/:username/:date(\\d+)', name: 'user', component: User },
   { path: '/user/:username/acts', name: 'user-acts', component: UserActsOvTable },
   { path: '/changes', name: 'changes', component: Change },
+  { path: '/probs', name: 'probs', component: Prob },
   {
     path: '/tools',
     component: Tools,

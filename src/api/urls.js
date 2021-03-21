@@ -71,6 +71,11 @@ const urls = {
       return '/saveShopActsDiff'
     }
   },
+  probs: {
+    base(key) {
+      return `/probs/${key}`
+    }
+  },
   plan: {
     multi: 'plans'
   },

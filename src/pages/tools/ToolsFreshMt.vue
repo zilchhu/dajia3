@@ -5,16 +5,12 @@
   .form
     a-input(v-model:value="wmPoiId" placeholder="门店ID" size="small" style="width: 160px; flex: 1 1 auto;")
     a-input(v-model:value="sourcePoiId" placeholder="折扣商品源门店ID" size="small" style="width: 160px; flex: 1 1 auto;")
+    a-input(v-model:value="reducSourcePoiId" placeholder="满减源门店ID" size="small" style="width: 160px; flex: 1 1 auto;")
 
     a-radio-group(name="poi_type" v-model:value="poi_type" size="small")
       a-radio(value="甜品") 甜品
       a-radio(value="贡茶") 贡茶
-    a-radio-group(name="poi_reduc_type" v-model:value="poi_reduc_type" size="small")
-      a-radio(value="甜品") 甜品
-      a-radio(value="甜品择优") 甜品择优
-      a-radio(value="贡茶") 贡茶
-      a-radio(value="贡茶择优") 贡茶择优
-      a-radio(value="原价扣点") 原价扣点
+    
     a-popconfirm(
       title="警告！这是新店设置操作，请确认后执行。"
       ok-text="确定"
@@ -42,7 +38,7 @@ export default {
       wmPoiId: '10085676',
       sourcePoiId: '',
       poi_type: '甜品',
-      poi_reduc_type: '甜品',
+      reducSourcePoiId: '',
       tasks: [
         { key: 1, name: '下单返券', checked: true, res: null },
         { key: 2, name: '店内领券', checked: true, res: null },
@@ -73,7 +69,7 @@ export default {
     run() {
       this.loading = true
       let userTasks = this.tasks.filter(v => v.checked).map(v => ({ name: v.name }))
-      let userRule = { wmPoiId: this.wmPoiId, wmPoiType: this.poi_type, wmPoiReducType: this.poi_reduc_type, sourcePoiId: this.sourcePoiId }
+      let userRule = { wmPoiId: this.wmPoiId, wmPoiType: this.poi_type, sourcePoiId: this.sourcePoiId, reducSourcePoiId: this.reducSourcePoiId }
       new Fresh(userTasks, userRule)
         .mt()
         .then(result => {
