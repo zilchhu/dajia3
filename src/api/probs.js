@@ -7,4 +7,7 @@ export default class Probs {
     return instance.get(urls.probs.base(key))
   }
 
+  save(type, key, handle) {
+    return instance.post(urls.probs.save(), { type, key, handle })
+  }
 }

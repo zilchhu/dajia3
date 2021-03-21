@@ -74,6 +74,9 @@ const urls = {
   probs: {
     base(key) {
       return `/probs/${key}`
+    },
+    save() {
+      return `/saveProbs`
     }
   },
   plan: {
