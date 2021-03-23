@@ -269,7 +269,8 @@ export default {
       if (record.field == '下架产品量') return this.toNum(text) > 5
       if (record.field == '下架产品量') return this.toNum(text) > 5
       if (record.field == '商圈排名') return this.toNum(text) > 2
-      if (record.field == '延迟发单') return this.toNum(text) < 5
+      if (record.field == '高佣返现') return this.toNum(text) == 0 && record.platform == '美团'
+      if (record.field == '延迟发单') return this.toNum(text) == 0 && record.platform == '饿了么'
       if (record.field == '评论/单量') return this.toNum(text) < 20
       if (record.field == '成本比例') return this.toNum(text) > 50
     },

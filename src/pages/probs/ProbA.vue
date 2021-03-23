@@ -97,12 +97,12 @@ export default {
           title: '处理',
           dataIndex: 'handle',
           filters: [
-            { text: '已处理', value: 1 },
-            { text: '未处理', value: 0 }
+            { text: '已处理', value: '' },
+            { text: '未处理', value: '1' }
           ],
           filterMultiple: true,
           slots: { customRender: 'handle' },
-          onFilter: (value, record) => (value == 0 ? record.handle[0] == null : record.handle[0] != null)
+          onFilter: (value, record) => (record?.handle == null) == Boolean(value)
         }
       ]
     }

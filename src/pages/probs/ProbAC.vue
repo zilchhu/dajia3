@@ -63,53 +63,53 @@ export default {
           onFilter: (value, record) => record.person == value
         },
         {
-          title: 'desc',
-          dataIndex: 'shop_product_desc',
+          title: '合作方案',
+          dataIndex: '合作方案',
           slots: { filterDropdown: 'filterDropdown' },
           width: 150,
-          onFilter: (value, record) => record.shop_product_desc == value
+          onFilter: (value, record) => record.合作方案 == value
         },
         {
-          title: 'rule',
-          dataIndex: 'rule',
+          title: '活动规则',
+          dataIndex: '活动规则',
           width: 250,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.rule == value
+          onFilter: (value, record) => record.活动规则 == value
         },
         {
-          title: 'delivery_fee',
-          dataIndex: 'delivery_fee_items',
+          title: '基础配送费',
+          dataIndex: '基础配送费',
           align: 'right',
           width: 130,
-          sorter: (a, b) => this.toNum(a.delivery_fee_items) - this.toNum(b.delivery_fee_items)
+          sorter: (a, b) => this.toNum(a.基础配送费) - this.toNum(b.基础配送费)
         },
         {
-          title: 'detail',
-          dataIndex: 'detail',
+          title: '减配力度',
+          dataIndex: '减配力度',
           align: 'right',
           width: 100,
-          sorter: (a, b) => this.toNum(a.detail) - this.toNum(b.detail)
+          sorter: (a, b) => this.toNum(a.减配力度) - this.toNum(b.减配力度)
         },
         {
-          title: 'sub_detail',
-          dataIndex: 'sub_detail',
+          title: '力度偏差',
+          dataIndex: '力度偏差',
           align: 'right',
           width: 100,
-          sorter: (a, b) => this.toNum(a.sub_detail) - this.toNum(b.sub_detail)
+          sorter: (a, b) => this.toNum(a.力度偏差) - this.toNum(b.力度偏差)
         },
         {
-          title: 'price_items',
-          dataIndex: 'price_items',
+          title: '起送价',
+          dataIndex: '起送价',
           align: 'right',
           width: 130,
-          sorter: (a, b) => this.toNum(a.price_items) - this.toNum(b.price_items)
+          sorter: (a, b) => this.toNum(a.起送价) - this.toNum(b.起送价)
         },
         {
-          title: 'date',
-          dataIndex: 'date',
+          title: '到期时间',
+          dataIndex: '到期时间',
           width: 200,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.date == value
+          onFilter: (value, record) => record.到期时间 == value
         }
       ]
     }

@@ -12,6 +12,8 @@ a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading"
         a-button(type="link" @click="confirm") confirm
         br
         a-button(type="link" @click="clearFilters") reset
+
+  
 </template>
 
 <script>
