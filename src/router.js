@@ -13,6 +13,7 @@ import ToolsAddMyt from './pages/tools/ToolsAddMyt'
 import ToolsFreshMt from './pages/tools/ToolsFreshMt'
 import ToolsFreshElm from './pages/tools/ToolsFreshElm'
 import ToolsTests from './pages/tools/ToolsTests'
+import ToolsFoodMt from './pages/tools/ToolsFoodMt'
 import Date from './pages/date/Date'
 import Sum from './pages/date/Sum'
 import Sum2 from './pages/date/Sum2'
@@ -38,6 +39,7 @@ const routes = [
       { path: 'add/myt', name: 'tools-add-myt', component: ToolsAddMyt },
       { path: 'fresh/mt', name: 'tools-fresh-mt', component: ToolsFreshMt },
       { path: 'fresh/elm', name: 'tools-fresh-elm', component: ToolsFreshElm },
+      { path: 'food/mt', name: 'tools-food-mt', component: ToolsFoodMt },
       { path: 'tests', name: 'tools-tests', component: ToolsTests }
     ]
   },

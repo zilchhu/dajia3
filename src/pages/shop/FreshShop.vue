@@ -23,9 +23,18 @@ div
       .cell(:title="record.name") {{text}}
 
   a-modal(v-model:visible="aModel" :footer="null" centered :width="800")
-    a-table(:columns="fresh_as_columns" :data-source="fresh_as" rowKey="updated_at" :pagination="false" size="small" style="max-width: 700px;")
+    a-table(:columns="fresh_as_columns" :data-source="fresh_as" rowKey="updated_at" :pagination="false" :scroll="{y: 850}" size="small" style="max-width: 700px;")
       template(#a2="{text, record}")
         a-textarea(:value="text" @change="e => handleChange(e.target.value, record.wmpoiid, record.updated_at)" :auto-size="{ minRows: 1 }")
+
+  a-modal(v-model:visible="probClickModal" :footer="null" centered :width="1080")
+    shop-problem(:shop_meta="shop_meta")
+
+  a-modal(v-model:visible="ratesClickModal" :footer="null" centered :width="800")
+    shop-indices(:shop_meta="shop_meta_rates")
+
+  a-modal(v-model:visible="offsellClickModal" :footer="null" centered :width="1080")
+    shop-offsell(:goods_meta="shop_meta_offsells")
 
 </template>
 
@@ -36,6 +45,10 @@ import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
 import weekday from 'dayjs/plugin/weekday'
 import updateLocale from 'dayjs/plugin/updateLocale'
+
+import ShopProblem from '../../components/shop/ShopProblem'
+import ShopIndices from '../../components/shop/ShopIndices'
+import ShopOffsell from '../../components/shop/ShopOffsell'
 
 import 'dayjs/locale/zh-cn'
 
@@ -51,6 +64,11 @@ dayjs.updateLocale('zh-cn', {
 
 export default {
   name: 'fresh-shop',
+  components: {
+    ShopProblem,
+    ShopIndices,
+    ShopOffsell
+  },
   data() {
     return {
       fresh_shop_data: {
@@ -64,7 +82,13 @@ export default {
       scrollY: 900,
       debounce_save: null,
       defaultPageSize: 19,
-      last_fresh_shop_route: { path: '/freshshop' }
+      last_fresh_shop_route: { path: '/freshshop' },
+      probClickModal: false,
+      ratesClickModal: false,
+      offsellClickModal: false,
+      shop_meta: { shopId: null, platform: null },
+      shop_meta_rates: { shopId: null, platform: null },
+      shop_meta_offsells: { shopId: null, platform: null, day: null },
     }
   },
   computed: {
@@ -80,10 +104,10 @@ export default {
           customRender: ({ text, record, index }) => {
             const obj = {
               children: (
-                <div
-                  style="writing-mode: vertical-lr; white-space: pre-wrap; color: rgba(0,0,0,.65);"
-                >
-                  {text}<br/>{record.wmPoiId}
+                <div style="writing-mode: vertical-lr; white-space: pre-wrap; color: rgba(0,0,0,.65);">
+                  {text}
+                  <br />
+                  {record.wmPoiId}
                 </div>
               ),
               props: {}
@@ -142,12 +166,16 @@ export default {
         align: 'right',
         width: 80,
         // slots: { customRender: 'value' }
-        customRender: ({ text, record, index }) => {
+        customRender: ({ text, record }) => {
           const obj2 = {
             children: (
               <div
                 className={this.isUnsatisfy(record, text) ? 'unsatisfied' : ''}
-                onClick={() => console.log(text, record, index)}
+                onClick={() => {
+                  if(record.field == '成本比例') this.costRatioClick(record)
+                  else if(record.field == '评分') this.ratingClick(record)
+                  else if(record.field == '下架产品量') this.offsellClick(dayjs(v, 'YYYYMMDD').add(1, 'day').format('YYYYMMDD'), record)
+                }}
               >
                 {text}
               </div>
@@ -166,10 +194,12 @@ export default {
                   }
                   onChange={e => this.handleChange(e.target.value, record.wmPoiId, dayjs().format('YYYY-MM-DD'))}
                 />
-                <a-badge count={ this.fresh_as_data.filter(v => v.wmpoiid == record.wmPoiId).length } number-style={{ backgroundColor: '#52c41acc' }} style="flex-basis: 80px;">
-                  <div onClick={() => this.handleAModel(record)} >
-                    历史记录
-                  </div>
+                <a-badge
+                  count={this.fresh_as_data.filter(v => v.wmpoiid == record.wmPoiId).length}
+                  number-style={{ backgroundColor: '#52c41acc' }}
+                  style="flex-basis: 80px;"
+                >
+                  <div onClick={() => this.handleAModel(record)}>历史记录</div>
                 </a-badge>
               </div>
             ),
@@ -281,15 +311,14 @@ export default {
       if (target) {
         target['a2'] = value
       } else {
-        this.fresh_as_data = [
-          ...this.fresh_as_data,
-          { wmpoiid, a2: value, updated_at }
-        ]
+        this.fresh_as_data = [...this.fresh_as_data, { wmpoiid, a2: value, updated_at }]
       }
       this.debounce_save(wmpoiid, updated_at)
     },
     save(wmpoiid, updated_at) {
-      const target = this.fresh_as_data.filter(v => v.wmpoiid == wmpoiid && dayjs(v.updated_at).isSame(dayjs(updated_at), 'day'))[0]
+      const target = this.fresh_as_data.filter(
+        v => v.wmpoiid == wmpoiid && dayjs(v.updated_at).isSame(dayjs(updated_at), 'day')
+      )[0]
       if (target) {
         new FreshShop()
           .saveA(target['wmpoiid'], target['a2'], target['updated_at'])
@@ -308,6 +337,18 @@ export default {
     },
     table_change(pagination) {
       localStorage.setItem('freshShop/defaultPageSize', pagination.pageSize)
+    },
+    costRatioClick(record) {
+      this.shop_meta = { shopId: record.wmPoiId, platform: record.platform == '美团' ? 'mt' : 'elm' }
+      this.probClickModal = true
+    },
+    ratingClick(record) {
+      this.shop_meta_rates = { shopId: record.wmPoiId, platform: record.platform == '美团' ? 'mt' : 'elm' }
+      this.ratesClickModal = true
+    },
+    offsellClick(day, record) {
+      this.shop_meta_offsells = { shopId: record.wmPoiId, platform: record.platform == '美团' ? 'mt' : 'elm', day }
+      this.offsellClickModal = true
     }
   },
   created() {

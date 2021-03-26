@@ -17,6 +17,10 @@
       a-menu-item(key="add-myt") 
         router-link(:to="{name: 'tools-add-myt'}") 麦芽田
 
+    a-sub-menu(key="food-setting" title="原价修改")
+      a-menu-item(key="food-setting:mt")
+        router-link(:to="{name: 'tools-food-mt'}") 美团
+        
     a-menu-item(key="tests:sync/del") 
       router-link(:to="{name: 'tools-tests'}") 测试产品
   router-view

@@ -72,4 +72,8 @@ export default class Shop {
   indices(platform, day = 7) {
     return instance.get(urls.shop.indices.base(platform, this.shopid, day))
   }
+
+  offsell(platform, day) {
+    return instance.get(urls.shop.offsell.base(platform, this.shopid, day))
+  }
 }

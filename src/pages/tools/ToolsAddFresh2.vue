@@ -9,9 +9,14 @@
           a-radio(:value="1") 美团
           a-radio(:value="2") 饿了么
 
-      a-form-item(label="门店")
-        a-select(v-model:value="formState.shop" showSearch :filterOption="filterShop" @select="shopSelect" placeholder="请选择门店")
-          a-select-option(v-for="shop in selectedShops" :key="shop.id" :value="`${shop.id}|${shop.name}|${shop.city}`") {{shop.id}} {{shop.name}} {{shop.city}}
+      a-form-item(label="shopId")
+        a-input(v-model:value="formState.shopId" placeholder="请输入SHOPID")
+
+      a-form-item(label="shopName")
+        a-input(v-model:value="formState.shopName" placeholder="请输入SHOPNAME")
+
+      a-form-item(label="city")
+        a-input(v-model:value="formState.city" placeholder="请输入CITY")
 
       a-form-item(label="物理店")
         a-auto-complete(v-model:value="formState.realName" placeholder="请输入物理店")
@@ -66,7 +71,9 @@ export default {
     return {
       formState: {
         platform: 1,
-        shop: '',
+        shopId: '',
+        shopName: '',
+        city: '',
         realName: '',
         person: '',
         newPerson: '',
@@ -149,38 +156,10 @@ export default {
     filterShop(input, option) {
       return option.props.value.includes(input.trim())
     },
-    shopSelect(value) {
-      let shopId = value.split('|')[0]
-      let shopName = value.split('|')[1]
-      let shopNameSimple = RegExp('.*[(, （](.*)店', 'g').exec(shopName)
-      if (shopId || shopNameSimple) {
-        let real = this.realShops.find(v => v.shop_id == shopId)
-        if(!real) real = this.realShops.find(v => v.real_shop_name.includes(shopNameSimple[1]))
-        if (real) {
-          this.formState.realName = real.real_shop_name
-          this.formState.person = real.person
-          this.formState.newPerson = real.new_person
-          this.formState.bd = real.bd
-          this.formState.phone = real.shop_phone
-          this.formState.rent = real.rent + ''
-          this.formState.roomId = real.room_id
-
-          if (real.is_original_price_deduction_point == 1) this.formState.isDM = [...this.formState.isDM, '原价扣点']
-          if (real.is_merit_based_activity == 1) this.formState.isDM = [...this.formState.isDM, '活动择优']
-        } else {
-          this.formState.realName = ''
-          this.formState.person = ''
-          this.formState.newPerson = ''
-          this.formState.bd = ''
-          this.formState.phone = ''
-          this.formState.rent = ''
-          this.formState.isDM = []
-          this.formState.roomId = ''
-        }
-      }
-    },
     platformChange() {
-      this.formState.shop = ''
+      this.formState.shopId = ''
+      this.formState.shopName = ''
+      this.formState.city = ''
       this.formState.realName = ''
       this.formState.person = ''
       this.formState.newPerson = ''
@@ -196,18 +175,14 @@ export default {
       this.fetchRealShops()
     },
     onSubmit() {
-      ['realName', 'person', 'newPerson', 'bd', 'phone', 'roomId']
+      ['shopId', 'shopName', 'city', 'realName', 'person', 'newPerson', 'bd', 'phone', 'roomId']
         .filter(k => this.formState[k] != null)
         .map(k => (this.formState[k] = this.formState[k].trim()))
       let data = {
         ...this.formState,
-        shopId: this.formState.shop.split('|')[0],
-        shopName: this.formState.shop.split('|')[1],
-        city: this.formState.shop.split('|')[2],
         isD: this.formState.isDM.includes('原价扣点') ? 1 : 0,
         isM: this.formState.isDM.includes('活动择优') ? 1 : 0,
-        rent: parseInt(this.formState.rent),
-        project_id: this.formState.shop.split('|')[1].includes('大计划') ? 10001 : 10000
+        rent: parseInt(this.formState.rent)
       }
       console.log(data)
       this.loading = true

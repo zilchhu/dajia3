@@ -61,6 +61,11 @@ const urls = {
       base(platform, shopId, day) {
         return `/indices/${platform}/${shopId}/${day}`
       }
+    },
+    offsell: {
+      base(platform, shopId, day) {
+        return `/offsell/${platform}/${shopId}/${day}`
+      }
     }
   },
   change: {
