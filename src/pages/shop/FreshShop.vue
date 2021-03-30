@@ -36,6 +36,7 @@ div
   a-modal(v-model:visible="offsellClickModal" :footer="null" centered :width="1080")
     shop-offsell(:goods_meta="shop_meta_offsells")
 
+  a.expo(:href="`http://192.168.3.3:9040/新店表${yesterday}.xlsx`" target="_blank") export
 </template>
 
 <script>
@@ -92,6 +93,11 @@ export default {
     }
   },
   computed: {
+    yesterday() {
+      return dayjs()
+        .subtract(1, 'day')
+        .format('YYYYMMDD')
+    },
     fresh_shop_columns() {
       let fiexed_cols = [
         {
@@ -383,4 +389,11 @@ export default {
 
 .ant-table-fresh .table-striped
   background-color: #6ed8c750
+
+.expo
+  display: block
+  position: absolute
+  bottom: 20px
+  left: 10px
+  z-index: 100
 </style>

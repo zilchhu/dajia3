@@ -12,11 +12,15 @@ a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading"
         a-button(type="link" @click="confirm") confirm
         br
         a-button(type="link" @click="clearFilters") reset
+
+  template(#rule="{text, record}")
+    span.pre {{text}}
 </template>
 
 <script>
 import Probs from '../../api/probs'
 import { message } from 'ant-design-vue'
+import dayjs from 'dayjs'
 
 export default {
   name: 'ProbAE',
@@ -31,63 +35,57 @@ export default {
     columns() {
        return [
         {
-          title: '门店id',
-          dataIndex: 'shop_id',
-          width: 90,
+          title: '店铺编号',
+          dataIndex: '店铺编号',
+          width: 110,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.shop_id == value
+          onFilter: (value, record) => record.店铺编号 == value
         },
         {
-          title: '门店',
-          dataIndex: 'shop_name',
+          title: '店铺名称',
+          dataIndex: '店铺名称',
           width: 250,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.shop_name == value
+          onFilter: (value, record) => record.店铺名称 == value
         },
         {
           title: '平台',
-          dataIndex: 'platform',
+          dataIndex: '平台',
           width: 70,
           filters: [
             { text: '美团', value: '美团' },
             { text: '饿了么', value: '饿了么' }
           ],
           filterMultiple: true,
-          onFilter: (value, record) => record.platform == value
+          onFilter: (value, record) => record.平台 == value
         },
         {
-          title: '负责',
-          dataIndex: 'person',
-          width: 70,
+          title: '责任人',
+          dataIndex: '责任人',
+          width: 100,
           slots: { filterDropdown: 'filterDropdown', customRender: 'person' },
-          onFilter: (value, record) => record.person == value
+          onFilter: (value, record) => record.责任人 == value
         },
         {
-          title: 'title',
-          dataIndex: 'title',
+          title: '活动类型',
+          dataIndex: '活动类型',
           width: 130,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.title == value
+          onFilter: (value, record) => record.活动类型 == value
         },
         {
-          title: 'descs',
-          dataIndex: 'descs',
-          width: 130,
-          slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.descs == value
+          title: '活动规则',
+          dataIndex: '活动规则',
+          slots: { filterDropdown: 'filterDropdown', customRender: 'rule' },
+          onFilter: (value, record) => record.活动规则 == value
         },
         {
-          title: 'rule',
-          dataIndex: 'rule',
-          slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.rule == value
-        },
-        {
-          title: 'date',
-          dataIndex: 'date',
+          title: '结束时间',
+          dataIndex: '结束时间',
           width: 200,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.date == value
+          onFilter: (value, record) => record.结束时间 == value,
+          sorter: (a, b) => dayjs(a.结束时间).isBefore(dayjs(b.结束时间)) ? -1 : 1
         }
       ]
     }
@@ -126,3 +124,8 @@ export default {
   }
 }
 </script>
+
+<style lang="sass" scoped>
+.pre 
+  white-space: pre-wrap
+</style>

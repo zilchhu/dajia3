@@ -17,6 +17,7 @@ a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading"
 <script>
 import Probs from '../../api/probs'
 import { message } from 'ant-design-vue'
+import dayjs from 'dayjs'
 
 export default {
   name: 'ProbAC',
@@ -109,7 +110,8 @@ export default {
           dataIndex: '到期时间',
           width: 200,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.到期时间 == value
+          onFilter: (value, record) => record.到期时间 == value,
+          sorter: (a, b) => dayjs(a.到期时间).isBefore(dayjs(b.到期时间)) ? -1 : 1
         }
       ]
     }
