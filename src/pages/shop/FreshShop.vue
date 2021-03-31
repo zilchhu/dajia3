@@ -14,7 +14,7 @@ div
       //-     a-button(type="link" @click="confirm") confirm
       //-     br
       //-     a-button(type="link" @click="clearFilters") reset
-      table-select(:style="`min-width: 300px; width: ${column.width + 50 || 220}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+      table-select(:style="`min-width: 160px; width: ${column.dataIndex == 'name' ? 350 : column.width + 50 || 300}px;`" :filterOptions="getColFilters(column.dataIndex)" 
         :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
 
       

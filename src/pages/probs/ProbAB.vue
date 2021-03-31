@@ -4,22 +4,20 @@ a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading"
   size="small" :scroll="{y: scrollY}")
 
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-    a-row(type="flex")
-      a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width || 220}px;`")
-          a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-      a-col(flex="60px")
-        a-button(type="link" @click="confirm") confirm
-        br
-        a-button(type="link" @click="clearFilters") reset
+    table-select(:style="`min-width: 160px; width: ${column.width + 50 || 250}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+      :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
 </template>
 
 <script>
 import Probs from '../../api/probs'
 import { message } from 'ant-design-vue'
+import TableSelect from '../../components/TableSelect'
 
 export default {
   name: 'ProbAB',
+  components: {
+    TableSelect
+  },
   data() {
     return {
       table: [],
@@ -86,10 +84,12 @@ export default {
   },
   methods: {
     getColFilters(colName) {
-      return Array.from(new Set(this.table.map(row => row[colName]))).map(col => ({
-        text: col,
-        value: col
-      }))
+      return Array.from(new Set(this.table.map(row => row[colName] || '')))
+        .sort()
+        .map(col => ({
+          label: col,
+          value: col
+        }))
     },
     toNum(str) {
       try {

@@ -75,8 +75,21 @@ export default {
   data() {
     return {
       tabs: [
-        { key: 1, tab: '原价扣点城市折扣与原价差距大于2', comp: 'ProbA' },
+        { key: 31, tab: '满减活动检查', comp: 'ProbAE' },
+        { key: 29, tab: '减配活动检查', comp: 'ProbAC' },
+        { key: 30, tab: '假减配检查', comp: 'ProbAD' },
+        { key: 28, tab: '折扣到期商品检查', comp: 'ProbAB' },
+        { key: 27, tab: '折扣遗漏商品查询', comp: 'ProbAA' },
+        { key: 26, tab: '美团配送范围对比昨日', comp: 'ProbZ' },
+        { key: 25, tab: '查询点金0曝光的时间', comp: 'ProbY' },
+        { key: 24, tab: '成本表查漏', comp: 'ProbX' },
+        { key: 12, tab: '津贴联盟', comp: 'ProbL' },
+        { key: 23, tab: '单折扣起送', comp: 'ProbW' },
+        { key: 11, tab: '两份起购餐品价格错误', comp: 'ProbK' },
+        { key: 10, tab: '零元商品有餐盒费', comp: 'ProbJ' },
         { key: 2, tab: '商品无餐盒费', comp: 'ProbB' },
+        { key: 1, tab: '原价扣点城市折扣与原价差距大于2', comp: 'ProbA' },
+        
         // { key: 3, tab: '美团薯饼虾饼鸡柳设置两份起购', comp: 'ProbC' },
         // { key: 4, tab: '餐盒费为0常规餐品设置餐盒费1', comp: 'ProbD' },
         // { key: 5, tab: '0.01两份起购餐盒费调整为1.5', comp: 'ProbE' },
@@ -84,9 +97,7 @@ export default {
         // { key: 7, tab: '原价扣点城市产品原价与折扣价差距超过1.1', comp: 'ProbG' },
         // { key: 8, tab: '0元购有餐盒费', comp: 'ProbH' },
         // { key: 9, tab: '加料门店', comp: 'ProbI' },
-        { key: 10, tab: '零元商品有餐盒费', comp: 'ProbJ' },
-        { key: 11, tab: '两份起购餐品价格错误', comp: 'ProbK' },
-        { key: 12, tab: '津贴联盟', comp: 'ProbL' },
+        
         // { key: 13, tab: '饿了么所有门店配送费批量检查', comp: 'ProbM' },
         // { key: 14, tab: '原价扣点城市折扣与原价差距大1', comp: 'ProbN' },
         // { key: 15, tab: '饿了么无餐盒费+1', comp: 'ProbO' },
@@ -97,16 +108,7 @@ export default {
         // { key: 20, tab: '饿了么折扣餐品原价+餐盒费会起送', comp: 'ProbT' },
         // { key: 21, tab: '饿了么零元购有餐盒费', comp: 'ProbU' },
         // { key: 22, tab: '饿了么两份起购餐品价格错误', comp: 'ProbV' },
-        { key: 23, tab: '单折扣起送', comp: 'ProbW' },
-        { key: 24, tab: '成本表查漏', comp: 'ProbX' },
-        { key: 25, tab: '查询点金0曝光的时间', comp: 'ProbY' },
-        { key: 26, tab: '美团配送范围对比昨日', comp: 'ProbZ' },
-        { key: 27, tab: '折扣遗漏商品查询', comp: 'ProbAA' },
-        { key: 28, tab: '折扣到期商品检查', comp: 'ProbAB' },
-        { key: 29, tab: '减配活动检查', comp: 'ProbAC' },
-        { key: 30, tab: '假减配检查', comp: 'ProbAD' },
-        { key: 31, tab: '满减活动检查', comp: 'ProbAE' },
-      ]
+      ].map((v, i) => ({...v, tab: `${i+1}.${v.tab}`}))
     }
   }
 }
