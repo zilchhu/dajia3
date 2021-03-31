@@ -87,11 +87,12 @@ export default {
         {
           title: '物理店',
           dataIndex: 'real_shop',
-          width: 100,
+          width: 120,
           slots: { filterDropdown: 'filterDropdown' },
           filterMultiple: true,
           fixed: 'left',
-          onFilter: (value, record) => record.real_shop == value
+          onFilter: (value, record) => record.real_shop == value,
+          sorter: (a, b) => a.real_shop < b.real_shop ? -1 : 1
         },
         {
           title: '收入',

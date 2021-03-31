@@ -90,7 +90,8 @@ export default {
           width: 120,
           slots: { filterDropdown: 'filterDropdown', customRender: 'real_shop' },
           fixed: 'left',
-          onFilter: (value, record) => record.real_shop == value
+          onFilter: (value, record) => record.real_shop == value,
+          sorter: (a, b) => a.real_shop < b.real_shop ? -1 : 1
         }
       ]
       let dates_cols = this.sum_data.dates.map(v => ({

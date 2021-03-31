@@ -112,7 +112,7 @@ export default {
       elmRules: [['income', '<', 1000]],
       ruleIdx: ['income', 'income_avg', 'consume_ratio', 'settlea_30'],
       collapseKey: [],
-      scrollY: 900,
+      scrollY: 2000,
       selectedRowKeys: [],
       editRowKeysModal: false,
       probClickModal: false,
@@ -161,10 +161,11 @@ export default {
         {
           title: '物理店',
           dataIndex: 'real_shop',
-          width: 100,
+          width: 120,
           slots: { filterDropdown: 'filterDropdown' },
           defaultFilteredValue: this.$route.query.real_shop ? this.$route.query.real_shop.split(',') : [],
-          onFilter: (value, record) => record.real_shop == value
+          onFilter: (value, record) => record.real_shop == value,
+          sorter: (a, b) => a.real_shop < b.real_shop ? -1 : 1
         },
         {
           title: '门店id',
@@ -397,7 +398,7 @@ export default {
       ]
     },
     scrollX() {
-      return this.tableCols.reduce((sum, { width }) => sum + width, 50)
+      return this.tableCols.reduce((sum, { width }) => sum + width + 10, 50)
     },
     shopScrollX() {
       return this.shopTableCols.reduce((sum, { width }) => sum + width, 50)
@@ -471,6 +472,7 @@ export default {
         selectedRowKeys,
         onChange: this.onSelectChange,
         hideDefaultSelections: true,
+        columnWidth: 80,
         selections: [
           {
             key: 'by id',
@@ -574,7 +576,7 @@ export default {
     }
   },
   created() {
-    this.scrollY = document.body.clientHeight - 116
+    this.scrollY = document.body.clientHeight - 136
     this.defaultPageSize = +localStorage.getItem('date/defaultPageSize') || 30
     this.getTableByDate()
   },

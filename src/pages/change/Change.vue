@@ -5,14 +5,17 @@ a-table.ant-table-change(:columns="changes_cols" :data-source="changes" rowKey="
   size="small" :scroll="{y: scrollY}")
 
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-    a-row(type="flex")
-      a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width || 220}px;`")
-          a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-      a-col(flex="60px")
-        a-button(type="link" @click="confirm") confirm
-        br
-        a-button(type="link" @click="clearFilters") reset
+    //- a-row(type="flex")
+    //-   a-col(flex="auto")
+    //-     a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width || 220}px;`")
+    //-       a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
+    //-   a-col(flex="60px")
+    //-     a-button(type="link" @click="confirm") confirm
+    //-     br
+    //-     a-button(type="link" @click="clearFilters") reset
+    table-select(:style="`min-width: 160px; width: ${column.width + 50 || 220}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+      :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
+
 
   template(#shop_id="{text, record}")
     router-link.small(:to="{name: 'shop', params: {shopid: text}}") {{text}}
@@ -44,11 +47,13 @@ import Change from '../../api/change'
 import { message } from 'ant-design-vue'
 import { LoadingOutlined } from '@ant-design/icons-vue'
 import dayjs from 'dayjs'
+import TableSelect from '../../components/TableSelect'
 
 export default {
   name: 'change',
   components: {
-    LoadingOutlined
+    LoadingOutlined,
+    TableSelect
   },
   data() {
     return {
@@ -171,8 +176,8 @@ export default {
   },
   methods: {
     getColFilters(colName) {
-      return Array.from(new Set(this.changes.map(row => row[colName]))).map(col => ({
-        text: col,
+      return Array.from(new Set(this.changes.map(row => row[colName] || ''))).map(col => ({
+        label: col,
         value: col
       }))
     },

@@ -4,14 +4,17 @@ a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading"
   size="small" :scroll="{y: scrollY}")
 
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-    a-row(type="flex")
-      a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width || 220}px;`")
-          a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-      a-col(flex="60px")
-        a-button(type="link" @click="confirm") confirm
-        br
-        a-button(type="link" @click="clearFilters") reset
+    //- a-row(type="flex")
+    //-   a-col(flex="auto")
+    //-     a-select(mode="multiple" :value="selectedKeys" @change="onSelectChange" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width || 220}px;`")
+    //-       a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
+    //-   a-col(flex="60px")
+    //-     a-button(type="link" @click="confirm") confirm
+    //-     br
+    //-     a-button(type="link" @click="clearFilters") reset
+    //- p {{selectedKeys}}
+    table-select(:style="`min-width: 160px; width: ${column.width || 220}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+      :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
 
   template(#handle="{text, record}")
     a-input(:value="text" @change="e => handleChange(e.target.value, record)" size="small")
@@ -20,9 +23,13 @@ a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading"
 <script>
 import Probs from '../../api/probs'
 import { message } from 'ant-design-vue'
+import TableSelect from '../../components/TableSelect'
 
 export default {
   name: 'ProbA',
+  components: {
+    TableSelect
+  },
   data() {
     return {
       table: [],
@@ -110,8 +117,8 @@ export default {
   methods: {
     getColFilters(colName) {
       return Array.from(new Set(this.table.map(row => row[colName]))).map(col => ({
-        text: col,
-        value: col
+        label: col || '',
+        value: col || ''
       }))
     },
     toNum(str) {
@@ -160,6 +167,9 @@ export default {
             message.error(err)
           })
       }
+    },
+    onSelectChange(checks) {
+      console.log(checks)
     }
   },
   created() {
