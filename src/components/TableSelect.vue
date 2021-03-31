@@ -1,6 +1,6 @@
 <template lang="pug">
 div.table-select
-  a-input-search(v-model:value="searchText" placeholder="筛选（支持正则表达式）" @search="onSearch" @change="onChange")
+  a-input-search(v-model:value="searchText" placeholder="（支持正则表达式）" @search="onSearch" @change="onChange")
 
   a-checkbox(v-model:checked="allChecked" @change="onCheckAll" :indeterminate="indeterminate") 全选
   a-checkbox-group.scroll(:options="checkOptions" v-model:value="checkedList")
@@ -31,6 +31,11 @@ export default {
   },
   methods: {
     onChange() {
+      if (this.searchText == '') {
+        this.checkOptions = this.filterOptions
+        this.checkedList = []
+        return
+      }
       let reg = new RegExp(this.searchText)
       this.checkOptions = this.filterOptions.filter(v => reg.test(v.label))
       this.checkedList = this.checkOptions.map(v => v.value)
@@ -46,13 +51,15 @@ export default {
       this.$emit('confirm', this.checkedList)
     },
     onResetClick() {
+      this.searchText = ''
+      this.checkOptions = this.filterOptions
       this.checkedList = []
       this.$emit('reset')
     }
   },
   watch: {
-    filterOptionMd5(n) {
-      console.log('filterOptions Changed', n)
+    filterOptionMd5() {
+      // console.log('filterOptions Changed', n)
       this.checkOptions = this.filterOptions
     },
     selectedList(n) {

@@ -176,10 +176,12 @@ export default {
   },
   methods: {
     getColFilters(colName) {
-      return Array.from(new Set(this.changes.map(row => row[colName] || ''))).map(col => ({
-        label: col,
-        value: col
-      }))
+      return Array.from(new Set(this.changes.map(row => row[colName] || '')))
+        .sort()
+        .map(col => ({
+          label: col,
+          value: col
+        }))
     },
     debounce(fn) {
       let timeout = null
