@@ -5,14 +5,16 @@ div
     @change="table_change"
     size="small" :scroll="{x: scrollX, y: scrollY}" bordered)
     template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-      a-row(type="flex")
-        a-col(flex="auto")
-          a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${240}px;`")
-            a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-        a-col(flex="60px")
-          a-button(type="link" @click="confirm") confirm
-          br
-          a-button(type="link" @click="clearFilters") reset
+      //- a-row(type="flex")
+      //-   a-col(flex="auto")
+      //-     a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${240}px;`")
+      //-       a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
+      //-   a-col(flex="60px")
+      //-     a-button(type="link" @click="confirm") confirm
+      //-     br
+      //-     a-button(type="link" @click="clearFilters") reset
+      table-select(:style="`min-width: 160px; width: ${column.width + 50 || 220}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+        :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
 
     template(#person="{text, record}")
         router-link(:to="{ name: 'user', params: { username: text || '-', date: 0 }}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
@@ -30,6 +32,7 @@ import dayjs from 'dayjs'
 import localeData from 'dayjs/plugin/localeData'
 import weekday from 'dayjs/plugin/weekday'
 import updateLocale from 'dayjs/plugin/updateLocale'
+import TableSelect from '../../components/TableSelect'
 
 import 'dayjs/locale/zh-cn'
 
@@ -45,6 +48,9 @@ dayjs.updateLocale('zh-cn', {
 
 export default {
   name: 'perf',
+  components: {
+    TableSelect
+  },
   data() {
     return {
       perfs: [],
@@ -92,7 +98,7 @@ export default {
           filterMultiple: true,
           fixed: 'left',
           onFilter: (value, record) => record.real_shop == value,
-          sorter: (a, b) => a.real_shop < b.real_shop ? -1 : 1
+          sorter: (a, b) => (a.real_shop < b.real_shop ? -1 : 1)
         },
         {
           title: '收入',
@@ -255,10 +261,12 @@ export default {
       }
     },
     getColFilters(colName) {
-      return Array.from(new Set(this.perfs.map(row => row[colName]))).map(col => ({
-        text: col,
-        value: col
-      }))
+      return Array.from(new Set(this.perfs.map(row => row[colName] || '')))
+        .sort()
+        .map(col => ({
+          label: col,
+          value: col
+        }))
     },
     fetch_perf() {
       this.spinning = true

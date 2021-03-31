@@ -1,11 +1,11 @@
 <template lang="pug">
 div.table-select
-  a-input-search(v-model:value="searchText" placeholder="（支持正则表达式）" @search="onSearch" @change="onChange")
+  a-input-search(v-model:value="searchText" :allowClear="true" placeholder="(支持正则，回车确定)" @search="onSearch" @change="onChange")
 
   a-checkbox(v-model:checked="allChecked" @change="onCheckAll" :indeterminate="indeterminate") 全选
   a-checkbox-group.scroll(:options="checkOptions" v-model:value="checkedList")
-  a-button.mr10(size="small" @click="onClick") 确定
-  a-button(size="small" @click="onResetClick") 重置
+  a-button.mr10(size="small" @click="onClick") confirm
+  a-button(size="small" @click="onResetClick") reset
   //- p {{checkedList}}
 </template>
 
