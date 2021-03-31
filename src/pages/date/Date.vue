@@ -3,14 +3,17 @@ div
   a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :row-selection="rowSelection" :loading="tableLoading" @expand="expand" :expandRowByClick="true" :expandIconAsCell="false" :expandIconColumnIndex="-1" :pagination="{showSizeChanger: true, defaultPageSize}"
     @change="table_change" size="small" :scroll="{x: scrollX, y: scrollY}")
     template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-      a-row(type="flex")
-        a-col(flex="auto")
-          a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width}px;`")
-            a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-        a-col(flex="60px")
-          a-button(type="link" @click="confirm") confirm
-          br
-          a-button(type="link" @click="clearFilters") reset
+      //- a-row(type="flex")
+      //-   a-col(flex="auto")
+      //-     a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width}px;`")
+      //-       a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
+      //-   a-col(flex="60px")
+      //-     a-button(type="link" @click="confirm") confirm
+      //-     br
+      //-     a-button(type="link" @click="clearFilters") reset
+      table-select(:style="`min-width: 160px; width: ${column.width + 50 || 220}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+       :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
+
     //- 染色
     template(v-for="col in ruleIdx" #[col]="{text, record}")
       .cell(:class="{unsatisfied: rules2fn[record.platform][col](text)}") {{text}}
@@ -86,6 +89,7 @@ import HelloForm2 from '../../components/HelloForm2'
 import AllShopForm from '../../components/shop/AllShopForm'
 import ShopProblem from '../../components/shop/ShopProblem'
 import ShopIndices from '../../components/shop/ShopIndices'
+import TableSelect from '../../components/TableSelect'
 
 function distinct(s) {
   let ns = s.trim().split('\n')
@@ -127,7 +131,8 @@ export default {
     HelloForm2,
     AllShopForm,
     ShopProblem,
-    ShopIndices
+    ShopIndices,
+    TableSelect
   },
   computed: {
     tablePersonColFilters() {
@@ -145,17 +150,14 @@ export default {
           title: '城市',
           dataIndex: 'city',
           width: 70,
-          filters: this.tableCityColFilters,
-          filterMultiple: true,
+          slots: { filterDropdown: 'filterDropdown' },
           onFilter: (value, record) => record.city == value
         },
         {
           title: '负责',
           dataIndex: 'person',
           width: 70,
-          filters: this.tablePersonColFilters,
-          filterMultiple: true,
-          slots: { customRender: 'person' },
+          slots: { customRender: 'person', filterDropdown: 'filterDropdown' },
           onFilter: (value, record) => record.person == value
         },
         {
@@ -163,9 +165,8 @@ export default {
           dataIndex: 'real_shop',
           width: 120,
           slots: { filterDropdown: 'filterDropdown' },
-          defaultFilteredValue: this.$route.query.real_shop ? this.$route.query.real_shop.split(',') : [],
           onFilter: (value, record) => record.real_shop == value,
-          sorter: (a, b) => a.real_shop < b.real_shop ? -1 : 1
+          sorter: (a, b) => (a.real_shop < b.real_shop ? -1 : 1)
         },
         {
           title: '门店id',
@@ -472,7 +473,6 @@ export default {
         selectedRowKeys,
         onChange: this.onSelectChange,
         hideDefaultSelections: true,
-        columnWidth: 80,
         selections: [
           {
             key: 'by id',
@@ -498,8 +498,10 @@ export default {
       return this.$route.params.day
     },
     yesterday() {
-      return dayjs().subtract(1, 'day').format('YYYYMMDD')
-    },
+      return dayjs()
+        .subtract(1, 'day')
+        .format('YYYYMMDD')
+    }
   },
   methods: {
     getTableByDate() {
@@ -528,7 +530,9 @@ export default {
         })
     },
     getColFilters(colName) {
-      return Array.from(new Set(this.table.map(row => row[colName]))).map(col => ({ text: col, value: col }))
+      return Array.from(new Set(this.table.map(row => row[colName] || '')))
+        .sort()
+        .map(col => ({ label: col, value: col }))
     },
     expand(expanded, record) {
       if (expanded) {
@@ -576,7 +580,7 @@ export default {
     }
   },
   created() {
-    this.scrollY = document.body.clientHeight - 136
+    this.scrollY = document.body.clientHeight - 116
     this.defaultPageSize = +localStorage.getItem('date/defaultPageSize') || 30
     this.getTableByDate()
   },

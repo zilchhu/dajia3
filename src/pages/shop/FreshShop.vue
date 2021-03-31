@@ -6,14 +6,16 @@ div
     size="small" :scroll="{ x: scrollX, y: scrollY}" bordered :style="`max-width: ${scrollX + 10}px;`"
     :rowClassName="(record) => record.field == '评论数' ? 'table-striped' : null")
     template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-      a-row(type="flex")
-        a-col(flex="auto")
-          a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${240}px;`")
-            a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-        a-col(flex="60px")
-          a-button(type="link" @click="confirm") confirm
-          br
-          a-button(type="link" @click="clearFilters") reset
+      //- a-row(type="flex")
+      //-   a-col(flex="auto")
+      //-     a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${240}px;`")
+      //-       a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
+      //-   a-col(flex="60px")
+      //-     a-button(type="link" @click="confirm") confirm
+      //-     br
+      //-     a-button(type="link" @click="clearFilters") reset
+      table-select(:style="`min-width: 300px; width: ${column.width + 50 || 220}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+        :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
 
       
     template(#value="{text, record}")
@@ -50,6 +52,7 @@ import updateLocale from 'dayjs/plugin/updateLocale'
 import ShopProblem from '../../components/shop/ShopProblem'
 import ShopIndices from '../../components/shop/ShopIndices'
 import ShopOffsell from '../../components/shop/ShopOffsell'
+import TableSelect from '../../components/TableSelect'
 
 import 'dayjs/locale/zh-cn'
 
@@ -68,7 +71,8 @@ export default {
   components: {
     ShopProblem,
     ShopIndices,
-    ShopOffsell
+    ShopOffsell,
+    TableSelect
   },
   data() {
     return {
@@ -89,7 +93,7 @@ export default {
       offsellClickModal: false,
       shop_meta: { shopId: null, platform: null },
       shop_meta_rates: { shopId: null, platform: null },
-      shop_meta_offsells: { shopId: null, platform: null, day: null },
+      shop_meta_offsells: { shopId: null, platform: null, day: null }
     }
   },
   computed: {
@@ -159,8 +163,8 @@ export default {
           title: '项目',
           dataIndex: 'field',
           width: 100,
-          filters: this.getColFilters('field'),
-          filterMultiple: true,
+          // filters: this.getColFilters('field'),
+          // filterMultiple: true,
           fixed: 'left',
           slots: { customRender: 'field' },
           onFilter: (value, record) => record.field == value
@@ -178,9 +182,15 @@ export default {
               <div
                 className={this.isUnsatisfy(record, text) ? 'unsatisfied' : ''}
                 onClick={() => {
-                  if(record.field == '成本比例') this.costRatioClick(record)
-                  else if(record.field == '评分') this.ratingClick(record)
-                  else if(record.field == '下架产品量') this.offsellClick(dayjs(v, 'YYYYMMDD').add(1, 'day').format('YYYYMMDD'), record)
+                  if (record.field == '成本比例') this.costRatioClick(record)
+                  else if (record.field == '评分') this.ratingClick(record)
+                  else if (record.field == '下架产品量')
+                    this.offsellClick(
+                      dayjs(v, 'YYYYMMDD')
+                        .add(1, 'day')
+                        .format('YYYYMMDD'),
+                      record
+                    )
                 }}
               >
                 {text}
@@ -261,10 +271,12 @@ export default {
       }
     },
     getColFilters(colName) {
-      return Array.from(new Set(this.fresh_shop_data.shops.map(row => row[colName]))).map(col => ({
-        text: col,
-        value: col
-      }))
+      return Array.from(new Set(this.fresh_shop_data.shops.map(row => row[colName] || '')))
+        .sort()
+        .map(col => ({
+          label: col,
+          value: col
+        }))
     },
     fetch_fresh_shop() {
       this.spinning = true
