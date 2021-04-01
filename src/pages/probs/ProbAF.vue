@@ -1,17 +1,11 @@
 <template lang="pug">
-a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading" 
+a-table.ant-table-change(:columns="columns" :data-source="table" rowKey="key" :loading="loading" 
   :pagination="{showSizeChanger: true, defaultPageSize: 100, pageSizeOptions: ['50', '100', '200', '400'], size: 'small'}" 
-  size="small" :scroll="{y: scrollY}")
+  size="small" :scroll="{y: scrollY}" :rowClassName="(record, index) => (index % 2 === 1 ? 'table-striped' : null)")
 
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-    a-row(type="flex")
-      a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width || 220}px;`")
-          a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-      a-col(flex="60px")
-        a-button(type="link" @click="confirm") confirm
-        br
-        a-button(type="link" @click="clearFilters") reset
+    table-select(:style="`min-width: 160px; width: ${column.width + 50 || 350}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+      :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
 
   template(#rule="{text, record}")
     span.pre {{text}}
@@ -20,9 +14,13 @@ a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading"
 <script>
 import Probs from '../../api/probs'
 import { message } from 'ant-design-vue'
+import TableSelect from '../../components/TableSelect'
 
 export default {
   name: 'ProbAF',
+  components: {
+    TableSelect
+  },
   data() {
     return {
       table: [],
@@ -32,7 +30,7 @@ export default {
   },
   computed: {
     columns() {
-       return [
+      return [
         {
           title: '店铺id',
           dataIndex: '店铺id',
@@ -102,10 +100,12 @@ export default {
   },
   methods: {
     getColFilters(colName) {
-      return Array.from(new Set(this.table.map(row => row[colName]))).map(col => ({
-        text: col,
-        value: col
-      }))
+      return Array.from(new Set(this.table.map(row => row[colName] || '')))
+        .sort()
+        .map(col => ({
+          label: col,
+          value: col
+        }))
     },
     toNum(str) {
       try {
@@ -136,6 +136,6 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.pre 
+.pre
   white-space: pre-wrap
 </style>

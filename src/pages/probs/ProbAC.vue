@@ -1,26 +1,25 @@
 <template lang="pug">
-a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading" 
+a-table.ant-table-change(:columns="columns" :data-source="table" rowKey="key" :loading="loading" 
   :pagination="{showSizeChanger: true, defaultPageSize: 100, pageSizeOptions: ['50', '100', '200', '400'], size: 'small'}" 
-  size="small" :scroll="{y: scrollY}")
+  size="small" :scroll="{y: scrollY}" :rowClassName="(record, index) => (index % 2 === 1 ? 'table-striped' : null)")
 
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-    a-row(type="flex")
-      a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width || 220}px;`")
-          a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-      a-col(flex="60px")
-        a-button(type="link" @click="confirm") confirm
-        br
-        a-button(type="link" @click="clearFilters") reset
+    table-select(:style="`min-width: 160px; width: ${column.width + 50 || 220}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+      :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
+
 </template>
 
 <script>
 import Probs from '../../api/probs'
 import { message } from 'ant-design-vue'
 import dayjs from 'dayjs'
+import TableSelect from '../../components/TableSelect'
 
 export default {
   name: 'ProbAC',
+  components: {
+    TableSelect
+  },
   data() {
     return {
       table: [],
@@ -68,14 +67,14 @@ export default {
           dataIndex: '合作方案',
           slots: { filterDropdown: 'filterDropdown' },
           width: 150,
-          onFilter: (value, record) => record.合作方案 == value
+          onFilter: (value, record) => (record.合作方案 || '') == value
         },
         {
           title: '活动规则',
           dataIndex: '活动规则',
           width: 250,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.活动规则 == value
+          onFilter: (value, record) => (record.活动规则 || '') == value
         },
         {
           title: '基础配送费',
@@ -110,18 +109,20 @@ export default {
           dataIndex: '到期时间',
           width: 200,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.到期时间 == value,
-          sorter: (a, b) => dayjs(a.到期时间).isBefore(dayjs(b.到期时间)) ? -1 : 1
+          onFilter: (value, record) => (record.到期时间 || '') == value,
+          sorter: (a, b) => (dayjs(a.到期时间).isBefore(dayjs(b.到期时间)) ? -1 : 1)
         }
       ]
     }
   },
   methods: {
     getColFilters(colName) {
-      return Array.from(new Set(this.table.map(row => row[colName]))).map(col => ({
-        text: col,
-        value: col
-      }))
+      return Array.from(new Set(this.table.map(row => row[colName] || '')))
+        .sort()
+        .map(col => ({
+          label: col,
+          value: col
+        }))
     },
     toNum(str) {
       try {

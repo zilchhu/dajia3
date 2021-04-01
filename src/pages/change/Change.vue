@@ -72,7 +72,7 @@ export default {
           dataIndex: 'shop_name',
           width: 250,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.shop_name == value
+          onFilter: (value, record) => (record.shop_name || '') == value
         },
         {
           title: '平台',
@@ -91,7 +91,7 @@ export default {
           dataIndex: 'person',
           width: 70,
           slots: { filterDropdown: 'filterDropdown', customRender: 'person' },
-          onFilter: (value, record) => record.person == value
+          onFilter: (value, record) => (record.person || '') == value
         },
         {
           title: '活动',
@@ -276,14 +276,18 @@ export default {
   font-size: 0.886em
   color: #2c363c
 
+.ant-table-change svg[data-icon="filter"] 
+  width: 10px
+  height: 10px
+
 .ant-table-change .table-striped
   background-color: #fafafa
 
-.ant-table-change .ant-input-affix-wrapper-sm
+.ant-table-change .ant-input-affix-wrapper-sm, .ant-table-change .ant-input-sm
   border: none
   background: transparent
 
-.ant-table-change .ant-input-affix-wrapper > input.ant-input
+.ant-table-change .ant-input-affix-wrapper > input.ant-input, .ant-table-change .ant-input-sm
   background: transparent
   color: #fa821c
 </style>
