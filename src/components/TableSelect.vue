@@ -18,9 +18,9 @@ export default {
   data() {
     return {
       searchText: '',
-      checkedList: [],
+      checkedList: [...this.selectedList],
       checkOptions: [],
-      indeterminate: true,
+      indeterminate: false,
       allChecked: false
     }
   },
@@ -36,7 +36,12 @@ export default {
         this.checkedList = []
         return
       }
-      let reg = new RegExp(this.searchText)
+      let reg
+      try {
+        reg = new RegExp(this.searchText)
+      } catch (e) {
+        return
+      }
       this.checkOptions = this.filterOptions.filter(v => reg.test(v.label))
       this.checkedList = this.checkOptions.map(v => v.value)
     },
@@ -61,9 +66,6 @@ export default {
     filterOptionMd5() {
       // console.log('filterOptions Changed', n)
       this.checkOptions = this.filterOptions
-    },
-    selectedList(n) {
-      this.checkedList = n
     },
     checkedList(n) {
       this.indeterminate = !!n.length && n.length < this.checkOptions.length

@@ -128,7 +128,8 @@ export default {
             '大额互斥红包',
             '配送费减免',
             '单品折扣',
-            '第二份半价'
+            '第二份半价',
+            '买赠活动'
           ],
           onFilter: (value, record) => record.title == value
         },

@@ -1575,6 +1575,17 @@
     semver "^6.1.0"
     strip-ansi "^6.0.0"
 
+"@vue/compiler-core@3.0.10":
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/@vue/compiler-core/-/compiler-core-3.0.10.tgz#ced92120c6b9bab7b6c44dfe5e3e5cf2ea422531"
+  integrity sha512-rayD+aODgX9CWgWv0cAI+whPLyMmtkWfNGsZpdpsaIloh8mY2hX8+SvE1Nn3755YhGWJ/7oaDEcNpOctGwZbsA==
+  dependencies:
+    "@babel/parser" "^7.12.0"
+    "@babel/types" "^7.12.0"
+    "@vue/shared" "3.0.10"
+    estree-walker "^2.0.1"
+    source-map "^0.6.1"
+
 "@vue/compiler-core@3.0.4":
   version "3.0.4"
   resolved "https://registry.npm.taobao.org/@vue/compiler-core/download/@vue/compiler-core-3.0.4.tgz?cache=0&sync_timestamp=1606946111037&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vue%2Fcompiler-core%2Fdownload%2F%40vue%2Fcompiler-core-3.0.4.tgz#0122aca6eada4cb28b39ed930af917444755e330"
@@ -1585,6 +1596,14 @@
     "@vue/shared" "3.0.4"
     estree-walker "^2.0.1"
     source-map "^0.6.1"
+
+"@vue/compiler-dom@3.0.10":
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/@vue/compiler-dom/-/compiler-dom-3.0.10.tgz#59d3597498e7d4b0b92f3886a823f99d5b08f1fe"
+  integrity sha512-SzN1li9xAxtqkZimR1AFU2t1N0vzsAJxR/5764xoS0xedwhUU9s8s+Tks2FNMLsXiqdkP2Qd4zAM+9EwTbZmRw==
+  dependencies:
+    "@vue/compiler-core" "3.0.10"
+    "@vue/shared" "3.0.10"
 
 "@vue/compiler-dom@3.0.4":
   version "3.0.4"
@@ -1615,6 +1634,14 @@
     postcss-modules "^3.2.2"
     postcss-selector-parser "^6.0.4"
     source-map "^0.6.1"
+
+"@vue/compiler-ssr@3.0.10":
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/@vue/compiler-ssr/-/compiler-ssr-3.0.10.tgz#6ccc647bda49c0fc1ca100219e9c71268e048120"
+  integrity sha512-skrPSp9pjZG3unqHpUaEaRRpO1yYxbCXRfJ1kZW8PTGAg5g3Y/hrUet5+Q6zCIZwr5j1mSMBSLXMDCjFuyyZLg==
+  dependencies:
+    "@vue/compiler-dom" "3.0.10"
+    "@vue/shared" "3.0.10"
 
 "@vue/compiler-ssr@3.0.4":
   version "3.0.4"
@@ -1668,6 +1695,19 @@
     "@vue/runtime-core" "3.0.4"
     "@vue/shared" "3.0.4"
     csstype "^2.6.8"
+
+"@vue/server-renderer@^3.0.10":
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/@vue/server-renderer/-/server-renderer-3.0.10.tgz#14ba728db03c8f1408437cf900d8b24e1044e160"
+  integrity sha512-8WR/OdFdwLIhLmw82euU4NEQcucz1h3LWgKsfFfzmx0OLaQiaafXm2vNpYlN3lPpVi3s2GzDbMBmIrUNSliI7g==
+  dependencies:
+    "@vue/compiler-ssr" "3.0.10"
+    "@vue/shared" "3.0.10"
+
+"@vue/shared@3.0.10":
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.0.10.tgz#5476d5615d01bf339c65c2e804f5909bbc27844a"
+  integrity sha512-p8GJ+bGpEGiEHICwcCH/EtJnkZQllrOfm1J2J+Ep0ydMte25bPnArgrY/h2Tn1LKqqR3LXyQlOSYY6gJgiW2LQ==
 
 "@vue/shared@3.0.4":
   version "3.0.4"
