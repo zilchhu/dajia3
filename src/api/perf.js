@@ -5,7 +5,7 @@ export default class Perf {
     this.date = date
   }
 
-  single() {
-    return instance.get(urls.perf.base(this.date))
+  single(djh = 1) {
+    return instance.get(urls.perf.base(this.date), { params: { djh } })
   }
 }

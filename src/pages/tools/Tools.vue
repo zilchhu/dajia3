@@ -16,6 +16,8 @@
         router-link(:to="{name: 'tools-add-dada'}") 达达
       a-menu-item(key="add-myt") 
         router-link(:to="{name: 'tools-add-myt'}") 麦芽田
+      a-menu-item(key="add-shunfeng") 
+        router-link(:to="{name: 'tools-add-shunfeng'}") 顺丰 
 
     a-sub-menu(key="food-setting" title="原价修改")
       a-menu-item(key="food-setting:mt")

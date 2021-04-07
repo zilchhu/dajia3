@@ -49,6 +49,18 @@ export default class Shop {
     return instance.get(urls.shop.dada)
   }
 
+  addShunfeng(data) {
+    return instance.post(urls.shop.addShunfeng, data)
+  }
+
+  delShunfeng(data) {
+    return instance.post(urls.shop.delShunfeng, data)
+  }
+
+  shunfeng() {
+    return instance.get(urls.shop.shunfeng)
+  }
+
   addMyt(data) {
     return instance.post(urls.shop.addMyt, data)
   }

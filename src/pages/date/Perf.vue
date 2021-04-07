@@ -23,6 +23,7 @@ div
       .cell(:class="{unsatisfied: isUnsatisfy(text, col)}") {{text}}
 
   a.expo(:href="`http://192.168.3.3:9040/绩效表${yesterday}.xlsx`" target="_blank") export
+  a-checkbox.djh(v-model:checked="djh" @change="fetch_perf") 大计划
 </template>
 
 <script>
@@ -58,7 +59,8 @@ export default {
       scrollY: 900,
       defaultPageSize: 40,
       last_perf_route: { path: '/perf/31' },
-      ruleIdx: ['income_avg', 'cost_sum_ratio', 'consume_sum_ratio', 'score']
+      ruleIdx: ['income_avg', 'cost_sum_ratio', 'consume_sum_ratio', 'score'],
+      djh: true
     }
   },
   computed: {
@@ -271,7 +273,7 @@ export default {
     fetch_perf() {
       this.spinning = true
       new Perf(this.day)
-        .single()
+        .single(this.djh ? 1 : 0)
         .then(res => {
           this.perfs = res
           this.spinning = false
@@ -325,5 +327,12 @@ export default {
   position: absolute
   bottom: 10px
   left: 10px
+  z-index: 100
+
+.djh
+  display: block
+  position: absolute
+  bottom: 10px
+  left: 80px
   z-index: 100
 </style>

@@ -9,6 +9,7 @@ import Tools from './pages/tools/Tools'
 import ToolsAddFresh from './pages/tools/ToolsAddFresh'
 import ToolsAddFengniao from './pages/tools/ToolsAddFengniao'
 import ToolsAddDada from './pages/tools/ToolsAddDada'
+import ToolsAddShunfeng from './pages/tools/ToolsAddShunfeng'
 import ToolsAddMyt from './pages/tools/ToolsAddMyt'
 import ToolsFreshMt from './pages/tools/ToolsFreshMt'
 import ToolsFreshElm from './pages/tools/ToolsFreshElm'
@@ -36,6 +37,7 @@ const routes = [
       { path: 'add/fresh', name: 'tools-add-fresh', component: ToolsAddFresh },
       { path: 'add/fengniao', name: 'tools-add-fengniao', component: ToolsAddFengniao },
       { path: 'add/dada', name: 'tools-add-dada', component: ToolsAddDada },
+      { path: 'add/shunfeng', name: 'tools-add-shunfeng', component: ToolsAddShunfeng },
       { path: 'add/myt', name: 'tools-add-myt', component: ToolsAddMyt },
       { path: 'fresh/mt', name: 'tools-fresh-mt', component: ToolsFreshMt },
       { path: 'fresh/elm', name: 'tools-fresh-elm', component: ToolsFreshElm },
