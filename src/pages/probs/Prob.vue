@@ -37,6 +37,7 @@ import ProbAC from './ProbAC'
 import ProbAD from './ProbAD'
 import ProbAE from './ProbAE'
 import ProbAF from './ProbAF'
+import ProbAG from './ProbAG'
 
 export default {
   name: 'Prob',
@@ -73,6 +74,7 @@ export default {
     ProbAD,
     ProbAE,
     ProbAF,
+    ProbAG
   },
   data() {
     return {
@@ -91,7 +93,8 @@ export default {
         { key: 10, tab: '零元商品有餐盒费', comp: 'ProbJ' },
         { key: 2, tab: '商品无餐盒费', comp: 'ProbB' },
         { key: 1, tab: '原价扣点城市折扣与原价差距大于2', comp: 'ProbA' },
-        { key: 32, tab: '库存过少检查', comp: 'ProbAF' }
+        { key: 32, tab: '库存过少检查', comp: 'ProbAF' },
+        { key: 33, tab: '查询商品多规格', comp: 'ProbAG' },
         
         // { key: 3, tab: '美团薯饼虾饼鸡柳设置两份起购', comp: 'ProbC' },
         // { key: 4, tab: '餐盒费为0常规餐品设置餐盒费1', comp: 'ProbD' },
