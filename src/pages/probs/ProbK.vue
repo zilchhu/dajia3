@@ -79,31 +79,31 @@ export default {
         },
         {
           title: '原价',
-          dataIndex: 'originalPrice',
+          dataIndex: '商品原价',
           align: 'right',
           width: 100,
-          sorter: (a, b) => this.toNum(a.originalPrice) - this.toNum(b.originalPrice)
+          sorter: (a, b) => this.toNum(a.商品原价) - this.toNum(b.商品原价)
         },
         {
-          title: '折扣价',
-          dataIndex: 'price',
+          title: '凑满减/起送价格',
+          dataIndex: '凑满减/起送价格',
           align: 'right',
           width: 100,
-          sorter: (a, b) => this.toNum(a.price) - this.toNum(b.price)
+          sorter: (a, b) => this.toNum(a['凑满减/起送价格']) - this.toNum(b['凑满减/起送价格'])
         },
         {
           title: '餐盒费',
-          dataIndex: 'package_fee',
+          dataIndex: '餐盒费',
           align: 'right',
           width: 100,
-          sorter: (a, b) => this.toNum(a.package_fee) - this.toNum(b.package_fee)
+          sorter: (a, b) => this.toNum(a.餐盒费) - this.toNum(b.餐盒费)
         },
         {
-          title: '起购数',
-          dataIndex: 'min_purchase_quantity',
+          title: '起购量',
+          dataIndex: '起购量',
           align: 'right',
           width: 100,
-          sorter: (a, b) => this.toNum(a.min_purchase_quantity) - this.toNum(b.min_purchase_quantity)
+          sorter: (a, b) => this.toNum(a.起购量) - this.toNum(b.起购量)
         },
         {
           title: '处理',

@@ -1,5 +1,5 @@
 <template lang="pug">
-a-tabs(tab-position="top" )
+a-tabs(tab-position="top" size="small" :tabBarGutter="0")
   a-tab-pane(v-for="tab in tabs" :key="tab.key" :tab="tab.tab")
     component(:is="tab.comp")
 </template>

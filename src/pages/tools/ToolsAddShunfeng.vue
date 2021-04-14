@@ -84,7 +84,7 @@ export default {
         .map(k =>
           typeof this.formState[k] == 'string' ? (this.formState[k] = this.formState[k].trim()) : this.formState[k]
         )
-      console.log({ ...this.formState })
+      console.log({ ...this.formState }) 
       this.loading = true
       new Shop()
         .addShunfeng({ ...this.formState })

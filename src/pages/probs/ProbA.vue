@@ -1,7 +1,7 @@
 <template lang="pug">
-a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading" 
+a-table.ant-table-change(:columns="columns" :data-source="table" rowKey="key" :loading="loading" 
   :pagination="{showSizeChanger: true, defaultPageSize: 100, pageSizeOptions: ['50', '100', '200', '400'], size: 'small'}" 
-  size="small" :scroll="{y: scrollY}")
+  size="small" :scroll="{y: scrollY}" :rowClassName="(record, index) => (index % 2 === 1 ? 'table-striped' : null)")
 
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     //- a-row(type="flex")

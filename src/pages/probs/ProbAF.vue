@@ -9,6 +9,9 @@ a-table.ant-table-change(:columns="columns" :data-source="table" rowKey="key" :l
 
   template(#rule="{text, record}")
     span.pre {{text}}
+
+  template(#handle="{text, record}")
+    a-input(:value="text" @change="e => handleChange(e.target.value, record)" size="small")
 </template>
 
 <script>
@@ -25,7 +28,8 @@ export default {
     return {
       table: [],
       loading: false,
-      scrollY: 900
+      scrollY: 900,
+      debounce_save: null
     }
   },
   computed: {
@@ -94,6 +98,17 @@ export default {
           dataIndex: '最大库存',
           width: 100,
           sorter: (a, b) => this.toNum(a.最大库存) - this.toNum(b.最大库存)
+        },
+        {
+          title: '处理',
+          dataIndex: 'handle',
+          filters: [
+            { text: '已处理', value: '' },
+            { text: '未处理', value: '1' }
+          ],
+          filterMultiple: true,
+          slots: { customRender: 'handle' },
+          onFilter: (value, record) => (record?.handle == null) == Boolean(value)
         }
       ]
     }
@@ -126,10 +141,38 @@ export default {
           message.error(err)
           this.loading = false
         })
+    },
+    debounce(fn) {
+      let timeout = null
+      return function() {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => fn.apply(this, arguments), 800)
+      }
+    },
+    handleChange(value, record) {
+      const target = this.table.filter(item => record.key === item.key)[0]
+      if (target) {
+        target['handle'] = value
+        this.debounce_save(record)
+      }
+    },
+    save(record) {
+      const target = this.table.filter(item => record.key === item.key)[0]
+      if (target) {
+        new Probs()
+          .save('af', record.key, target['handle'])
+          .then(res => {
+            console.log(res)
+          })
+          .catch(err => {
+            message.error(err)
+          })
+      }
     }
   },
   created() {
     this.scrollY = document.body.clientHeight - 176
+    this.debounce_save = this.debounce(this.save)
     this.fetchTable()
   }
 }
