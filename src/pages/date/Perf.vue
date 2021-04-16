@@ -125,6 +125,13 @@ export default {
           sorter: (a, b) => this.toNum(a.income_score) - this.toNum(b.income_score)
         },
         {
+          title: '收入分变化',
+          dataIndex: 'income_score_1',
+          align: 'right',
+          width: 120,
+          sorter: (a, b) => this.toNum(a.income_score_1) - this.toNum(b.income_score_1)
+        },
+        {
           title: '成本',
           dataIndex: 'cost_sum',
           align: 'right',
@@ -161,6 +168,13 @@ export default {
           sorter: (a, b) => this.toNum(a.cost_score) - this.toNum(b.cost_score)
         },
         {
+          title: '成本分变化',
+          dataIndex: 'cost_score_1',
+          align: 'right',
+          width: 120,
+          sorter: (a, b) => this.toNum(a.cost_score_1) - this.toNum(b.cost_score_1)
+        },
+        {
           title: '推广',
           dataIndex: 'consume_sum',
           align: 'right',
@@ -195,6 +209,13 @@ export default {
           align: 'right',
           width: 100,
           sorter: (a, b) => this.toNum(a.consume_score) - this.toNum(b.consume_score)
+        },
+        {
+          title: '推广分变化',
+          dataIndex: 'consume_score_1',
+          align: 'right',
+          width: 120,
+          sorter: (a, b) => this.toNum(a.consume_score_1) - this.toNum(b.consume_score_1)
         },
         {
           title: '分数',

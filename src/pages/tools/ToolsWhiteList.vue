@@ -12,7 +12,7 @@
           a-list-item
             template(#actions)
               span(@click="e => onDelMtSmart(item)") 删除
-            a-list-item-meta(:description="`${item.shopId} ${item.shopName}`")
+            a-list-item-meta(:title="`${item.shopId} ${item.shopName}`")
 
     a-tab-pane(key="2" tab="美团点金推广")
       .toolbar
@@ -25,7 +25,7 @@
           a-list-item
             template(#actions)
               span(@click="e => onDelMtCpc(item)") 删除
-            a-list-item-meta(:description="`${item.shopId} ${item.shopName}`")
+            a-list-item-meta(:title="`${item.shopId} ${item.shopName}`")
 
     a-tab-pane(key="3" tab="饿了么推广")
       .toolbar
@@ -38,7 +38,7 @@
           a-list-item
             template(#actions)
               span(@click="e => onDelElmSmart(item)") 删除
-            a-list-item-meta(:description="`${item.shopId} ${item.shopName}`")
+            a-list-item-meta(:title="`${item.shopId} ${item.shopName}`")
 </template>
 
 <script>
@@ -262,8 +262,8 @@ export default {
   padding: 0 20px
 
 .list
-  max-height: calc(100vh - 120px)
-  overflow: scroll
+  max-height: calc(100vh - 140px)
+  overflow-y: scroll
 
 .toolbar
   display: flex

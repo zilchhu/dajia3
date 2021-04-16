@@ -38,6 +38,7 @@ import ProbAD from './ProbAD'
 import ProbAE from './ProbAE'
 import ProbAF from './ProbAF'
 import ProbAG from './ProbAG'
+import ProbAH from './ProbAH'
 
 export default {
   name: 'Prob',
@@ -74,11 +75,13 @@ export default {
     ProbAD,
     ProbAE,
     ProbAF,
-    ProbAG
+    ProbAG,
+    ProbAH,
   },
   data() {
     return {
       tabs: [
+        { key: 34, tab: '推广费余额查询', comp: 'ProbAH' },
         { key: 31, tab: '满减活动检查', comp: 'ProbAE' },
         { key: 29, tab: '减配活动检查', comp: 'ProbAC' },
         { key: 30, tab: '假减配检查', comp: 'ProbAD' },
