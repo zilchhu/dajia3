@@ -8,14 +8,14 @@ div
       table-select(:style="`min-width: 160px; width: ${column.width + 50 || 350}px;`" :filterOptions="getColFilters(column.dataIndex)" 
         :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
 
-    template(#rule="{text, record}")
-      span.pre {{text}}
+    template(#balances="{text, record}")
+      div(v-html="renderBalances(text)")
 
     template(#handle="{text, record}")
       a-input(:value="text" @change="e => handleChange(e.target.value, record)" size="small")
 
-  .day-slider
-    div(style="margin-right: 18px; font-size: 10px;") 变化天数
+  .day-slider(v-show="!loading")
+    div(style="margin-right: 8px; font-size: 10px;") 变化天数
     a-slider(v-model:value="day" :min="1" :max="10" style="width: 160px;")
 </template>
 
@@ -76,7 +76,8 @@ export default {
         },
         {
           title: '余额变化',
-          dataIndex: 'balances'
+          dataIndex: 'balances',
+          slots: { customRender: 'balances' }
         },
         {
           title: '处理',
@@ -147,6 +148,20 @@ export default {
             message.error(err)
           })
       }
+    },
+    renderBalances(text) {
+      if (!text) return text
+      return text
+        .split('->')
+        .map(parseFloat)
+        .map((v, i, a) =>
+          v < a[i + 1]
+            ? `<span style="text-decoration: underline dotted orange;">${v}</span>`
+            : i == a.length - 1 && v > 0 && v < 10
+            ? `<span style="text-decoration: underline dotted red;">${v}</span>`
+            : `<span>${v}</span>`
+        )
+        .join('<span>-></span>')
     }
   },
   created() {

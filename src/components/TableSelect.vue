@@ -82,7 +82,8 @@ export default {
 
 .scroll
   max-height: 250px
-  overflow: scroll
+  overflow-y: scroll
+  margin-bottom: 6px
 
 .mr10
   margin-right: 10px
