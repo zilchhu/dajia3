@@ -8,6 +8,8 @@
         router-link(:to="{name: 'tools-fresh-elm'}") 饿了么
 
     a-sub-menu(key="info-setting" title="信息录入")
+      a-menu-item(key="whitelist") 
+        router-link(:to="{name: 'tools-white-list'}") 白名单
       a-menu-item(key="add-new-shop") 
         router-link(:to="{name: 'tools-add-fresh'}") 新店
       a-menu-item(key="add-fengniao") 
@@ -33,7 +35,7 @@ export default {
   name: 'tools',
   data() {
     return {
-      menu_open_keys: ['new-shop-setting', 'info-setting']
+      menu_open_keys: ['new-shop-setting', 'info-setting', 'food-setting']
     }
   }
 }

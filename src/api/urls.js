@@ -107,6 +107,11 @@ const urls = {
     perf(date) {
       return `/绩效表${date}`
     }
+  },
+  whitelist: {
+    mtSmartAds: '/whitelist/mt/ad/smarts',
+    mtCpcAds: '/whitelist/mt/ad/cpcs',
+    elmSmartAds: '/whitelist/elm/ad/smarts'
   }
 }
 
