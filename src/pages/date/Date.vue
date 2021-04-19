@@ -24,7 +24,7 @@ div
     template(#cost_ratio="{text, record}")
       .cell(:class="{unsatisfied: rules2fn[record.platform]['cost_ratio'](text)}" @click.stop="() => costRatioClick(text, record)" style="cursor: pointer;") {{text}}
     template(#rating="{text, record}")
-      .cell(@click.stop="() => ratingClick(record)" style="cursor: pointer;") {{text}}
+      .cell(@click.stop="() => ratingClick(record)" :class="{unsatisfied: text < record.rating_last}" style="cursor: pointer;") {{text}}
 
     template(#expandedRowRender="{record}")
       a-collapse(v-model:activeKey="collapseKey" :bordered="false")
@@ -414,6 +414,7 @@ export default {
       map.set('shop_name', '店名')
       map.set('platform', '平台')
       map.set('rating', '评分')
+      map.set('rating_last', '上次评分')
       map.set('third_send', '三方配送')
       map.set('unit_price', '单价')
       map.set('orders', '订单')

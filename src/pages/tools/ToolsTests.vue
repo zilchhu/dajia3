@@ -3,7 +3,9 @@
   .header
     span.title tests:sync/del
   .form
-    a-input(v-model:value="wmPoiId" placeholder="wmPoiId" size="small" style="width: 160px; flex: 1 1 auto;")
+    a-select(v-model:value="wmpoi" showSearch :filterOption="filterShop" placeholder="请选择门店" size="small" style="width: 160px; flex: 1 1 auto;")
+      a-select-option(v-for="shop in mtShops" :key="shop.id" :value="`${shop.id}||${shop.poiName}`") {{shop.id}} {{shop.poiName}} 
+    //- a-input(v-model:value="wmPoiId" placeholder="wmPoiId" size="small" style="width: 160px; flex: 1 1 auto;")
     a-button(@click="sync" :loading="loading_sync" size="small" :disabled="false") 同步
     a-button(@click="del" :loading="loading_del" size="small") 删除
   .txt {{res_sync}}
@@ -11,24 +13,46 @@
 </template>
 
 <script>
-import { notification } from 'ant-design-vue'
+import { notification, message } from 'ant-design-vue'
 import Tests from '../../api/tests'
+import Shop from '../../api/shop'
 import SockJS from 'sockjs-client'
 
 export default {
   name: 'tools-tests',
   data() {
     return {
+      wmpoi: '',
       wmPoiId: '',
       res_sync: '',
       res_del: '',
+      mtShops: [],
+      loading: false,
       loading_sync: false,
       loading_del: false,
       sock: new SockJS('http://192.168.3.3:9999/tests_sync')
     }
   },
   methods: {
+    fetchMtShops() {
+      this.loading = true
+      new Shop()
+        .shops('mt')
+        .then(res => {
+          this.mtShops = res
+          this.loading = false
+        })
+        .catch(err => {
+          message.error(err)
+          this.loading = false
+        })
+    },
+    filterShop(input, option) {
+      return option.props.value.includes(input.trim())
+    },
     sync() {
+      if(this.wmpoi.length == 0) return
+      this.wmPoiId = this.wmpoi.split('||')[0]
       this.loading_sync = true
       this.sock.send(this.wmPoiId)
       this.sock.onmessage = e => {
@@ -43,6 +67,8 @@ export default {
       }
     },
     del() {
+      if(this.wmpoi.length == 0) return
+      this.wmPoiId = this.wmpoi.split('||')[0]
       this.loading_del = true
       new Tests(this.wmPoiId)
         .del()
@@ -57,6 +83,7 @@ export default {
     }
   },
   created() {
+    this.fetchMtShops()
     this.sock.onopen = function() {
       console.log('open')
     }

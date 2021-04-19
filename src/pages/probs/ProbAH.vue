@@ -36,7 +36,7 @@ export default {
       scrollY: 900,
       debounce_save: null,
       debounce_fetch: null,
-      day: 1
+      day: 2
     }
   },
   computed: {
@@ -157,7 +157,7 @@ export default {
         .map((v, i, a) =>
           v < a[i + 1]
             ? `<span style="text-decoration: underline dotted orange;">${v}</span>`
-            : i == a.length - 1 && v > 0 && v < 10
+            : i == a.length - 1 && v > 0 && v < 20
             ? `<span style="text-decoration: underline dotted red;">${v}</span>`
             : `<span>${v}</span>`
         )

@@ -11,7 +11,7 @@
 
       a-form-item(label="门店")
         a-select(v-model:value="formState.shop" showSearch :filterOption="filterShop" @select="shopSelect" placeholder="请选择门店")
-          a-select-option(v-for="shop in selectedShops" :key="shop.id" :value="`${shop.id}|${shop.name}|${shop.city}`") {{shop.id}} {{shop.name}} {{shop.city}}
+          a-select-option(v-for="shop in selectedShops" :key="shop.id" :value="`${shop.id}||${shop.name}||${shop.city}`") {{shop.id}} {{shop.name}} {{shop.city}}
 
       a-form-item(label="物理店")
         a-auto-complete(v-model:value="formState.realName" placeholder="请输入物理店")
@@ -150,8 +150,8 @@ export default {
       return option.props.value.includes(input.trim())
     },
     shopSelect(value) {
-      let shopId = value.split('|')[0]
-      let shopName = value.split('|')[1]
+      let shopId = value.split('||')[0]
+      let shopName = value.split('||')[1]
       let shopNameSimple = RegExp('.*[(, （](.*)店', 'g').exec(shopName)
       if (shopId || shopNameSimple) {
         let real = this.realShops.find(v => v.shop_id == shopId)
@@ -201,13 +201,13 @@ export default {
         .map(k => (this.formState[k] = this.formState[k].trim()))
       let data = {
         ...this.formState,
-        shopId: this.formState.shop.split('|')[0],
-        shopName: this.formState.shop.split('|')[1],
-        city: this.formState.shop.split('|')[2],
+        shopId: this.formState.shop.split('||')[0],
+        shopName: this.formState.shop.split('||')[1],
+        city: this.formState.shop.split('||')[2],
         isD: this.formState.isDM.includes('原价扣点') ? 1 : 0,
         isM: this.formState.isDM.includes('活动择优') ? 1 : 0,
         rent: parseInt(this.formState.rent),
-        project_id: this.formState.shop.split('|')[1].includes('大计划') ? 10001 : 10000
+        project_id: this.formState.shop.split('||')[1].includes('大计划') ? 10001 : 10000
       }
       console.log(data)
       this.loading = true
