@@ -184,13 +184,7 @@ export default {
                 onClick={() => {
                   if (record.field == '成本比例') this.costRatioClick(record)
                   else if (record.field == '评分') this.ratingClick(record)
-                  else if (record.field == '下架产品量')
-                    this.offsellClick(
-                      dayjs(v, 'YYYYMMDD')
-                        .add(1, 'day')
-                        .format('YYYYMMDD'),
-                      record
-                    )
+                  else if (record.field == '下架产品量') this.offsellClick(v, record)
                 }}
               >
                 {text}
