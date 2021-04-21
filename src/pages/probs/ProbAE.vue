@@ -9,6 +9,9 @@ a-table.ant-table-change(:columns="columns" :data-source="table" rowKey="key" :l
 
   template(#rule="{text, record}")
     span.pre {{text}}
+
+  template(#handle="{text, record}")
+    a-input(:value="text" @change="e => handleChange(e.target.value, record)" size="small")
 </template>
 
 <script>
@@ -26,7 +29,8 @@ export default {
     return {
       table: [],
       loading: false,
-      scrollY: 900
+      scrollY: 900,
+      debounce_save: null
     }
   },
   computed: {
@@ -69,13 +73,13 @@ export default {
           dataIndex: '活动类型',
           width: 130,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.活动类型 == value
+          onFilter: (value, record) => (record.活动类型 || '') == value
         },
         {
           title: '活动规则',
           dataIndex: '活动规则',
           slots: { filterDropdown: 'filterDropdown', customRender: 'rule' },
-          onFilter: (value, record) => record.活动规则 == value
+          onFilter: (value, record) => (record.活动规则 || '') == value
         },
         {
           title: '结束时间',
@@ -84,6 +88,17 @@ export default {
           slots: { filterDropdown: 'filterDropdown' },
           onFilter: (value, record) => record.结束时间 == value,
           sorter: (a, b) => (dayjs(a.结束时间).isBefore(dayjs(b.结束时间)) ? -1 : 1)
+        },
+        {
+          title: '处理',
+          dataIndex: 'handle',
+          filters: [
+            { text: '已处理', value: '' },
+            { text: '未处理', value: '1' }
+          ],
+          filterMultiple: true,
+          slots: { customRender: 'handle' },
+          onFilter: (value, record) => (record?.handle == null) == Boolean(value)
         }
       ]
     }
@@ -116,10 +131,38 @@ export default {
           message.error(err)
           this.loading = false
         })
+    },
+    debounce(fn) {
+      let timeout = null
+      return function() {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => fn.apply(this, arguments), 800)
+      }
+    },
+    handleChange(value, record) {
+      const target = this.table.filter(item => record.key === item.key)[0]
+      if (target) {
+        target['handle'] = value
+        this.debounce_save(record)
+      }
+    },
+    save(record) {
+      const target = this.table.filter(item => record.key === item.key)[0]
+      if (target) {
+        new Probs()
+          .save('ae', record.key, target['handle'])
+          .then(res => {
+            console.log(res)
+          })
+          .catch(err => {
+            message.error(err)
+          })
+      }
     }
   },
   created() {
     this.scrollY = document.body.clientHeight - 176
+    this.debounce_save = this.debounce(this.save)
     this.fetchTable()
   }
 }
