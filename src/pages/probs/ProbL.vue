@@ -1,7 +1,7 @@
 <template lang="pug">
-a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading" 
+a-table.ant-table-change(:columns="columns" :data-source="table" rowKey="key" :loading="loading" 
   :pagination="{showSizeChanger: true, defaultPageSize: 100, pageSizeOptions: ['50', '100', '200', '400'], size: 'small'}" 
-  size="small" :scroll="{y: scrollY}")
+  size="small" :scroll="{y: scrollY}" :rowClassName="(record, index) => (index % 2 === 1 ? 'table-striped' : null)")
 
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
     table-select(:style="`min-width: 160px; width: ${column.width + 50 || 300}px;`" :filterOptions="getColFilters(column.dataIndex)" 
@@ -180,7 +180,7 @@ export default {
       const target = this.table.filter(item => record.key === item.key)[0]
       if (target) {
         new Probs()
-          .save('a', record.key, target['handle'])
+          .save('l', record.key, target['handle'])
           .then(res => {
             console.log(res)
           })

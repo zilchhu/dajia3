@@ -46,13 +46,23 @@ export default {
   data() {
     const data = this.record.a
       ? JSON.parse(this.record.a)
-      : this.unSatisfiesProblems(this.record).map(v => ({
-          q: v,
-          name: this.record.person,
-          a: '',
-          operation: 'save',
-          time: ''
-        }))
+      : this.unSatisfiesProblems(this.record)
+          .map(v => ({
+            q: v,
+            name: this.record.person,
+            a: '',
+            operation: 'save',
+            time: ''
+          }))
+          .concat([
+            {
+              q: '自定义',
+              name: this.record.person,
+              a: '',
+              operation: 'save',
+              time: ''
+            }
+          ])
     return {
       data,
       columns,

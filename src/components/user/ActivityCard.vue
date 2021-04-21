@@ -92,6 +92,7 @@ export default {
       return dayjs.weekdays()[dayjs(this.activity.time_parsed).day()]
     },
     title_value() {
+      if(this.activity.q == '自定义') return ''
       return this.activity.qs.find(q => q.type == this.activity.q).value.toFixed(2)
     },
     shop_data() {
@@ -125,8 +126,8 @@ export default {
     shop_as() {
       return this.activity.as.map(a => ({
         ...a,
-        value: this.activity.qs.find(q => q.type == a.q).value,
-        threshold: this.activity.qs.find(q => q.type == a.q).threshold
+        value: this.activity.qs.find(q => q.type == a.q)?.value,
+        threshold: this.activity.qs.find(q => q.type == a.q)?.threshold
       }))
     },
     time2date() {

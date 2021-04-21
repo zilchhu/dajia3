@@ -54,12 +54,21 @@ export default {
           time_parsed: '',
           value: q.value,
           threshold: q.threshold
-        }))
+        })).concat([{
+          a: '',
+          name: this.shop.person,
+          operation: 'save',
+          q: '自定义',
+          time: '',
+          time_parsed: '',
+          value: null,
+          threshold: null
+        }])
       } else {
         return this.shop.a.map(a => ({
           ...a,
-          value: this.shop.qs.find(q => q.type == a.q).value,
-          threshold: this.shop.qs.find(q => q.type == a.q).threshold
+          value: this.shop.qs.find(q => q.type == a.q)?.value,
+          threshold: this.shop.qs.find(q => q.type == a.q)?.threshold
         }))
       }
     },

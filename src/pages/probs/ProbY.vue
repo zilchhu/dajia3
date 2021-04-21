@@ -1,17 +1,14 @@
 <template lang="pug">
-a-table(:columns="columns" :data-source="table" rowKey="key" :loading="loading" 
+a-table.ant-table-change(:columns="columns" :data-source="table" rowKey="key" :loading="loading" 
   :pagination="{showSizeChanger: true, defaultPageSize: 100, pageSizeOptions: ['50', '100', '200', '400'], size: 'small'}" 
-  size="small" :scroll="{y: scrollY}")
+  size="small" :scroll="{y: scrollY}" :rowClassName="(record, index) => (index % 2 === 1 ? 'table-striped' : null)")
 
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-    a-row(type="flex")
-      a-col(flex="auto")
-        a-select(mode="multiple" :value="selectedKeys" @change="setSelectedKeys" :placeholder="`filter ${column.title}`" :style="`min-width: 160px; width: ${column.width || 220}px;`")
-          a-select-option(v-for="option in getColFilters(column.dataIndex)" :key="option.value") {{option.value}} 
-      a-col(flex="60px")
-        a-button(type="link" @click="confirm") confirm
-        br
-        a-button(type="link" @click="clearFilters") reset
+    table-select(:style="`min-width: 160px; width: ${column.width + 50 || 300}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+      :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
+
+  template(#handle="{text, record}")
+    a-input(:value="text" @change="e => handleChange(e.target.value, record)" size="small")
 </template>
 
 <script>
@@ -24,12 +21,13 @@ export default {
     return {
       table: [],
       loading: false,
-      scrollY: 900
+      scrollY: 900,
+      debounce_save: null
     }
   },
   computed: {
     columns() {
-       return [
+      return [
         {
           title: '门店id',
           dataIndex: 'shop_id',
@@ -67,16 +65,29 @@ export default {
           align: 'right',
           width: 150,
           sorter: (a, b) => this.toNum(a.点金0曝光时间) - this.toNum(b.点金0曝光时间)
+        },
+        {
+          title: '处理',
+          dataIndex: 'handle',
+          filters: [
+            { text: '已处理', value: '' },
+            { text: '未处理', value: '1' }
+          ],
+          filterMultiple: true,
+          slots: { customRender: 'handle' },
+          onFilter: (value, record) => (record?.handle == null) == Boolean(value)
         }
       ]
     }
   },
   methods: {
     getColFilters(colName) {
-      return Array.from(new Set(this.table.map(row => row[colName]))).map(col => ({
-        text: col,
-        value: col
-      }))
+      return Array.from(new Set(this.table.map(row => row[colName] || '')))
+        .sort()
+        .map(col => ({
+          label: col,
+          value: col
+        }))
     },
     toNum(str) {
       try {
@@ -97,10 +108,38 @@ export default {
           message.error(err)
           this.loading = false
         })
+    },
+    debounce(fn) {
+      let timeout = null
+      return function() {
+        clearTimeout(timeout)
+        timeout = setTimeout(() => fn.apply(this, arguments), 800)
+      }
+    },
+    handleChange(value, record) {
+      const target = this.table.filter(item => record.key === item.key)[0]
+      if (target) {
+        target['handle'] = value
+        this.debounce_save(record)
+      }
+    },
+    save(record) {
+      const target = this.table.filter(item => record.key === item.key)[0]
+      if (target) {
+        new Probs()
+          .save('y', record.key, target['handle'])
+          .then(res => {
+            console.log(res)
+          })
+          .catch(err => {
+            message.error(err)
+          })
+      }
     }
   },
   created() {
     this.scrollY = document.body.clientHeight - 176
+    this.debounce_save = this.debounce(this.save)
     this.fetchTable()
   }
 }
