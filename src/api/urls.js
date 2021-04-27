@@ -51,13 +51,13 @@ const urls = {
     myt: '/myt',
     delMyt: '/delMyt',
     prob: {
-      base(type, platform, shopId) {
-        return `/prob/${type}/${platform}/${shopId}`
+      base(type, platform, shopId, date) {
+        return `/prob/${type}/${platform}/${shopId}/${date}`
       }
     },
     order: {
-      base(id, platform) {
-        return `/order/${platform}/${id}`
+      base(id, platform, date) {
+        return `/order/${platform}/${id}/${date}`
       }
     },
     indices: {

@@ -9,7 +9,7 @@ a-list-item(:key="shop.id")
           a-button(size="small" type="link" @click="detail_click") detail
     template(#description)
       shop-form(:as="shop_as" :shop_meta="shop_meta")
-      shop-data(v-if="shop_data_show" :shop_data="shop_data")
+      shop-data(v-if="shop_data_show" :shop_data="shop_data" :shop_meta="shop_meta")
       shop-history(v-if="shop_history_show" :shopid="shop_meta.shop_id")
 </template>
 

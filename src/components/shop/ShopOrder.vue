@@ -86,9 +86,9 @@ export default {
   methods: {
     fetchOrder() {
       this.loading = true
-      let { shopId, platform, activi, counts } = this.goods_meta
+      let { shopId, platform, activi, counts, date } = this.goods_meta
       new Shop(shopId)
-        .order(platform, activi, counts)
+        .order(platform, activi, counts, date)
         .then(res => {
           this.data = res
           this.loading = false

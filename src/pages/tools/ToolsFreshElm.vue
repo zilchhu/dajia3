@@ -68,8 +68,8 @@ export default {
         { key: 16, name: '店铺公告', checked: true, res: null },
         { key: 17, name: '到店自取', checked: true, res: null },
         { key: 18, name: '减配送费', checked: true, res: null },
-        { key: 19, name: '超值换购', checked: true, res: null },
-        { key: 20, name: '折扣商品', checked: true, res: null },
+        { key: 19, name: '折扣商品', checked: true, res: null },
+        { key: 20, name: '超值换购', checked: true, res: null }
       ],
       loading: false
     }

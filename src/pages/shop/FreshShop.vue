@@ -182,7 +182,7 @@ export default {
               <div
                 className={this.isUnsatisfy(record, text) ? 'unsatisfied' : ''}
                 onClick={() => {
-                  if (record.field == '成本比例') this.costRatioClick(record)
+                  if (record.field == '成本比例') this.costRatioClick(v, record)
                   else if (record.field == '评分') this.ratingClick(record)
                   else if (record.field == '下架产品量') this.offsellClick(v, record)
                 }}
@@ -350,8 +350,8 @@ export default {
     table_change(pagination) {
       localStorage.setItem('freshShop/defaultPageSize', pagination.pageSize)
     },
-    costRatioClick(record) {
-      this.shop_meta = { shopId: record.wmPoiId, platform: record.platform == '美团' ? 'mt' : 'elm' }
+    costRatioClick(date, record) {
+      this.shop_meta = { shopId: record.wmPoiId, platform: record.platform == '美团' ? 'mt' : 'elm', date: dayjs(date, 'YYYYMMDD').add(1, 'day').format('YYYYMMDD') }
       this.probClickModal = true
     },
     ratingClick(record) {

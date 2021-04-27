@@ -42,6 +42,7 @@ export default {
       map.set('shop_name', '店名')
       map.set('platform', '平台')
       map.set('rating', '评分')
+      map.set('rating_last', '上次评分')
       map.set('third_send', '三方配送')
       map.set('unit_price', '单价')
       map.set('orders', '订单')

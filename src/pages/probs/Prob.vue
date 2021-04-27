@@ -81,7 +81,6 @@ export default {
   data() {
     return {
       tabs: [
-        { key: 34, tab: '推广费余额查询', comp: 'ProbAH' },
         { key: 31, tab: '满减活动检查', comp: 'ProbAE' },
         { key: 29, tab: '减配活动检查', comp: 'ProbAC' },
         { key: 30, tab: '假减配检查', comp: 'ProbAD' },
@@ -98,6 +97,7 @@ export default {
         { key: 1, tab: '原价扣点城市折扣与原价差距大于2', comp: 'ProbA' },
         { key: 32, tab: '库存过少检查', comp: 'ProbAF' },
         { key: 33, tab: '查询商品多规格', comp: 'ProbAG' },
+        { key: 34, tab: '推广费余额查询', comp: 'ProbAH' },
         
         // { key: 3, tab: '美团薯饼虾饼鸡柳设置两份起购', comp: 'ProbC' },
         // { key: 4, tab: '餐盒费为0常规餐品设置餐盒费1', comp: 'ProbD' },

@@ -39,7 +39,7 @@ export default {
       this.sock.onmessage = e => {
         console.log('message', e.data)
         this.results.push(e.data)
-        window.scrollTo(0,document.body.scrollHeight)
+        window.scrollTo(0,document.body.scrollHeight + 20)
       }
     }
   },

@@ -90,9 +90,9 @@ export default {
   methods: {
     fetchProb() {
       this.loading = true
-      let { shopId, platform } = this.shop_meta
+      let { shopId, date, platform } = this.shop_meta
       new Shop(shopId)
-        .prob('cost', platform)
+        .prob('cost', platform, date)
         .then(res => {
           this.data = res
           this.loading = false

@@ -572,7 +572,7 @@ export default {
       this.$router.push({ name: 'shop', params: { shopid: text } })
     },
     costRatioClick(_, record) {
-      this.shop_meta = { shopId: record.shop_id, platform: record.platform == '美团' ? 'mt' : 'elm' }
+      this.shop_meta = { shopId: record.shop_id, platform: record.platform == '美团' ? 'mt' : 'elm', date: dayjs().subtract(+this.day - 1, 'day').format('YYYYMMDD') }
       this.probClickModal = true
     },
     ratingClick(record) {
