@@ -39,6 +39,7 @@ import ProbAE from './ProbAE'
 import ProbAF from './ProbAF'
 import ProbAG from './ProbAG'
 import ProbAH from './ProbAH'
+import ProbAI from './ProbAI'
 
 export default {
   name: 'Prob',
@@ -77,10 +78,12 @@ export default {
     ProbAF,
     ProbAG,
     ProbAH,
+    ProbAI,
   },
   data() {
     return {
       tabs: [
+        { key: 35, tab: '差评', comp: 'ProbAI' },
         { key: 31, tab: '满减活动检查', comp: 'ProbAE' },
         { key: 29, tab: '减配活动检查', comp: 'ProbAC' },
         { key: 30, tab: '假减配检查', comp: 'ProbAD' },
