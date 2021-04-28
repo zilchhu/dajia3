@@ -65,7 +65,7 @@ export default {
       return this.calends.map(c => ({
         ...c,
         key: `${c.year}/${c.month + 1}`,
-        grid_height: c.calends.length * this.cell_width + (c.calends.length - 1) * this.cell_gap + 34
+        grid_height: c.calends.length * this.cell_width + (c.calends.length - 1) * this.cell_gap + 80
       }))
     }
   },

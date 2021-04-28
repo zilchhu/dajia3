@@ -17,6 +17,7 @@ a-list-item(:key="shop.id")
 import ShopForm from './ShopForm'
 import ShopData from './ShopData'
 import ShopHistory from '../shop/ShopHistory'
+import dayjs from 'dayjs'
 
 export default {
   name: 'shop-card',
@@ -40,7 +41,8 @@ export default {
         id: this.shop.id,
         shop_id: this.shop.shop_id,
         shop_name: this.shop.shop_name,
-        platform: this.shop.platform
+        platform: this.shop.platform,
+        date: dayjs(`${this.shop.date}`, 'YYYYMMDD').add(1, 'day').format('YYYYMMDD')
       }
     },
     shop_as() {

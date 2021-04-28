@@ -10,7 +10,7 @@ div
           a-menu
             a-menu-item(key="1" @click="e => click(key)") item1
   a-modal(v-model:visible="probClickModal" :footer="null" centered :width="1080")
-    shop-problem(:shop_meta="{shopId: shop_meta.shop_id, platform: shop_meta.platform == '美团' ? 'mt' : 'elm'}")
+    shop-problem(:shop_meta="{shopId: shop_meta.shop_id, platform: shop_meta.platform == '美团' ? 'mt' : 'elm', date: shop_meta.date}")
 
 </template>
 
@@ -79,7 +79,7 @@ export default {
       console.log(key)
     },
     statisticClick(key) {
-      if (key == 'cost') this.probClickModal = true
+      if (key == 'cost_ratio') this.probClickModal = true
     }
   }
 }

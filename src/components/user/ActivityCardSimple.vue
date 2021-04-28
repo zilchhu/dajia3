@@ -68,7 +68,8 @@ export default {
         id: this.activity.id,
         shop_id: this.activity.shop_id,
         shop_name: this.activity.shop_name,
-        platform: this.activity.platform
+        platform: this.activity.platform,
+        date: dayjs(`${this.activity.date}`, 'YYYYMMDD').add(1, 'day').format('YYYYMMDD')
       }
     },
     title_num() {
