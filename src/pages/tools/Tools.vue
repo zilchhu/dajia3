@@ -21,9 +21,11 @@
       a-menu-item(key="add-shunfeng") 
         router-link(:to="{name: 'tools-add-shunfeng'}") 顺丰 
 
-    a-sub-menu(key="food-setting" title="原价修改")
+    a-sub-menu(key="food-setting" title="价格修改")
       a-menu-item(key="food-setting:mt")
         router-link(:to="{name: 'tools-food-mt'}") 美团
+      a-menu-item(key="food-setting:elm")
+        router-link(:to="{name: 'tools-food-elm'}") 饿了么
         
     a-menu-item(key="tests:sync/del") 
       router-link(:to="{name: 'tools-tests'}") 测试产品

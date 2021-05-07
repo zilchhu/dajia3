@@ -1,5 +1,5 @@
 <template lang="pug">
-div.tools-food-mt
+div.tools-food-elm
   div(style="display: flex; align-items: start;")
     a(href="/美团折扣商品涨原价表格模板.xlsx" target="_blank" style="margin-right: 20px") 下载模板
     a-upload(v-model:file-list="fileList" action="http://192.168.3.3:9005/upload")
@@ -18,14 +18,14 @@ import SockJS from 'sockjs-client'
 import { message } from 'ant-design-vue'
 
 export default {
-  name: 'tools-food-mt',
+  name: 'tools-food-elm',
   components: {
     UploadOutlined
   },
   data() {
     return {
       fileList: [],
-      sock: new SockJS('http://192.168.3.3:9998/price_update'),
+      sock: new SockJS('http://192.168.3.3:9997/price_update3'),
       results: []
     }
   },
@@ -57,7 +57,7 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.tools-food-mt
+.tools-food-elm
   width: 960px
   margin: 20px auto
 </style>

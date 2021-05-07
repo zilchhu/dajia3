@@ -4,7 +4,7 @@ a-table.ant-table-change(:columns="columns" :data-source="table" rowKey="key" :l
   size="small" :scroll="{y: scrollY}" :rowClassName="(record, index) => (index % 2 === 1 ? 'table-striped' : null)")
 
   template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
-    table-select(:style="`min-width: 160px; width: ${column.width + 50 || 220}px;`" :filterOptions="getColFilters(column.dataIndex)" 
+    table-select(:style="`min-width: 160px; width: ${column.width + 50 || 350}px;`" :filterOptions="getColFilters(column.dataIndex)" 
       :selectedList="selectedKeys" @select-change="setSelectedKeys" @confirm="confirm" @reset="clearFilters")
 
   template(#handle="{text, record}")
@@ -14,11 +14,10 @@ a-table.ant-table-change(:columns="columns" :data-source="table" rowKey="key" :l
 <script>
 import Probs from '../../api/probs'
 import { message } from 'ant-design-vue'
-import dayjs from 'dayjs'
 import TableSelect from '../../components/TableSelect'
 
 export default {
-  name: 'ProbAC',
+  name: 'ProbAJ',
   components: {
     TableSelect
   },
@@ -34,18 +33,17 @@ export default {
     columns() {
       return [
         {
-          title: '门店编号',
-          dataIndex: '门店编号',
+          title: '店铺id',
+          dataIndex: '店铺id',
           width: 90,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.门店编号 == value
+          onFilter: (value, record) => record.店铺id == value
         },
         {
-          title: '店名',
-          dataIndex: '店名',
-          width: 250,
+          title: '店铺名称',
+          dataIndex: '店铺名称',
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => record.店名 == value
+          onFilter: (value, record) => record.店铺名称 == value
         },
         {
           title: '平台',
@@ -56,7 +54,7 @@ export default {
             { text: '饿了么', value: '饿了么' }
           ],
           filterMultiple: true,
-          onFilter: (value, record) => record.platform == value
+          onFilter: (value, record) => record.平台 == value
         },
         {
           title: '责任人',
@@ -66,54 +64,17 @@ export default {
           onFilter: (value, record) => record.责任人 == value
         },
         {
-          title: '合作方案',
-          dataIndex: '合作方案',
-          slots: { filterDropdown: 'filterDropdown' },
-          width: 150,
-          onFilter: (value, record) => (record.合作方案 || '') == value
-        },
-        {
-          title: '活动规则',
-          dataIndex: '活动规则',
-          width: 250,
-          slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => (record.活动规则 || '') == value
-        },
-        {
-          title: '基础配送费',
-          dataIndex: '基础配送费',
-          align: 'right',
-          width: 130,
-          sorter: (a, b) => this.toNum(a.基础配送费) - this.toNum(b.基础配送费)
-        },
-        {
-          title: '减配力度',
-          dataIndex: '减配力度',
-          align: 'right',
+          title: '物理店',
+          dataIndex: '物理店',
           width: 100,
-          sorter: (a, b) => this.toNum(a.减配力度) - this.toNum(b.减配力度)
-        },
-        {
-          title: '力度偏差',
-          dataIndex: '力度偏差',
-          align: 'right',
-          width: 100,
-          sorter: (a, b) => this.toNum(a.力度偏差) - this.toNum(b.力度偏差)
-        },
-        {
-          title: '起送价',
-          dataIndex: '起送价',
-          align: 'right',
-          width: 130,
-          sorter: (a, b) => this.toNum(a.起送价) - this.toNum(b.起送价)
+          slots: { filterDropdown: 'filterDropdown' },
+          onFilter: (value, record) => record.物理店 == value
         },
         {
           title: '到期时间',
           dataIndex: '到期时间',
-          width: 130,
           slots: { filterDropdown: 'filterDropdown' },
-          onFilter: (value, record) => (record.到期时间 || '') == value,
-          sorter: (a, b) => (dayjs(a.到期时间).isBefore(dayjs(b.到期时间)) ? -1 : 1)
+          onFilter: (value, record) => record.到期时间 == value
         },
         {
           title: '处理',
@@ -148,7 +109,7 @@ export default {
     fetchTable() {
       this.loading = true
       new Probs()
-        .single('ac')
+        .single('aj')
         .then(res => {
           this.table = res
           this.loading = false
@@ -176,7 +137,7 @@ export default {
       const target = this.table.filter(item => record.key === item.key)[0]
       if (target) {
         new Probs()
-          .save('ac', record.key, target['handle'])
+          .save('aj', record.key, target['handle'])
           .then(res => {
             console.log(res)
           })

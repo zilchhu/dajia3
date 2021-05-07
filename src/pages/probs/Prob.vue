@@ -40,6 +40,7 @@ import ProbAF from './ProbAF'
 import ProbAG from './ProbAG'
 import ProbAH from './ProbAH'
 import ProbAI from './ProbAI'
+import ProbAJ from './ProbAJ'
 
 export default {
   name: 'Prob',
@@ -79,6 +80,7 @@ export default {
     ProbAG,
     ProbAH,
     ProbAI,
+    ProbAJ
   },
   data() {
     return {
@@ -86,6 +88,7 @@ export default {
         { key: 35, tab: '差评', comp: 'ProbAI' },
         { key: 31, tab: '满减活动检查', comp: 'ProbAE' },
         { key: 29, tab: '减配活动检查', comp: 'ProbAC' },
+        { key: 36, tab: '合作方案到期', comp: 'ProbAJ' },
         { key: 30, tab: '假减配检查', comp: 'ProbAD' },
         { key: 28, tab: '折扣到期商品检查', comp: 'ProbAB' },
         { key: 27, tab: '折扣遗漏商品查询', comp: 'ProbAA' },

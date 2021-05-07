@@ -15,6 +15,7 @@ import ToolsFreshMt from './pages/tools/ToolsFreshMt'
 import ToolsFreshElm from './pages/tools/ToolsFreshElm'
 import ToolsTests from './pages/tools/ToolsTests'
 import ToolsFoodMt from './pages/tools/ToolsFoodMt'
+import ToolsFoodElm from './pages/tools/ToolsFoodElm'
 import ToolsWhiteList from './pages/tools/ToolsWhiteList'
 import Date from './pages/date/Date'
 import Sum from './pages/date/Sum'
@@ -43,6 +44,7 @@ const routes = [
       { path: 'fresh/mt', name: 'tools-fresh-mt', component: ToolsFreshMt },
       { path: 'fresh/elm', name: 'tools-fresh-elm', component: ToolsFreshElm },
       { path: 'food/mt', name: 'tools-food-mt', component: ToolsFoodMt },
+      { path: 'food/elm', name: 'tools-food-elm', component: ToolsFoodElm },
       { path: 'whitelist', name: 'tools-white-list', component: ToolsWhiteList },
       { path: 'tests', name: 'tools-tests', component: ToolsTests }
     ]

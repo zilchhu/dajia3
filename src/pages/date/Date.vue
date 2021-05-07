@@ -1,7 +1,7 @@
 <template lang="pug">
 div
   a-table(:columns="tableCols" :data-source="table" rowKey="shop_id" :row-selection="rowSelection" :loading="tableLoading" @expand="expand" :expandRowByClick="true" :expandIconAsCell="false" :expandIconColumnIndex="-1" :pagination="{showSizeChanger: true, defaultPageSize}"
-    @change="table_change" size="small" :scroll="{x: scrollX, y: scrollY}")
+    @change="table_change" size="small" :scroll="{x: scrollX, y: scrollY}" :rowClassName="(record, index) => (record.new_person != null ? 'table-new-person-row' : null)")
     template(#filterDropdown="{confirm, clearFilters, column, selectedKeys, setSelectedKeys}")
       //- a-row(type="flex")
       //-   a-col(flex="auto")
@@ -20,7 +20,9 @@ div
     template(#shop_id="{text, record}")
       router-link.cell(:to="{name: 'shop', params: {shopid: text}}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
     template(#person="{text, record}")
-      router-link.cell(:to="{ name: 'user', params: { username: text || '-', date: 0 }}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
+      a-tooltip(v-if="record.new_person" :title="`新店 : ${record.new_person}`")
+        router-link.cell(:to="{ name: 'user', params: { username: text || '-', date: 0 }}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
+      router-link.cell(v-else :to="{ name: 'user', params: { username: text || '-', date: 0 }}" style="color: rgba(0, 0, 0, 0.65);") {{text}}
     template(#cost_ratio="{text, record}")
       .cell(:class="{unsatisfied: rules2fn[record.platform]['cost_ratio'](text)}" @click.stop="() => costRatioClick(text, record)" style="cursor: pointer;") {{text}}
     template(#rating="{text, record}")
@@ -639,4 +641,7 @@ export default {
 
 .ant-table-thead > tr > th
   border: none
+
+.table-new-person-row
+  background-color: #6ed8c71a
 </style>

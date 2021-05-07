@@ -105,6 +105,34 @@ export default {
     fresh_shop_columns() {
       let fiexed_cols = [
         {
+          title: '物理店',
+          dataIndex: 'real_shop_name',
+          width: 85,
+          slots: { filterDropdown: 'filterDropdown' },
+          filterMultiple: true,
+          fixed: 'left',
+          customRender: ({ text, record, index }) => {
+            const obj = {
+              children: (
+                <div
+                  onclick={() => this.$router.push({ name: 'user', params: { username: record.new_person, date: 0 } })}
+                  style="writing-mode: vertical-lr; white-space: pre-wrap; color: rgba(0,0,0,.65);"
+                >
+                  {text}
+                </div>
+              ),
+              props: {}
+            }
+            if (index % 19 == 0) {
+              obj.props.rowSpan = 19
+            } else {
+              obj.props.rowSpan = 0
+            }
+            return obj
+          },
+          onFilter: (value, record) => record.real_shop_name == value
+        },
+        {
           title: '门店',
           dataIndex: 'name',
           width: 75,
@@ -351,7 +379,13 @@ export default {
       localStorage.setItem('freshShop/defaultPageSize', pagination.pageSize)
     },
     costRatioClick(date, record) {
-      this.shop_meta = { shopId: record.wmPoiId, platform: record.platform == '美团' ? 'mt' : 'elm', date: dayjs(date, 'YYYYMMDD').add(1, 'day').format('YYYYMMDD') }
+      this.shop_meta = {
+        shopId: record.wmPoiId,
+        platform: record.platform == '美团' ? 'mt' : 'elm',
+        date: dayjs(date, 'YYYYMMDD')
+          .add(1, 'day')
+          .format('YYYYMMDD')
+      }
       this.probClickModal = true
     },
     ratingClick(record) {
